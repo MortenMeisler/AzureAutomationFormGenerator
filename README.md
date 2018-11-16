@@ -17,7 +17,7 @@ Generate input forms from Azure Automation Runbooks and submit
 ## Getting Started
 
 1. Fork or clone the project
-2. Open appsettings.josn and change the values to your own
+2. Open appsettings.json and change the values to your own
 3. Right-click WebUI project and click Manage User Secrets:
 4. Paste the following:
 
