@@ -1,0 +1,84 @@
+﻿@model Dictionary<string, AzureAutomationFormGenerator.Models.RunbookParameterSetting>
+@{
+    ViewData["Title"] = "AzureRunbookFormView";
+}
+
+<link rel="stylesheet" href="~/css/site.css" />
+
+
+<h3 class="about-heading runbook-name">@ViewBag.RunbookName</h3>
+@if (Model != null)
+{
+    <form asp-controller="Home" asp-action="Submit" method="post" onsubmit="myFunction()">
+        @{int inputCount = 0;}
+
+        @foreach (var item in Model)
+        {
+
+            <input type="text" name="inputs[@inputCount].Key" hidden value="@item.Key" />
+            <div class="form-group needs-validation has-danger" novalidate>
+
+                <label class="form-control-label" for="@(item.Key)">
+                    @if (item.Value.DisplayName != null)
+                    {
+                        @item.Value.DisplayName
+                    }
+                    else
+                    { @item.Key}
+                </label>
+                @if (item.Value.ValidateSet != null)
+                {
+
+                    <select class="form-control" id="@(item.Key)" name="inputs[@inputCount].Value" value="@item.Value.DefaultValue">
+                        @foreach (var validateItem in item.Value.ValidateSet)
+                        {
+                            if (item.Value.DefaultValue != null && item.Value.DefaultValue.Equals(validateItem))
+                            {
+                                <option selected>@validateItem</option>
+                            }
+                            else
+                            {
+                                @item.Value.DefaultValue
+                                <option>@validateItem</option>
+                            }
+
+                        }
+                    </select>
+                }
+                else
+                {
+                    @if (item.Value.IsRequired)
+                    {
+                        <input type="text" name="inputs[@inputCount].Value" class="form-control form-control-danger" id="@item.Key" value="@item.Value.DefaultValue" required />
+
+                    }
+                    else
+                    {
+                        <input type="text" name="inputs[@inputCount].Value" class="form-control" id="@item.Key" value="@item.Value.DefaultValue" />
+                    }
+                }
+            </div>
+            inputCount++;
+        }
+        <input type="text" id="signalRconnectionId" name="signalRconnectionId" hidden value="" />
+
+        <table>
+            <tr>
+
+                <td><input id="submitButton" data-loading-text="<i class='fa fa-spinner fa-spin fa-fw' aria-hidden='true'>" type="submit" value="Submit" /></td>
+                <td><p class="text-success" id="jobstatus"></p></td>
+                <td id="spinner"></td>
+
+            </tr>
+        </table>
+
+    </form>
+}
+<br />
+
+<p id="errormessage" class="alert-danger"></p>
+
+<script src="~/lib/signalr/signalr.js"></script>
+<script src="~/js/signal.js" defer></script>
+<script src="~/js/site.js" defer></script>
+

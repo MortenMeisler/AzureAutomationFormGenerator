@@ -1,0 +1,15 @@
+﻿
+@{
+    ViewData["Title"] = "Result";
+}
+
+<h2>Output:</h2>
+<p>@Html.Raw(ViewData["JobOutput"])</p>
+
+@if (!string.IsNullOrEmpty((string)ViewData["JobOutputError"]))
+{
+    <p>The runbook executed successfully, but there was an error in the script:</p>
+    <br>
+    <p class="text-danger">@Html.Raw(ViewData["JobOutputError"])</p>
+}
+

@@ -1,0 +1,16 @@
+﻿@model AzureRunbookFormViewModel
+
+@{
+    Layout = "_Layout";
+}
+<body>
+    <div class="container col-md-5">
+        <vc:azure-runbook-form resource-group="@Model.ResourceGroup" automation-account="@Model.AutomationAccount" runbook-name="@Model.RunbookName"></vc:azure-runbook-form>
+    </div>
+</body>
+
+
+
+
+
+
