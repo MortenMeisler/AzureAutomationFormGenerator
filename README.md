@@ -12,7 +12,7 @@ Generate input forms from Azure Automation Runbooks and submit
 
 ## Requirements
 
- - Create Service Principal that has permission to your Azure Automation Account. [Read more here:](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
+ - Create a Service Principal that has permission to your Azure Automation Account. [Read more here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
 
 ## Getting Started
 
