@@ -1,5 +1,5 @@
 # Azure Automation Form Generator
-Generate input forms from Azure Automation Runbooks
+Generate input forms from Azure Automation Runbooks and submit
 
 
 ## Overview
