@@ -77,7 +77,8 @@
         "sqlDbMaxSizeBytes": "1073741824",
         "sqlDbCollation": "SQL_Latin1_General_CP1_CI_AS",
         "contributorRoleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "roleAssignmentId": "[guid(resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName')))]"        
+        "roleAssignmentId": "[guid(resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName')))]",
+        "principal": "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]"     
     },
     "resources": [
         {
@@ -204,8 +205,8 @@
              ],
              "properties": {
                 "roleDefinitionId": "[variables('contributorRoleDefinitionId')]",
-                "principalId": "[reference(concat('Microsoft.Web/Sites/', variables('apiSiteName')), '2018-02-01', 'Full').identity.principalId]"
-                     }
+                "principalId": "[reference(variables('principal'), '2018-02-01', 'Full').identity.principalId]"
+            }
          },        
         {
             "apiVersion": "2015-04-01",
