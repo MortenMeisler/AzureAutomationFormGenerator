@@ -64,9 +64,6 @@
         "sqlDbEdition": {
             "type": "string",
             "defaultValue": "Basic"
-        },
-        "automationAccountName": {
-            "type": "string"
         }
     },
     "variables": {
@@ -75,10 +72,7 @@
         "project-api": "src\\AzureAutomationFormGenerator-API\\AzureAutomationFormGenerator.WebUI.csproj",
         "sqlDbServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
         "sqlDbMaxSizeBytes": "1073741824",
-        "sqlDbCollation": "SQL_Latin1_General_CP1_CI_AS",
-        "contributorRoleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', 'b24988ac-6180-42a0-ab88-20f7382dd24c')]",
-        "roleAssignmentId": "[guid(resourceId('Microsoft.Automation/automationAccounts/', parameters('automationAccountName')))]",
-        "principal": "[concat('Microsoft.Automation/automationAccounts/', parameters('automationAccountName'))]"     
+        "sqlDbCollation": "SQL_Latin1_General_CP1_CI_AS"
     },
     "resources": [
         {
@@ -195,19 +189,7 @@
                     }
                 }
             ]
-        },
-        {
-            "apiVersion": "2016-07-01",
-            "type": "Microsoft.Authorization/roleAssignments",
-            "name": "[variables('roleAssignmentId')]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
-             ],
-             "properties": {
-                "roleDefinitionId": "[variables('contributorRoleDefinitionId')]",
-                "principalId": "[reference(variables('principal'), '2018-02-01', 'Full').identity.principalId]"
-            }
-         },        
+        },        
         {
             "apiVersion": "2015-04-01",
             "name": "[parameters('siteName')]",
@@ -248,5 +230,6 @@
                 }
             ]
         }
-    ]
+    ],
+    "outputs": {}
 }
