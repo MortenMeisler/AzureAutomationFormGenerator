@@ -104,7 +104,11 @@
                         "collation": "[variables('sqlDbCollation')]",
                         "maxSizeBytes": "[variables('sqlDbMaxSizeBytes')]",
                         "requestedServiceObjectiveId": "[variables('sqlDbServiceObjectiveId')]"
-                    }
+                    },
+                    "sku": {
+                        "name": "Basic",
+                        "tier": "Basic"
+                    }                 
                 },
                 {
                     "apiVersion": "2014-04-01-preview",
