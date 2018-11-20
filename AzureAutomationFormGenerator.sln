@@ -5,11 +5,20 @@ VisualStudioVersion = 15.0.27705.2000
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{64BCE28A-5953-4AAC-82E6-AEC8D0E5D805}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAutomationFormGenerator.WebUI", "src\AzureAutomationFormGenerator\AzureAutomationFormGenerator.WebUI.csproj", "{21A5DB1B-4AC4-4719-A324-75F3FBCC1CCF}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{E70800BC-B0A8-469E-A8E7-450F0D6770BF}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAutomationFormGenerator.Test", "test\AzureAutomationFormGenerator.Test\AzureAutomationFormGenerator.Test.csproj", "{0F30F0B4-BE96-4526-AC22-53E66A0187A2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAutomationFormGenerator.Persistence", "AzureAutomationFormGenerator.Persistence\AzureAutomationFormGenerator.Persistence.csproj", "{3C4D0A9D-D892-4CB8-8790-EAA64FBCAEC8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{22E1C310-9A99-407A-B3F8-5004FCF34993}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Presentation", "Presentation", "{49E41917-3146-4AB8-BF5B-B365D1C6661F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AzureAutomationFormGenerator.WebUI", "AzureAutomationFormGenerator.WebUI\AzureAutomationFormGenerator.WebUI.csproj", "{7729B262-34A2-4999-9EB8-54CBF7C57EBC}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3C4D0A9D-D892-4CB8-8790-EAA64FBCAEC8} = {3C4D0A9D-D892-4CB8-8790-EAA64FBCAEC8}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,21 +26,28 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{21A5DB1B-4AC4-4719-A324-75F3FBCC1CCF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{21A5DB1B-4AC4-4719-A324-75F3FBCC1CCF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{21A5DB1B-4AC4-4719-A324-75F3FBCC1CCF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{21A5DB1B-4AC4-4719-A324-75F3FBCC1CCF}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0F30F0B4-BE96-4526-AC22-53E66A0187A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0F30F0B4-BE96-4526-AC22-53E66A0187A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F30F0B4-BE96-4526-AC22-53E66A0187A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F30F0B4-BE96-4526-AC22-53E66A0187A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C4D0A9D-D892-4CB8-8790-EAA64FBCAEC8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C4D0A9D-D892-4CB8-8790-EAA64FBCAEC8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C4D0A9D-D892-4CB8-8790-EAA64FBCAEC8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C4D0A9D-D892-4CB8-8790-EAA64FBCAEC8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7729B262-34A2-4999-9EB8-54CBF7C57EBC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7729B262-34A2-4999-9EB8-54CBF7C57EBC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7729B262-34A2-4999-9EB8-54CBF7C57EBC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7729B262-34A2-4999-9EB8-54CBF7C57EBC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{21A5DB1B-4AC4-4719-A324-75F3FBCC1CCF} = {64BCE28A-5953-4AAC-82E6-AEC8D0E5D805}
 		{0F30F0B4-BE96-4526-AC22-53E66A0187A2} = {E70800BC-B0A8-469E-A8E7-450F0D6770BF}
+		{3C4D0A9D-D892-4CB8-8790-EAA64FBCAEC8} = {22E1C310-9A99-407A-B3F8-5004FCF34993}
+		{22E1C310-9A99-407A-B3F8-5004FCF34993} = {64BCE28A-5953-4AAC-82E6-AEC8D0E5D805}
+		{49E41917-3146-4AB8-BF5B-B365D1C6661F} = {64BCE28A-5953-4AAC-82E6-AEC8D0E5D805}
+		{7729B262-34A2-4999-9EB8-54CBF7C57EBC} = {49E41917-3146-4AB8-BF5B-B365D1C6661F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {19F18107-082E-4479-96D0-4BE0008445A4}
