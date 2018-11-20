@@ -28,13 +28,9 @@ $Location = 'northeurope'
 New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Force | Out-Null
 
 $TemplateParameterObject = @{
-    siteName = 'siteB8jHNFN8wusv'
-    hostingPlanName = 'planB8jHNFN8wusv'
-    siteLocation = $Location
+    siteName = 'siteB8jHNFN8wusv'    
+    Location = $Location
     repoUrl = 'https://github.com/MortenMeisler/AzureAutomationFormGenerator'
-    sqlServerName = 'sqlB8jHNFN8wusv'.ToLower()
-    sqlServerLocation = $Location
-    sqlServerAdminPassword = 'TQ4NkJRjo4ICZfC*8sm7!pnm'
 }
 
 Test-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile ".\azuredeploy.json" -TemplateParameterObject $TemplateParameterObject

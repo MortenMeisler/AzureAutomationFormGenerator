@@ -5,34 +5,8 @@
         "siteName": {
             "type": "string"
         },
-        "hostingPlanName": {
-            "type": "string"
-        },
-        "siteLocation": {
+        "Location": {
             "type": "string"            
-        },
-        "sku": {
-            "type": "string",
-            "allowedValues": [
-                "Free",
-                "Shared",
-                "Basic",
-                "Standard", 
-                "Premium"
-            ],
-            "defaultValue": "Free",
-            "metadata": {
-                "description": "The 'Free' tier is sufficient"
-            }
-        },
-        "workerSize": {
-            "type": "string",
-            "allowedValues": [
-                "0",
-                "1",
-                "2"
-            ],
-            "defaultValue": "0"
         },
         "repoUrl": {
             "type": "string"
@@ -40,67 +14,51 @@
         "branch": {
             "type": "string",
             "defaultValue": "master"
-        },
-        "sqlServerName": {
-            "type": "string"
-        },
-        "sqlServerLocation": {
-            "type": "string"
-        },
-        "sqlServerAdminLogin": {
-            "type": "string",
-            "defaultValue": "sqladmin"
-        },
-        "sqlServerAdminPassword": {
-            "type": "securestring",
-            "metadata": {
-                "description": "must be sufficiently complex or else the deployment will fail"
-            }
-        },
-        "sqlDbName": {
-            "type": "string",
-            "defaultValue": "HelloSQLDB"
-        },
-        "sqlDbEdition": {
-            "type": "string",
-            "defaultValue": "Basic"
         }
     },
     "variables": {
         "apiSiteName": "[concat(parameters('siteName'), '-api')]",
+        "hostingPlanName": "[concat(parameters('siteName'), '-plan')]",
         "project-web": "AzureAutomationFormGenerator.WebUI\\AzureAutomationFormGenerator.WebUI.csproj",
         "project-api": "AzureAutomationFormGenerator.WebUI\\AzureAutomationFormGenerator.WebUI.csproj",
+        "sku": "Free",
+        "workerSize": "0",
         "sqlDbServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
         "sqlDbMaxSizeBytes": "1073741824",
-        "sqlDbCollation": "SQL_Latin1_General_CP1_CI_AS"
+        "sqlDbCollation": "SQL_Latin1_General_CP1_CI_AS",
+        "sqlServerAdminLogin": "sqladmin",
+        "sqlServerAdminPassword": "[concat(uniqueString(resourceGroup().id), 'Nx6%#%9wh$8')]",
+        "sqlDbName": "AutomationPortal",
+        "sqlDbEdition": "Basic",
+        "sqlServerName": "[toLower(concat(parameters('siteName'), '-sql'))]"
     },
     "resources": [
         {
             "apiVersion": "2014-04-01-preview",
-            "name": "[parameters('sqlServerName')]",
+            "name": "[variables('sqlServerName')]",
             "type": "Microsoft.Sql/servers",
-            "location": "[parameters('sqlServerLocation')]",
+            "location": "[parameters('Location')]",
             "tags": {
                 "displayName": "SQLServer"
             },
             "properties": {
-                "administratorLogin": "[parameters('sqlServerAdminLogin')]",
-                "administratorLoginPassword": "[parameters('sqlServerAdminPassword')]"
+                "administratorLogin": "[variables('sqlServerAdminLogin')]",
+                "administratorLoginPassword": "[variables('sqlServerAdminPassword')]"
             },
             "resources": [
                 {
                     "apiVersion": "2014-04-01-preview",
-                    "name": "[parameters('sqlDbName')]",
+                    "name": "[variables('sqlDbName')]",
                     "type": "databases",
-                    "location": "[parameters('sqlServerLocation')]",
+                    "location": "[parameters('Location')]",
                     "tags": {
                         "displayName": "SQLDatabase"
                     },
                     "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
+                        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
                     ],
                     "properties": {
-                        "edition": "[parameters('sqlDbEdition')]",
+                        "edition": "[variables('sqlDbEdition')]",
                         "collation": "[variables('sqlDbCollation')]",
                         "maxSizeBytes": "[variables('sqlDbMaxSizeBytes')]",
                         "requestedServiceObjectiveId": "[variables('sqlDbServiceObjectiveId')]"
@@ -110,9 +68,9 @@
                     "apiVersion": "2014-04-01-preview",
                     "name": "SQLServerFirewallRules",
                     "type": "firewallrules",
-                    "location": "[parameters('sqlServerLocation')]",
+                    "location": "[parameters('Location')]",
                     "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
+                        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
                     ],
                     "properties": {
                         "endIpAddress": "0.0.0.0",
@@ -123,13 +81,13 @@
         },
         {
             "apiVersion": "2014-11-01",
-            "name": "[parameters('hostingPlanName')]",
+            "name": "[variables('hostingPlanName')]",
             "type": "Microsoft.Web/serverFarms",
-            "location": "[parameters('siteLocation')]",
+            "location": "[parameters('Location')]",
             "properties": {
-                "name": "[parameters('hostingPlanName')]",
-                "sku": "[parameters('sku')]",
-                "workerSize": "[parameters('workerSize')]",
+                "name": "[variables('hostingPlanName')]",
+                "sku": "[variables('sku')]",
+                "workerSize": "[variables('workerSize')]",
                 "numberOfWorkers": 1
             }
         },
@@ -137,16 +95,16 @@
             "apiVersion": "2015-04-01",
             "name": "[variables('apiSiteName')]",
             "type": "Microsoft.Web/sites",
-            "location": "[parameters('siteLocation')]",
+            "location": "[parameters('Location')]",
             "identity": {
                 "type": "SystemAssigned"
             },            
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverFarms', parameters('hostingPlanName'))]",
-                "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
+                "[resourceId('Microsoft.Web/serverFarms', variables('hostingPlanName'))]",
+                "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
             ],
             "properties": {
-                "serverFarmId": "[parameters('hostingPlanName')]"
+                "serverFarmId": "[variables('hostingPlanName')]"
             },
             "resources": [
                 {
@@ -166,10 +124,10 @@
                     "type": "config",
                     "dependsOn": [
                         "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]",
-                        "[resourceId('Microsoft.Sql/servers', parameters('sqlServerName'))]"
+                        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
                     ],
                     "properties": {
-                        "MultiChannelToDoContext": { "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('sqlDbName'), ';User Id=', parameters('sqlServerAdminLogin'), '@', parameters('sqlServerName'), ';Password=', parameters('sqlServerAdminPassword'), ';')]", "type": "SQLAzure" }
+                        "MultiChannelToDoContext": { "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDbName'), ';User Id=', variables('sqlServerAdminLogin'), '@', variables('sqlServerName'), ';Password=', variables('sqlServerAdminPassword'), ';')]", "type": "SQLAzure" }
                     }
                 }
             ]
@@ -178,12 +136,12 @@
             "apiVersion": "2015-04-01",
             "name": "[parameters('siteName')]",
             "type": "Microsoft.Web/sites",
-            "location": "[parameters('siteLocation')]",
+            "location": "[parameters('Location')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverFarms', parameters('hostingPlanName'))]"
+                "[resourceId('Microsoft.Web/serverFarms', variables('hostingPlanName'))]"
             ],
             "properties": {
-                "serverFarmId": "[parameters('hostingPlanName')]"                
+                "serverFarmId": "[variables('hostingPlanName')]"                
             },
             "resources": [
                 {
