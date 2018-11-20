@@ -3,6 +3,7 @@
 
 #
 vars.ps1
+global.json
 
 # User-specific files
 *.suo
