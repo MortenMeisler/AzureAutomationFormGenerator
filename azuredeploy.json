@@ -69,7 +69,7 @@
     "variables": {
         "apiSiteName": "[concat(parameters('siteName'), '-api')]",
         "project-web": "src\\AzureAutomationFormGenerator\\AzureAutomationFormGenerator.WebUI.csproj",
-        "project-api": "src\\AzureAutomationFormGenerator-API\\AzureAutomationFormGenerator.WebUI.csproj",
+        "project-api": "src\\AzureAutomationFormGenerator\\AzureAutomationFormGenerator.WebUI.csproj",
         "sqlDbServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
         "sqlDbMaxSizeBytes": "1073741824",
         "sqlDbCollation": "SQL_Latin1_General_CP1_CI_AS"
@@ -104,11 +104,7 @@
                         "collation": "[variables('sqlDbCollation')]",
                         "maxSizeBytes": "[variables('sqlDbMaxSizeBytes')]",
                         "requestedServiceObjectiveId": "[variables('sqlDbServiceObjectiveId')]"
-                    },
-                    "sku": {
-                        "name": "Basic",
-                        "tier": "Basic"
-                    }                 
+                    }                
                 },
                 {
                     "apiVersion": "2014-04-01-preview",
@@ -161,7 +157,6 @@
                         "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]",
                     ],
                     "properties": {
-                        "PROJECT": "[variables('project-web')]",
                         "clientUrl": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]"
                     }
                 },
@@ -176,21 +171,6 @@
                     "properties": {
                         "MultiChannelToDoContext": { "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', parameters('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', parameters('sqlDbName'), ';User Id=', parameters('sqlServerAdminLogin'), '@', parameters('sqlServerName'), ';Password=', parameters('sqlServerAdminPassword'), ';')]", "type": "SQLAzure" }
                     }
-                },
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "web",
-                    "type": "sourcecontrols",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]",
-                        "[resourceId('Microsoft.Web/Sites/config', variables('apiSiteName'), 'appsettings')]",
-                        "[resourceId('Microsoft.Web/Sites/config', variables('apiSiteName'), 'connectionstrings')]",
-                    ],
-                    "properties": {
-                        "RepoUrl": "[parameters('repoUrl')]",
-                        "branch": "[parameters('branch')]",
-                        "IsManualIntegration": true
-                    }
                 }
             ]
         },        
@@ -203,7 +183,7 @@
                 "[resourceId('Microsoft.Web/serverFarms', parameters('hostingPlanName'))]"
             ],
             "properties": {
-                "serverFarmId": "[parameters('hostingPlanName')]"
+                "serverFarmId": "[parameters('hostingPlanName')]"                
             },
             "resources": [
                 {
@@ -214,8 +194,9 @@
                         "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
                     ],
                     "properties": {
-                        "PROJECT": "[variables('project-api')]",
-                        "apiPath": "[concat('http://', variables('apiSiteName'), '.azurewebsites.net/api')]"
+                        "PROJECT": "[variables('project-web')]",
+                        "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
+                        "webSocketsEnabled": true
                     }
                 },
                 {
