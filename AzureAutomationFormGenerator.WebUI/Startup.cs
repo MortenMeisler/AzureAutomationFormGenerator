@@ -38,12 +38,18 @@ namespace AzureAutomationFormGenerator.WebUI
             services.AddSession();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+            string strConnectionString = Configuration.GetConnectionString("AutomationPortalDatabase");
+            // option to use hardcoded connectionstring
+            //strConnectionString = "Server=localhost\\SQLEXPRESS;Database=AutomationPortal;Trusted_Connection=True;Application Name=AutomationPortal;";
+            if(string.IsNullOrEmpty(strConnectionString))
+            {
+                throw new System.Exception("ConnectionString not found");
+            }
+
             //Infrastructure
             // Add DbContext using SQL Server Provider
             services.AddDbContext<AutomationPortalDbContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("AutomationPortalDatabase")));
-
-
+                options.UseSqlServer(strConnectionString));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
