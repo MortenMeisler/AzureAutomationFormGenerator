@@ -13,7 +13,7 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 ![Create Runbook with powershell parameters](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto00.png?raw=true)
 
 2. Fetch the runbook from the url
-![Fetch the runbook from the url](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto01.png?raw=true)
+![Fetch the runbook from the url](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto01.PNG?raw=true)
 
 ## Requirements
 
