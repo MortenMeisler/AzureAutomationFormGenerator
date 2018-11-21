@@ -30,9 +30,39 @@
         "sqlServerAdminPassword": "[concat(uniqueString(resourceGroup().id), 'Nx6%#%9wh$8')]",
         "sqlDbName": "AutomationPortal",
         "sqlDbEdition": "Basic",
-        "sqlServerName": "[toLower(concat(parameters('siteName'), '-sql'))]"
+        "sqlServerName": "[toLower(concat(parameters('siteName'), '-sql'))]",
+        "storageAccountName": "[toLower(concat('sa',uniqueString(resourceGroup().id)))]",
+        "storageAccountContainerLogsName": "logs",
+        "accountSasProperties": {
+            "type": "object",
+            "defaultValue": {
+                "signedServices": "b",
+                "signedPermission": "rwdl",
+                "signedExpiry": "2218-01-01T00:00:00Z",
+                "signedResourceTypes": "c"
+            }
+        }        
     },
     "resources": [
+        {
+            "type": "Microsoft.Storage/storageAccounts",
+            "name": "[variables('storageAccountName')]",
+            "apiVersion": "2018-02-01",
+            "location": "[parameters('location')]",
+            "sku": {
+              "name": "Standard_LRS"
+            },
+            "kind": "StorageV2",
+            "properties": {}
+        },
+        {
+          "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+          "apiVersion": "2018-03-01-preview",
+          "name": "[concat(variables('storageAccountName'), '/default/', variables('storageAccountContainerLogsName'))]",
+          "dependsOn": [
+            "[variables('storageAccountName')]"
+          ]
+        },   
         {
             "apiVersion": "2014-04-01-preview",
             "name": "[variables('sqlServerName')]",
@@ -98,10 +128,11 @@
             "location": "[parameters('Location')]",
             "identity": {
                 "type": "SystemAssigned"
-            },            
+            },
             "dependsOn": [
                 "[resourceId('Microsoft.Web/serverFarms', variables('hostingPlanName'))]",
-                "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+                "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]",
+                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
             ],
             "properties": {
                 "serverFarmId": "[variables('hostingPlanName')]"
@@ -137,7 +168,15 @@
                     "dependsOn": [
                         "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
                     ]                    
-                }                
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "AspNetCoreRuntime.2.2.x86",
+                    "type": "siteextensions",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
+                    ]                    
+                }         
             ]
         },        
         {
@@ -178,9 +217,32 @@
                         "branch": "[parameters('branch')]",
                         "IsManualIntegration": true
                     }
-                }
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "Microsoft.AspNetCore.AzureAppServices.SiteExtension",
+                    "type": "siteextensions",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
+                    ]                    
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "AspNetCoreRuntime.2.2.x86",
+                    "type": "siteextensions",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
+                    ]                    
+                } 
             ]
         }
     ],
-    "outputs": {}
+    "outputs": {
+        /*
+        "accountSAS": {
+            "type": "object",
+            "value": "[listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties'))]"
+        }
+        */
+    }
 }
