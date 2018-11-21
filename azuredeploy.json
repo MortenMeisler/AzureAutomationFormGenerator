@@ -129,7 +129,15 @@
                     "properties": {
                         "MultiChannelToDoContext": { "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDbName'), ';User Id=', variables('sqlServerAdminLogin'), '@', variables('sqlServerName'), ';Password=', variables('sqlServerAdminPassword'), ';')]", "type": "SQLAzure" }
                     }
-                }
+                },
+                {
+                    "apiVersion": "2015-08-01",
+                    "name": "Microsoft.AspNetCore.AzureAppServices.SiteExtension",
+                    "type": "siteextensions",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
+                    ]                    
+                }                
             ]
         },        
         {
