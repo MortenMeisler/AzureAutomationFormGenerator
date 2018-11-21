@@ -24,14 +24,13 @@ Select-AzureRmSubscription -SubscriptionId $SubscriptionId | Out-Null
 
 $ResourceGroupName = 'rg81e35VYltTU3'
 $Location = 'northeurope'
-
-New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Force | Out-Null
-
 $TemplateParameterObject = @{
     siteName = 'siteB8jHNFN8wusv'    
     Location = $Location
     repoUrl = 'https://github.com/MortenMeisler/AzureAutomationFormGenerator'
 }
+
+New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location -Force | Out-Null
 
 Test-AzureRmResourceGroupDeployment -ResourceGroupName $ResourceGroupName -TemplateFile ".\azuredeploy.json" -TemplateParameterObject $TemplateParameterObject
 

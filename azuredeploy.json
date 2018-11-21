@@ -168,6 +168,9 @@
                     ],
                     "properties": {
                         "applicationLogs": {
+                            "fileSystem": {
+                                "level": "Verbose"
+                            },
                             "azureBlobStorage": {
                                 "level": "Warning",
                                 "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('ApplicationLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
@@ -255,6 +258,9 @@
                     ],
                     "properties": {
                         "applicationLogs": {
+                            "fileSystem": {
+                                "level": "Verbose"
+                            },
                             "azureBlobStorage": {
                                 "level": "Warning",
                                 "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('ApplicationLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
