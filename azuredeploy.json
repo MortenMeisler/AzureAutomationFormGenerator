@@ -32,16 +32,16 @@
         "sqlDbEdition": "Basic",
         "sqlServerName": "[toLower(concat(parameters('siteName'), '-sql'))]",
         "storageAccountName": "[toLower(concat('sa',uniqueString(resourceGroup().id)))]",
-        "storageAccountContainerLogsName": "logs",
+        "ApplicationLoggingContainer": "applog",
+        "WebServerLoggingContainer": "weblog",
         "accountSasProperties": {
-            "type": "object",
-            "defaultValue": {
-                "signedServices": "b",
-                "signedPermission": "rwdl",
-                "signedExpiry": "2218-01-01T00:00:00Z",
-                "signedResourceTypes": "c"
-            }
-        }        
+            "signedServices": "b",
+            "signedResourceTypes": "c",
+            "signedPermission": "rwdl",
+            "signedExpiry": "2200-01-01T00:00:00Z",
+            "signedStart": "2018-01-01T00:00:00Z"
+        },
+        "logRetentionInDays": 60
     },
     "resources": [
         {
@@ -58,11 +58,19 @@
         {
           "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
           "apiVersion": "2018-03-01-preview",
-          "name": "[concat(variables('storageAccountName'), '/default/', variables('storageAccountContainerLogsName'))]",
+          "name": "[concat(variables('storageAccountName'), '/default/', variables('ApplicationLoggingContainer'))]",
           "dependsOn": [
             "[variables('storageAccountName')]"
           ]
-        },   
+        }, 
+        {
+            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+            "apiVersion": "2018-03-01-preview",
+            "name": "[concat(variables('storageAccountName'), '/default/', variables('WebServerLoggingContainer'))]",
+            "dependsOn": [
+              "[variables('storageAccountName')]"
+            ]
+        },           
         {
             "apiVersion": "2014-04-01-preview",
             "name": "[variables('sqlServerName')]",
@@ -151,6 +159,36 @@
                 },
                 {
                     "apiVersion": "2015-04-01",
+                    "name": "logs",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]",
+                    ],
+                    "properties": {
+                        "applicationLogs": {
+                            "azureBlobStorage": {
+                                "level": "Warning",
+                                "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('ApplicationLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
+                                "retentionInDays": "[variables('logRetentionInDays')]"
+                            }
+                        },
+                        "httpLogs": {
+                            "azureBlobStorage": {
+                                "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('WebServerLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
+                              "retentionInDays": "[variables('logRetentionInDays')]",
+                              "enabled": true
+                            }
+                        },                        
+                        "failedRequestsTracing": {
+                            "enabled": true
+                          },
+                          "detailedErrorMessages": {
+                            "enabled": true
+                          }                        
+                    }
+                },                
+                {
+                    "apiVersion": "2015-04-01",
                     "name": "connectionstrings",
                     "type": "config",
                     "dependsOn": [
@@ -169,14 +207,14 @@
                         "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
                     ]                    
                 },
-                {
+                /*{
                     "apiVersion": "2015-08-01",
                     "name": "AspNetCoreRuntime.2.2.x86",
                     "type": "siteextensions",
                     "dependsOn": [
                         "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
                     ]                    
-                }         
+                }  */       
             ]
         },        
         {
@@ -206,6 +244,48 @@
                 },
                 {
                     "apiVersion": "2015-04-01",
+                    "name": "logs",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
+                    ],
+                    "properties": {
+                        "applicationLogs": {
+                            "azureBlobStorage": {
+                                "level": "Warning",
+                                "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('ApplicationLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
+                                "retentionInDays": "[variables('logRetentionInDays')]"
+                            }
+                        },
+                        "httpLogs": {
+                            "azureBlobStorage": {
+                                "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('WebServerLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
+                              "retentionInDays": "[variables('logRetentionInDays')]",
+                              "enabled": true
+                            }
+                        },                        
+                        "failedRequestsTracing": {
+                            "enabled": true
+                          },
+                          "detailedErrorMessages": {
+                            "enabled": true
+                          }                        
+                    }
+                },                
+                {
+                    "apiVersion": "2015-04-01",
+                    "name": "connectionstrings",
+                    "type": "config",
+                    "dependsOn": [
+                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
+                        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+                    ],
+                    "properties": {
+                        "MultiChannelToDoContext": { "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDbName'), ';User Id=', variables('sqlServerAdminLogin'), '@', variables('sqlServerName'), ';Password=', variables('sqlServerAdminPassword'), ';')]", "type": "SQLAzure" }
+                    }
+                },                
+                {
+                    "apiVersion": "2015-04-01",
                     "name": "web",
                     "type": "sourcecontrols",
                     "dependsOn": [
@@ -226,6 +306,7 @@
                         "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
                     ]                    
                 },
+                /*
                 {
                     "apiVersion": "2015-08-01",
                     "name": "AspNetCoreRuntime.2.2.x86",
@@ -233,16 +314,14 @@
                     "dependsOn": [
                         "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
                     ]                    
-                } 
+                } */
             ]
         }
     ],
-    "outputs": {
-        /*
+    "outputs": {        
         "accountSAS": {
-            "type": "object",
-            "value": "[listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties'))]"
-        }
-        */
+            "type": "string",
+            "value": "[listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken]"
+        }        
     }
 }
