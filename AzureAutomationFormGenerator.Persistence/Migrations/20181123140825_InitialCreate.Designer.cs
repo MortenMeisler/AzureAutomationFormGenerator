@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AzureAutomationFormGenerator.Persistence.Migrations
 {
     [DbContext(typeof(AutomationPortalDbContext))]
-    [Migration("20181120131109_initCreate4")]
-    partial class initCreate4
+    [Migration("20181123140825_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

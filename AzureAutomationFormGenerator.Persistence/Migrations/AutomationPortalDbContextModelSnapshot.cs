@@ -29,8 +29,6 @@ namespace AzureAutomationFormGenerator.Persistence.Migrations
 
                     b.Property<string>("RequestInput");
 
-                    b.Property<string>("RequestInput2");
-
                     b.Property<string>("RequestName");
 
                     b.Property<string>("RequestUser");

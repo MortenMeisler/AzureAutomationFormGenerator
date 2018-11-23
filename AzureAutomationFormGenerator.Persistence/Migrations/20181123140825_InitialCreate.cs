@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace AzureAutomationFormGenerator.Persistence.Migrations
 {
-    public partial class initCreate2 : Migration
+    public partial class InitialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,6 +14,7 @@ namespace AzureAutomationFormGenerator.Persistence.Migrations
                 {
                     AuditLogId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    RequestName = table.Column<string>(nullable: true),
                     RequestUser = table.Column<string>(nullable: true),
                     RequestInput = table.Column<string>(nullable: true),
                     CreatedDate = table.Column<DateTime>(nullable: false)
