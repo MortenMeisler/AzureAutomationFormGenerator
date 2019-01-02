@@ -212,14 +212,14 @@
                         "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
                     ]                    
                 },
-                /*{
+                {
                     "apiVersion": "2015-08-01",
                     "name": "AspNetCoreRuntime.2.2.x86",
                     "type": "siteextensions",
                     "dependsOn": [
                         "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
                     ]                    
-                }  */       
+                }         
             ]
         },        
         {
