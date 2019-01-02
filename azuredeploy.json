@@ -5,9 +5,10 @@
         "siteName": {
             "type": "string"
         },
-        "Location": {
-            "type": "string"            
+        "siteLocation": {
+            "type": "string"
         },
+        
         "repoUrl": {
             "type": "string"
         },
