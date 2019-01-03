@@ -6,7 +6,8 @@
             "type": "string"
         },
         "siteLocation": {
-            "type": "string"
+            "type": "string",
+            "defaultValue": "North Europe"
         },
         
         "repoUrl": {
