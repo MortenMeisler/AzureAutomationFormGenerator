@@ -15,7 +15,11 @@
         "branch": {
             "type": "string",
             "defaultValue": "master"
-        }
+        },
+        "clientId": {
+            "type": "string",
+            "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68"
+          }
     },
     "variables": {
         "apiSiteName": "[concat(parameters('siteName'), '-api')]",
@@ -238,7 +242,8 @@
                     "properties": {
                         "PROJECT": "[variables('project-web')]",
                         "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
-                        "webSocketsEnabled": true
+                        "webSocketsEnabled": true,
+                        "clientId": "[parameters('clientId')]"
                     }
                 },
                 {
