@@ -2,328 +2,247 @@
     "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "siteName": {
-            "type": "string"
-        },
-        "siteLocation": {
-            "type": "string",
-            "defaultValue": "northeurope"
-        },
-        
-        "repoUrl": {
-            "type": "string"
-        },
-        "branch": {
-            "type": "string",
-            "defaultValue": "master"
-        },
-        "clientId": {
-            "type": "string",
-            "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68"
-          }
+      "siteName": {
+        "type": "string"
+      },
+      "siteLocation": {
+        "type": "string",
+        "defaultValue": "northeurope"
+      },
+  
+      "repoUrl": {
+        "type": "string"
+      },
+      "branch": {
+        "type": "string",
+        "defaultValue": "master"
+      },
+      "clientId": {
+        "type": "string",
+        "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68"
+      },
+      "AutomationAccount": {
+        "type": "string"
+      }
     },
     "variables": {
-        "apiSiteName": "[concat(parameters('siteName'), '-api')]",
-        "hostingPlanName": "[concat(parameters('siteName'), '-plan')]",
-        "project-web": "AzureAutomationFormGenerator.WebUI\\AzureAutomationFormGenerator.WebUI.csproj",
-        "project-api": "AzureAutomationFormGenerator.WebUI\\AzureAutomationFormGenerator.WebUI.csproj",
-        "sku": "Free",
-        "workerSize": "0",
-        "sqlDbServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
-        "sqlDbMaxSizeBytes": "1073741824",
-        "sqlDbCollation": "SQL_Latin1_General_CP1_CI_AS",
-        "sqlServerAdminLogin": "sqladmin",
-        "sqlServerAdminPassword": "[concat(uniqueString(resourceGroup().id), 'Nx6%#%9wh$8')]",
-        "sqlDbName": "AutomationPortal",
-        "sqlDbEdition": "Basic",
-        "sqlServerName": "[toLower(concat(parameters('siteName'), '-sql'))]",
-        "storageAccountName": "[toLower(concat('sa',uniqueString(resourceGroup().id)))]",
-        "ApplicationLoggingContainer": "applog",
-        "WebServerLoggingContainer": "weblog",
-        "accountSasProperties": {
-            "signedServices": "bf",
-            "signedResourceTypes": "c",
-            "signedPermission": "rwdl",
-            "signedExpiry": "2200-01-01T00:00:00Z",
-            "signedStart": "2018-01-01T00:00:00Z"
-        },
-        "logRetentionInDays": 60
+      "hostingPlanName": "[concat(parameters('siteName'), '-plan')]",
+      "project-web": "AzureAutomationFormGenerator.WebUI\\AzureAutomationFormGenerator.WebUI.csproj",
+      "sku": "Free",
+      "workerSize": "0",
+      "sqlDbServiceObjectiveId": "dd6d99bb-f193-4ec1-86f2-43d3bccbc49c",
+      "sqlDbMaxSizeBytes": "1073741824",
+      "sqlDbCollation": "SQL_Latin1_General_CP1_CI_AS",
+      "sqlServerAdminLogin": "sqladmin",
+      "sqlServerAdminPassword": "[concat(uniqueString(resourceGroup().id), 'Nx6%#%9wh$8')]",
+      "sqlDbName": "AutomationPortal",
+      "sqlDbEdition": "Basic",
+      "sqlServerName": "[toLower(concat(parameters('siteName'), '-sql'))]",
+      "storageAccountName": "[toLower(concat('sa',uniqueString(resourceGroup().id)))]",
+      "ApplicationLoggingContainer": "applog",
+      "WebServerLoggingContainer": "weblog",
+      "accountSasProperties": {
+        "signedServices": "bf",
+        "signedResourceTypes": "c",
+        "signedPermission": "rwdl",
+        "signedExpiry": "2200-01-01T00:00:00Z",
+        "signedStart": "2018-01-01T00:00:00Z"
+      },
+      "logRetentionInDays": 60
     },
     "resources": [
-        {
-            "type": "Microsoft.Storage/storageAccounts",
-            "name": "[variables('storageAccountName')]",
-            "apiVersion": "2018-02-01",
-            "location": "[parameters('siteLocation')]",
-            "sku": {
-              "name": "Standard_LRS"
-            },
-            "kind": "StorageV2",
-            "properties": {}
+      {
+        "type": "Microsoft.Storage/storageAccounts",
+        "name": "[variables('storageAccountName')]",
+        "apiVersion": "2018-02-01",
+        "location": "[parameters('siteLocation')]",
+        "sku": {
+          "name": "Standard_LRS"
         },
-        {
-          "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-          "apiVersion": "2018-03-01-preview",
-          "name": "[concat(variables('storageAccountName'), '/default/', variables('ApplicationLoggingContainer'))]",
-          "dependsOn": [
-            "[variables('storageAccountName')]"
-          ]
-        }, 
-        {
-            "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
-            "apiVersion": "2018-03-01-preview",
-            "name": "[concat(variables('storageAccountName'), '/default/', variables('WebServerLoggingContainer'))]",
-            "dependsOn": [
-              "[variables('storageAccountName')]"
-            ]
-        },           
-        {
+        "kind": "StorageV2",
+        "properties": {}
+      },
+      {
+        "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        "apiVersion": "2018-03-01-preview",
+        "name": "[concat(variables('storageAccountName'), '/default/', variables('ApplicationLoggingContainer'))]",
+        "dependsOn": [
+          "[variables('storageAccountName')]"
+        ]
+      },
+      {
+        "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+        "apiVersion": "2018-03-01-preview",
+        "name": "[concat(variables('storageAccountName'), '/default/', variables('WebServerLoggingContainer'))]",
+        "dependsOn": [
+          "[variables('storageAccountName')]"
+        ]
+      },
+      {
+        "apiVersion": "2014-04-01-preview",
+        "name": "[variables('sqlServerName')]",
+        "type": "Microsoft.Sql/servers",
+        "location": "[parameters('siteLocation')]",
+        "tags": {
+          "displayName": "SQLServer"
+        },
+        "properties": {
+          "administratorLogin": "[variables('sqlServerAdminLogin')]",
+          "administratorLoginPassword": "[variables('sqlServerAdminPassword')]"
+        },
+        "resources": [
+          {
             "apiVersion": "2014-04-01-preview",
-            "name": "[variables('sqlServerName')]",
-            "type": "Microsoft.Sql/servers",
+            "name": "[variables('sqlDbName')]",
+            "type": "databases",
             "location": "[parameters('siteLocation')]",
             "tags": {
-                "displayName": "SQLServer"
+              "displayName": "SQLDatabase"
             },
+            "dependsOn": [
+              "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+            ],
             "properties": {
-                "administratorLogin": "[variables('sqlServerAdminLogin')]",
-                "administratorLoginPassword": "[variables('sqlServerAdminPassword')]"
-            },
-            "resources": [
-                {
-                    "apiVersion": "2014-04-01-preview",
-                    "name": "[variables('sqlDbName')]",
-                    "type": "databases",
-                    "location": "[parameters('siteLocation')]",
-                    "tags": {
-                        "displayName": "SQLDatabase"
-                    },
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
-                    ],
-                    "properties": {
-                        "edition": "[variables('sqlDbEdition')]",
-                        "collation": "[variables('sqlDbCollation')]",
-                        "maxSizeBytes": "[variables('sqlDbMaxSizeBytes')]",
-                        "requestedServiceObjectiveId": "[variables('sqlDbServiceObjectiveId')]"
-                    }                
-                },
-                {
-                    "apiVersion": "2014-04-01-preview",
-                    "name": "SQLServerFirewallRules",
-                    "type": "firewallrules",
-                    "location": "[parameters('siteLocation')]",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
-                    ],
-                    "properties": {
-                        "endIpAddress": "0.0.0.0",
-                        "startIpAddress": "0.0.0.0"
-                    }
-                }
-            ]
-        },
-        {
-            "apiVersion": "2014-11-01",
-            "name": "[variables('hostingPlanName')]",
-            "type": "Microsoft.Web/serverFarms",
-            "location": "[parameters('siteLocation')]",
-            "properties": {
-                "name": "[variables('hostingPlanName')]",
-                "sku": "[variables('sku')]",
-                "workerSize": "[variables('workerSize')]",
-                "numberOfWorkers": 1
+              "edition": "[variables('sqlDbEdition')]",
+              "collation": "[variables('sqlDbCollation')]",
+              "maxSizeBytes": "[variables('sqlDbMaxSizeBytes')]",
+              "requestedServiceObjectiveId": "[variables('sqlDbServiceObjectiveId')]"
             }
-        },
-        {
-            "apiVersion": "2015-04-01",
-            "name": "[variables('apiSiteName')]",
-            "type": "Microsoft.Web/sites",
-            "location": "[parameters('siteLocation')]",
-            "identity": {
-                "type": "SystemAssigned"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Web/serverFarms', variables('hostingPlanName'))]",
-                "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]",
-                "[resourceId('Microsoft.Storage/storageAccounts', variables('storageAccountName'))]"
-            ],
-            "properties": {
-                "serverFarmId": "[variables('hostingPlanName')]"
-            },
-            "resources": [
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "appsettings",
-                    "type": "config",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
-                    ],
-                    "properties": {
-                        "clientUrl": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]"
-                    }
-                },
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "logs",
-                    "type": "config",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]",
-                        "[resourceId('Microsoft.Web/Sites/siteextensions', variables('apiSiteName'), 'Microsoft.AspNetCore.AzureAppServices.SiteExtension')]",
-                        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('storageAccountName'), 'default', variables('ApplicationLoggingContainer'))]"
-                    ],
-                    "properties": {
-                        "applicationLogs": {
-                            "fileSystem": {
-                                "level": "Verbose"
-                            },
-                            "azureBlobStorage": {
-                                "level": "Warning",
-                                "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('ApplicationLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
-                                "retentionInDays": "[variables('logRetentionInDays')]"
-                            }
-                        },
-                        "httpLogs": {
-                            "azureBlobStorage": {
-                                "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('WebServerLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
-                              "retentionInDays": "[variables('logRetentionInDays')]",
-                              "enabled": true
-                            }
-                        },                        
-                        "failedRequestsTracing": {
-                            "enabled": true
-                          },
-                          "detailedErrorMessages": {
-                            "enabled": true
-                          }                        
-                    }
-                },                
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "connectionstrings",
-                    "type": "config",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]",
-                        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
-                    ],
-                    "properties": {
-                        "MultiChannelToDoContext": { "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDbName'), ';User Id=', variables('sqlServerAdminLogin'), '@', variables('sqlServerName'), ';Password=', variables('sqlServerAdminPassword'), ';')]", "type": "SQLAzure" }
-                    }
-                },
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "Microsoft.AspNetCore.AzureAppServices.SiteExtension",
-                    "type": "siteextensions",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', variables('apiSiteName'))]"
-                    ]                    
-                }
-                
-            ]
-        },        
-        {
-            "apiVersion": "2015-04-01",
-            "name": "[parameters('siteName')]",
-            "type": "Microsoft.Web/sites",
+          },
+          {
+            "apiVersion": "2014-04-01-preview",
+            "name": "SQLServerFirewallRules",
+            "type": "firewallrules",
             "location": "[parameters('siteLocation')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Web/serverFarms', variables('hostingPlanName'))]"
+              "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
             ],
             "properties": {
-                "serverFarmId": "[variables('hostingPlanName')]"                
-            },
-            "resources": [
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "appsettings",
-                    "type": "config",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
-                    ],
-                    "properties": {
-                        "PROJECT": "[variables('project-web')]",
-                        "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
-                        "webSocketsEnabled": true,
-                        "clientId": "[parameters('clientId')]"
-                    }
-                },
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "logs",
-                    "type": "config",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
-                        "[resourceId('Microsoft.Web/Sites/siteextensions', parameters('siteName'), 'Microsoft.AspNetCore.AzureAppServices.SiteExtension')]",
-                        "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('storageAccountName'), 'default', variables('ApplicationLoggingContainer'))]"
-                    ],
-                    "properties": {
-                        "applicationLogs": {
-                            "fileSystem": {
-                                "level": "Verbose"
-                            },
-                            "azureBlobStorage": {
-                                "level": "Warning",
-                                "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('ApplicationLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
-                                "retentionInDays": "[variables('logRetentionInDays')]"
-                            }
-                        },
-                        "httpLogs": {
-                            "azureBlobStorage": {
-                                "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('WebServerLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
-                              "retentionInDays": "[variables('logRetentionInDays')]",
-                              "enabled": true
-                            }
-                        },                        
-                        "failedRequestsTracing": {
-                            "enabled": true
-                          },
-                          "detailedErrorMessages": {
-                            "enabled": true
-                          }                        
-                    }
-                },                
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "connectionstrings",
-                    "type": "config",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
-                        "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
-                    ],
-                    "properties": {
-                        "MultiChannelToDoContext": { "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDbName'), ';User Id=', variables('sqlServerAdminLogin'), '@', variables('sqlServerName'), ';Password=', variables('sqlServerAdminPassword'), ';')]", "type": "SQLAzure" }
-                    }
-                },                
-                {
-                    "apiVersion": "2015-04-01",
-                    "name": "web",
-                    "type": "sourcecontrols",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
-                        "[resourceId('Microsoft.Web/Sites/config', parameters('siteName'), 'appsettings')]",
-                        "[resourceId('Microsoft.Web/Sites/siteextensions', parameters('siteName'), 'Microsoft.AspNetCore.AzureAppServices.SiteExtension')]"
-                    ],
-                    "properties": {
-                        "RepoUrl": "[parameters('repoUrl')]",
-                        "branch": "[parameters('branch')]",
-                        "IsManualIntegration": true
-                    }
-                },
-                {
-                    "apiVersion": "2015-08-01",
-                    "name": "Microsoft.AspNetCore.AzureAppServices.SiteExtension",
-                    "type": "siteextensions",
-                    "dependsOn": [
-                        "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
-                    ]                    
-                }
-            ]
+              "endIpAddress": "0.0.0.0",
+              "startIpAddress": "0.0.0.0"
+            }
+          }
+        ]
+      },
+      {
+        "apiVersion": "2014-11-01",
+        "name": "[variables('hostingPlanName')]",
+        "type": "Microsoft.Web/serverFarms",
+        "location": "[parameters('siteLocation')]",
+        "properties": {
+          "name": "[variables('hostingPlanName')]",
+          "sku": "[variables('sku')]",
+          "workerSize": "[variables('workerSize')]",
+          "numberOfWorkers": 1
         }
+      },
+      {
+        "apiVersion": "2015-04-01",
+        "name": "[parameters('siteName')]",
+        "type": "Microsoft.Web/sites",
+        "location": "[parameters('siteLocation')]",
+        "dependsOn": [
+          "[resourceId('Microsoft.Web/serverFarms', variables('hostingPlanName'))]"
+        ],
+        "properties": {
+          "serverFarmId": "[variables('hostingPlanName')]"
+        },
+        "resources": [
+          {
+            "apiVersion": "2015-04-01",
+            "name": "appsettings",
+            "type": "config",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
+            ],
+            "properties": {
+              "PROJECT": "[variables('project-web')]",
+              "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
+              "webSocketsEnabled": true,
+              "clientId": "[parameters('clientId')]",
+              "AutomationAccount": "MMEAutomation"
+            }
+          },
+          {
+            "apiVersion": "2015-04-01",
+            "name": "logs",
+            "type": "config",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
+              "[resourceId('Microsoft.Web/Sites/siteextensions', parameters('siteName'), 'Microsoft.AspNetCore.AzureAppServices.SiteExtension')]",
+              "[resourceId('Microsoft.Storage/storageAccounts/blobServices/containers', variables('storageAccountName'), 'default', variables('ApplicationLoggingContainer'))]"
+            ],
+            "properties": {
+              "applicationLogs": {
+                "fileSystem": {
+                  "level": "Verbose"
+                },
+                "azureBlobStorage": {
+                  "level": "Warning",
+                  "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('ApplicationLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
+                  "retentionInDays": "[variables('logRetentionInDays')]"
+                }
+              },
+              "httpLogs": {
+                "azureBlobStorage": {
+                  "sasUrl": "[concat('https://',variables('storageAccountName'),'.blob.core.windows.net/', variables('WebServerLoggingContainer'), '?', listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken)]",
+                  "retentionInDays": "[variables('logRetentionInDays')]",
+                  "enabled": true
+                }
+              },
+              "failedRequestsTracing": {
+                "enabled": true
+              },
+              "detailedErrorMessages": {
+                "enabled": true
+              }
+            }
+          },
+          {
+            "apiVersion": "2015-04-01",
+            "name": "connectionstrings",
+            "type": "config",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
+              "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
+            ],
+            "properties": {
+              "MultiChannelToDoContext": {
+                "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDbName'), ';User Id=', variables('sqlServerAdminLogin'), '@', variables('sqlServerName'), ';Password=', variables('sqlServerAdminPassword'), ';')]",
+                "type": "SQLAzure"
+              }
+            }
+          },
+          {
+            "apiVersion": "2015-04-01",
+            "name": "web",
+            "type": "sourcecontrols",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
+              "[resourceId('Microsoft.Web/Sites/config', parameters('siteName'), 'appsettings')]",
+              "[resourceId('Microsoft.Web/Sites/siteextensions', parameters('siteName'), 'Microsoft.AspNetCore.AzureAppServices.SiteExtension')]"
+            ],
+            "properties": {
+              "RepoUrl": "[parameters('repoUrl')]",
+              "branch": "[parameters('branch')]",
+              "IsManualIntegration": true
+            }
+          },
+          {
+            "apiVersion": "2015-08-01",
+            "name": "Microsoft.AspNetCore.AzureAppServices.SiteExtension",
+            "type": "siteextensions",
+            "dependsOn": [
+              "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]"
+            ]
+          }
+        ]
+      }
     ],
-    "outputs": {        
-        "accountSAS": {
-            "type": "string",
-            "value": "[listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken]"
-        }        
+    "outputs": {
+      "accountSAS": {
+        "type": "string",
+        "value": "[listAccountSas(variables('storageAccountName'), '2018-02-01', variables('accountSasProperties')).accountSasToken]"
+      }
     }
-}
+  }
