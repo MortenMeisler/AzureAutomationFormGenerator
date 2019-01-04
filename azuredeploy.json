@@ -7,7 +7,8 @@
       },
       "siteLocation": {
         "type": "string",
-        "defaultValue": "northeurope"
+        "defaultValue": "northeurope",
+        "value": "northeurope"
       },
   
       "repoUrl": {
@@ -19,10 +20,28 @@
       },
       "clientId": {
         "type": "string",
-        "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68"
+        "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68",
+        "metadata": {
+          "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Application ID"
+        }
       },
       "AutomationAccount": {
-        "type": "string"
+        "type": "string",
+        "defaultValue": "MyAutomationAccountName"
+      },
+      "AutomationResourceGroup": {
+        "type": "string",
+        "defaultValue": "AutomationAccountResourceGroup",
+        "metadata": {
+          "description": "Resource Group Name where Automation Account is located"
+        }
+      },
+      "TenantId": {
+        "type": "string",
+        "defaultValue": "b6909603-e5a8-497d-8fdb-7f10240fdc13",
+        "metadata": {
+          "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Tenant ID"
+        }
       }
     },
     "variables": {
@@ -160,7 +179,12 @@
               "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
               "webSocketsEnabled": true,
               "clientId": "[parameters('clientId')]",
-              "AutomationAccount": "MMEAutomation"
+              "AutomationAccount": "[parameters('AutomationAccount')]",
+              "TenantId": "[parameters('TenantId')]",
+              "AutomationResourceGroup": "[parameters('AutomationResourceGroup')]"
+              
+              
+
             }
           },
           {
