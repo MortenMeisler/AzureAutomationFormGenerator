@@ -7,8 +7,8 @@
       },
       "siteLocation": {
         "type": "string",
-        "defaultValue": "northeurope",
-        "value": "northeurope"
+        "defaultValue": "northeurope"
+        
       },
   
       "repoUrl": {
