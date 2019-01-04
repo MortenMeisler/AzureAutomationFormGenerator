@@ -18,11 +18,18 @@
         "type": "string",
         "defaultValue": "master"
       },
-      "clientId": {
+      "ApplicationId": {
         "type": "string",
         "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68",
         "metadata": {
           "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Application ID"
+        }
+      },
+      "ApplicationSecret": {
+        "type": "securestring",
+        "defaultValue": "mysecretkey",
+        "metadata": {
+          "description": "Secret password from your vault thingy"
         }
       },
       "AutomationAccount": {
@@ -178,10 +185,11 @@
               "PROJECT": "[variables('project-web')]",
               "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
               "webSocketsEnabled": true,
-              "clientId": "[parameters('clientId')]",
+              "ClientId": "[parameters('ApplicationId')]",
+              "ClientSecret": "[parameters('ApplicationSecret')]",
               "AutomationAccount": "[parameters('AutomationAccount')]",
               "TenantId": "[parameters('TenantId')]",
-              "AutomationResourceGroup": "[parameters('AutomationResourceGroup')]"
+              "ResourceGroup": "[parameters('AutomationResourceGroup')]",
               
               
 
