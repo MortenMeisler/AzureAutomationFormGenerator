@@ -183,11 +183,11 @@
               "PROJECT": "[variables('project-web')]",
               "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
               "webSocketsEnabled": true,
-              "ClientId": "[parameters('ApplicationId')]",
+              "AzureSettings:ClientId": "[parameters('ApplicationId')]",
               "ClientSecret": "[parameters('ApplicationSecret')]",
-              "AutomationAccount": "[parameters('AutomationAccount')]",
-              "TenantId": "[parameters('TenantId')]",
-              "ResourceGroup": "[parameters('AutomationResourceGroup')]",
+              "AzureSettings:AutomationAccount": "[parameters('AutomationAccount')]",
+              "AzureSettings:TenantId": "[parameters('TenantId')]",
+              "AzureSettings:ResourceGroup": "[parameters('AutomationResourceGroup')]",
               
               
 
@@ -237,7 +237,7 @@
               "[resourceId('Microsoft.Sql/servers', variables('sqlServerName'))]"
             ],
             "properties": {
-              "MultiChannelToDoContext": {
+              "AutomationPortalDatabase": {
                 "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDbName'), ';User Id=', variables('sqlServerAdminLogin'), '@', variables('sqlServerName'), ';Password=', variables('sqlServerAdminPassword'), ';')]",
                 "type": "SQLAzure"
               }
