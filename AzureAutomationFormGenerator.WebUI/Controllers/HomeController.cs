@@ -13,7 +13,6 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.SignalR;
 using static AzureAutomationFormGenerator.WebUI.Repos.StaticRepo;
-using AzureAutomationFormGenerator.WebUI.Models;
 using AzureAutomationFormGenerator.Persistence;
 using AzureAutomationFormGenerator.Persistence.Models;
 
@@ -60,9 +59,9 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         /// <summary>
         /// Return view with Runbook Name specified in the URL. Take Resource Group Name and Automation Account Name from static configuration
         /// </summary>
-        public async Task<IActionResult> Index(PageType? pageType)
+        public IActionResult Index(PageType? pageType)
         {
-            return await Index(pageType, StaticRepo.RunbookName);
+            return Index(pageType, StaticRepo.RunbookName);
         }
 
         /// <summary>
@@ -71,9 +70,9 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         /// <param name="runbookName"></param>
         /// <returns></returns>
         [HttpGet("{runbookName}")]
-        public async Task<IActionResult> Index(PageType? pageType, string runbookName)
+        public IActionResult Index(PageType? pageType, string runbookName)
         {
-            return await Index(pageType, runbookName, _resourceGroup, _automationAccount);
+            return Index(pageType, runbookName, _resourceGroup, _automationAccount);
         }
 
         /// <summary>
@@ -85,10 +84,10 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         
         [HttpGet("{resourceGroup}/{automationAccount}/{runbookName}")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(PageType? pageType, [FromRoute]string runbookName, string resourceGroup, string automationAccount)
+        public IActionResult Index(PageType? pageType, [FromRoute]string runbookName, string resourceGroup, string automationAccount)
         {
             //Set type of page to return. If nothing is passed set Full Width as default
-            pageType = pageType.HasValue ? pageType : PageType.FullWidth;
+            pageType = pageType.HasValue ? pageType : PageType.Centered;
             currentPageType = pageType.GetValueOrDefault();
 
             //save runbook variables
@@ -125,7 +124,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
             AuditLog logEntry = new AuditLog
             {
                 RequestName = StaticRepo.RunbookName,
-                RequestUser = GetEmail(HttpContext),
+                RequestUser = HttpContext.User.Identity.Name,
                 RequestInput = JsonConvert.SerializeObject(inputs, Formatting.None)
 
             };
