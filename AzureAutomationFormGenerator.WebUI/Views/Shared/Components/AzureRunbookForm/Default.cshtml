@@ -14,10 +14,11 @@
 
         @foreach (var item in Model)
         {
-
+            //Index value
             <input type="text" name="inputs[@inputCount].Key" hidden value="@item.Key" />
             <div class="form-group needs-validation has-danger" novalidate>
 
+                @*//Label*@
                 <label class="form-control-label" for="@(item.Key)">
                     @if (item.Value.DisplayName != null)
                     {
@@ -26,6 +27,8 @@
                     else
                     { @item.Key}
                 </label>
+
+                @* PARAMETER: VALIDATE SET *@
                 @if (item.Value.ValidateSet != null)
                 {
 
@@ -45,10 +48,48 @@
                         }
                     </select>
                 }
-                else
+                else if (item.Value.IsArray == true)
                 {
-                    @if (item.Value.IsRequired)
-                    {
+                    @* PARAMETER: STRING[] *@
+                    
+                    <div id="formarray_@(item.Key)" class="array-form">
+                        <table id="itemTable_@(item.Key)" class="array-table">
+                            <tr>
+                                <td><input type="text" id="itemInput_@(item.Key)" name="placeholder123" class="form-control form-control-danger" placeholder="" required/></td>
+                                <td><button type="submit" value="@(item.Key)" class="btn btn-primary itemAdd" id="itemAdd_@inputCount"><span class="fa fa-plus"></span> Add</button>      </td>
+
+                            </tr>
+                        </table>
+                        <p class="empty-list" id="@(item.Key)">The list is empty</p>
+                        <p class="non-empty-list"></p>
+                        <input type="text" name="inputs[@inputCount].Value" id="@item.Key" hidden />
+                    </div>
+
+
+                    <style>
+                        .validation-summary-errors ul {
+                            list-style-type: none;
+                            color: red;
+                            padding: 0;
+                            margin: 0;
+                        }
+
+                        .empty-list {
+                            color: lightgray;
+                        }
+
+                        .non-empty-list {
+                            list-style-type: none;
+                        }
+
+                    </style>
+
+                }
+                else { 
+
+
+                if (item.Value.IsRequired)
+                {
                         <input type="text" name="inputs[@inputCount].Value" class="form-control form-control-danger" id="@item.Key" value="@item.Value.DefaultValue" required />
 
                     }
@@ -58,21 +99,21 @@
                     }
                 }
             </div>
-            inputCount++;
-        }
-        <input type="text" id="signalRconnectionId" name="signalRconnectionId" hidden value="" />
+                        inputCount++;
+                        }
+                        <input type="text" id="signalRconnectionId" name="signalRconnectionId" hidden value="" />
 
-        <table>
-            <tr>
+                        <table>
+                            <tr>
 
-                <td><input id="submitButton" data-loading-text="<i class='fa fa-spinner fa-spin fa-fw' aria-hidden='true'>" type="submit" value="Submit" /></td>
-                <td><p class="text-success" id="jobstatus"></p></td>
-                <td id="spinner"></td>
+                                <td><input id="submitButton" class="btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin fa-fw' aria-hidden='true'>" type="submit" value="Submit" /></td>
+                                <td><p class="text-success" id="jobstatus"></p></td>
+                                <td id="spinner"></td>
 
-            </tr>
-        </table>
+                            </tr>
+                        </table>
 
-    </form>
+</form>
 }
 <br />
 
@@ -81,4 +122,10 @@
 <script src="~/lib/signalr/signalr.js"></script>
 <script src="~/js/signal.js" defer></script>
 <script src="~/js/site.js" defer></script>
+
+<script type="text/javascript">
+  
+   
+
+</script>
 

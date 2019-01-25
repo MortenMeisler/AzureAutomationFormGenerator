@@ -5,6 +5,19 @@ body {
     padding-bottom: 20px;
 }
 
+/* Array string[] elements */
+.array-table {
+width: 115%;
+}
+
+.array-form {
+    margin-left: -5px;
+}
+
+input#submitButton {
+    margin-left: -5px;
+}
+
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {

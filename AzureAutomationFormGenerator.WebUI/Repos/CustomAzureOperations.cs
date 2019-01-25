@@ -87,7 +87,10 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
                 RunbookParameterSetting runbookParameterSetting = new RunbookParameterSetting()
                 {
                     IsRequired = (bool)runbookVariable.Value.IsMandatory,
-                    DefaultValue = runbookVariable.Value.DefaultValue
+                    DefaultValue = runbookVariable.Value.DefaultValue,
+                    IsArray = runbookVariable.Value.Type == "System.String[]" ||
+                              runbookVariable.Value.Type == "System.Management.Automation.PSObject[]" ||
+                              runbookVariable.Value.Type == "System.Object[]"
                 };
 
                 if (runbookParameterSetting.DefaultValue != null) { runbookParameterSetting.DefaultValue = runbookParameterSetting.DefaultValue.Replace("'", ""); };

@@ -29,5 +29,11 @@ namespace AzureAutomationFormGenerator.WebUI.Models
         /// If parameter has a default value in the PowerShell Automation Runbook it will be set for the input field
         /// </summary>
         public string DefaultValue { get; set; }
+
+        /// <summary>
+        /// If parameter is of type string[] / object[]
+        /// </summary>
+
+        public bool IsArray { get; set; } = false;
     }
 }
