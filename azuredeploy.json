@@ -25,7 +25,7 @@
       },
       "SubscriptionIdForAutomationAccount": {
         "type": "string",
-        "defaultValue": "[subscription().subscriptionId]",
+        "defaultValue": "",
         "metadata": {
           "description": "Change",
           "name": "Subscription Automation Account"
