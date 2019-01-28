@@ -40,7 +40,7 @@ $(".btn.btn-primary.itemAdd").on('click', function (event) {
     let inputKey = $(this).val();
 
     //If input value from textbox is not empty and does not exists already
-    if (inputValue.length > 0 && arrayInputs[inputKey].indexOf(inputValue) === -1) {
+    if (inputValue.length > 0 && arrayInputs[inputKey].indexOf("'" + inputValue + "'") === -1) {
         //Get the id of the button clicked
         
         
