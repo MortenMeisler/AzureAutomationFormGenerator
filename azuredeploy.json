@@ -23,6 +23,14 @@
           "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Application ID"
         }
       },
+      "SubscriptionIdForAutomationAccount": {
+        "type": "string",
+        "defaultValue": "[subscription().subscriptionId]",
+        "metadata": {
+          "description": "Change",
+          "name": "Subscription Automation Account"
+        }
+      },
       "ApplicationSecret": {
         "type": "securestring",
         "defaultValue": "mysecretkey",
@@ -43,7 +51,7 @@
       },
       "TenantId": {
         "type": "string",
-        "defaultValue": "b6909603-e5a8-497d-8fdb-7f10240fdc13",
+        "defaultValue": "b6909603-e5a8-497d-8fdb-7f10240fdc14",
         "metadata": {
           "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Tenant ID"
         }
@@ -188,9 +196,8 @@
               "AzureSettings:AutomationAccount": "[parameters('AutomationAccount')]",
               "AzureSettings:TenantId": "[parameters('TenantId')]",
               "AzureSettings:ResourceGroup": "[parameters('AutomationResourceGroup')]",
+              "AzureSettings:SubscriptionId": "[parameters('SubscriptionIdForAutomationAccount')]"
               
-              
-
             }
           },
           {
