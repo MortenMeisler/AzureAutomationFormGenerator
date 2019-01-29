@@ -256,7 +256,7 @@
             }
           },
           {
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2015-04-01",
             "name": "connectionstrings",
             "condition": "[parameters('EnableAuditLogging')]",
             "type": "config",
