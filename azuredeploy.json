@@ -144,8 +144,9 @@
         },
         "resources": [
           {
-            "apiVersion": "2014-04-01-preview",
+            "apiVersion": "2017-10-01-preview",
             "name": "[variables('sqlDbName')]",
+            "condition": "[equals(parameters('EnableAuditLogging'),'Yes')]",
             "type": "databases",
             "location": "[parameters('siteLocation')]",
             "tags": {
@@ -162,8 +163,9 @@
             }
           },
           {
-            "apiVersion": "2014-04-01-preview",
+            "apiVersion": "2015-05-01-preview",
             "name": "SQLServerFirewallRules",
+            "condition": "[equals(parameters('EnableAuditLogging'),'Yes')]",
             "type": "firewallrules",
             "location": "[parameters('siteLocation')]",
             "dependsOn": [
@@ -189,7 +191,7 @@
         }
       },
       {
-        "apiVersion": "2015-04-01",
+        "apiVersion": "2016-03-01",
         "name": "[parameters('siteName')]",
         "type": "Microsoft.Web/sites",
         "location": "[parameters('siteLocation')]",
@@ -258,7 +260,7 @@
             }
           },
           {
-            "apiVersion": "2016-08-01",
+            "apiVersion": "2015-04-01",
             "name": "connectionstrings",
             "type": "config",
             "dependsOn": [
@@ -267,13 +269,13 @@
             ],
             "properties": {
               "AutomationPortalDatabase": {
-                "value": "[concat('Data Source=tcp:', reference(concat('Microsoft.Sql/servers/', variables('sqlServerName'))).fullyQualifiedDomainName, ',1433;Initial Catalog=', variables('sqlDbName'), ';User Id=', variables('sqlServerAdminLogin'), '@', variables('sqlServerName'), ';Password=', variables('sqlServerAdminPassword'), ';')]",
+                "value": "[concat('Data Source=tcp:', concat(variables('sqlServerName'),'.database.windows.net'), ',1433;Initial Catalog=', variables('sqlDbName'), ';User Id=', variables('sqlServerAdminLogin'), '@', variables('sqlServerName'), ';Password=', variables('sqlServerAdminPassword'), ';')]",
                 "type": "SQLAzure"
               }
             }
           },
           {
-            "apiVersion": "2017-05-10",
+            "apiVersion": "2015-04-01",
             "name": "web",
             "type": "sourcecontrols",
             "dependsOn": [
