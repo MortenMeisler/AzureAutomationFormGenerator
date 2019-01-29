@@ -19,22 +19,34 @@ namespace AzureAutomationFormGenerator.WebUI
             CreateWebHostBuilder(args).Build().Run();
 
 
+            
+
 
             var host = CreateWebHostBuilder(args).Build();
 
-            using (var scope = host.Services.CreateScope())
+            var config = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddCommandLine(args)
+                .Build();
+
+            if (config.GetValue<bool>("EnableAuditLogging") == true)
             {
-                try
+                using (var scope = host.Services.CreateScope())
                 {
-                    var context = scope.ServiceProvider.GetService<AzureAutomationFormGenerator.Persistence.AutomationPortalDbContext>();
-                    context.Database.Migrate();
-                }
-                catch (Exception ex)
-                {
-                    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while migrating or initializing the database.");
+                    try
+                    {
+                        var context = scope.ServiceProvider.GetService<AzureAutomationFormGenerator.Persistence.AutomationPortalDbContext>();
+                        context.Database.Migrate();
+                    }
+                    catch (Exception ex)
+                    {
+                        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
+                        logger.LogError(ex, "An error occurred while migrating or initializing the database.");
+                    }
                 }
             }
+            
 
             host.Run();
 

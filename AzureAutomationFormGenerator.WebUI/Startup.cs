@@ -38,18 +38,28 @@ namespace AzureAutomationFormGenerator.WebUI
             services.AddSession();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            string strConnectionString = Configuration.GetConnectionString("AutomationPortalDatabase");
-            // option to use hardcoded connectionstring
-            //strConnectionString = "Server=localhost\\SQLEXPRESS;Database=AutomationPortal;Trusted_Connection=True;Application Name=AutomationPortal;";
-            if(string.IsNullOrEmpty(strConnectionString))
+            //Enable Audit logging DbContext
+            if (Configuration.GetValue<bool>("EnableAuditLogging") == true)
             {
-                throw new System.Exception("ConnectionString not found");
+                string strConnectionString = Configuration.GetConnectionString("AutomationPortalDatabase");
+                // option to use hardcoded connectionstring
+                //strConnectionString = "Server=localhost\\SQLEXPRESS;Database=AutomationPortal;Trusted_Connection=True;Application Name=AutomationPortal;";
+                if (string.IsNullOrEmpty(strConnectionString))
+                {
+                    throw new System.Exception("ConnectionString not found");
+                }
+
+                //Infrastructure
+                // Add DbContext using SQL Server Provider
+
+                services.AddDbContext<AutomationPortalDbContext>(options =>
+                        options.UseSqlServer(strConnectionString));
+
             }
 
-            //Infrastructure
-            // Add DbContext using SQL Server Provider
-            services.AddDbContext<AutomationPortalDbContext>(options =>
-                options.UseSqlServer(strConnectionString));
+            //Add empty DbContext
+            services.AddDbContext<AutomationPortalDbContext>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -51,9 +51,9 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
 
             if (!string.IsNullOrEmpty(_configuration["AzureSettings:RunbookName"]))
             {
-               StaticRepo.RunbookName = _configuration["AzureSettings:RunbookName"];
+                StaticRepo.RunbookName = _configuration["AzureSettings:RunbookName"];
             }
-           
+
         }
 
         /// <summary>
@@ -121,16 +121,21 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
 
             jobOutput.JobStatus = JobStatusWrapper.Completed;
 
-            AuditLog logEntry = new AuditLog
+            //AUDIT LOG - START
+            if (Configuration.GetValue<bool>("EnableAuditLogging") == true)
             {
-                RequestName = StaticRepo.RunbookName,
-                RequestUser = HttpContext.User.Identity.Name,
-                RequestInput = JsonConvert.SerializeObject(inputs, Formatting.None)
+                AuditLog logEntry = new AuditLog
+                {
+                    RequestName = StaticRepo.RunbookName,
+                    RequestUser = HttpContext.User.Identity.Name, //TODO: Not working
+                    RequestInput = JsonConvert.SerializeObject(inputs, Formatting.None)
 
-            };
-            _automationPortalDbContext.Add(logEntry);
+                };
+                _automationPortalDbContext.Add(logEntry);
 
-            await _automationPortalDbContext.SaveChangesAsync();
+                await _automationPortalDbContext.SaveChangesAsync();
+            }
+            //AUDIT LOG - END
 
 
             //Start runbook and return output
