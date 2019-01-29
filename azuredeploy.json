@@ -125,7 +125,7 @@
         ]
       },
       {
-        "apiVersion": "2017-05-10",
+        "apiVersion": "2014-04-01-preview",
         "name": "[variables('sqlServerName')]",
         "type": "Microsoft.Sql/servers",
         "condition": "[parameters('EnableAuditLogging')]",
