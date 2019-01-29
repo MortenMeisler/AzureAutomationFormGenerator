@@ -65,7 +65,7 @@
       },
       "EnableAuditLogging": {
         "type": "bool",
-        "defaultValue": false,
+        "defaultValue": "[bool('false')]",
         "metadata": {
           "description": "Enable SQL Logging everytime a user submits a runbook"
         }
@@ -125,10 +125,10 @@
         ]
       },
       {
+        
         "apiVersion": "2014-04-01-preview",
         "name": "[variables('sqlServerName')]",
         "type": "Microsoft.Sql/servers",
-        "condition": "[parameters('EnableAuditLogging')]",
         "location": "[parameters('siteLocation')]",
         "tags": {
           "displayName": "SQLServer"
@@ -139,6 +139,7 @@
         },
         "resources": [
           {
+            "condition": "[parameters('EnableAuditLogging')]",
             "apiVersion": "2014-04-01-preview",
             "name": "[variables('sqlDbName')]",
             "type": "databases",
