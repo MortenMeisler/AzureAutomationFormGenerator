@@ -65,7 +65,7 @@
       },
       "EnableAuditLogging": {
         "type": "bool",
-        "defaultValue": "[bool('false')]",
+        "defaultValue": false,
         "metadata": {
           "description": "Enable SQL Logging everytime a user submits a runbook"
         }
@@ -139,9 +139,9 @@
         },
         "resources": [
           {
-            "condition": "[parameters('EnableAuditLogging')]",
-            "apiVersion": "2014-04-01-preview",
+            "apiVersion": "2017-05-10",
             "name": "[variables('sqlDbName')]",
+            "condition": "[parameters('EnableAuditLogging')]",
             "type": "databases",
             "location": "[parameters('siteLocation')]",
             "tags": {
@@ -158,8 +158,9 @@
             }
           },
           {
-            "apiVersion": "2014-04-01-preview",
+            "apiVersion": "2017-05-10",
             "name": "SQLServerFirewallRules",
+            "condition": "[parameters('EnableAuditLogging')]",
             "type": "firewallrules",
             "location": "[parameters('siteLocation')]",
             "dependsOn": [
@@ -207,6 +208,7 @@
               "PROJECT": "[variables('project-web')]",
               "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
               "webSocketsEnabled": true,
+              "EnableAuditLogging": "[parameters('EnableAuditLogging')]",
               "AzureSettings:ClientId": "[parameters('ApplicationId')]",
               "ClientSecret": "[parameters('ApplicationSecret')]",
               "AzureSettings:AutomationAccount": "[parameters('AutomationAccount')]",
@@ -253,8 +255,9 @@
             }
           },
           {
-            "apiVersion": "2015-04-01",
+            "apiVersion": "2017-05-10",
             "name": "connectionstrings",
+            "condition": "[parameters('EnableAuditLogging')]",
             "type": "config",
             "dependsOn": [
               "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
@@ -268,7 +271,7 @@
             }
           },
           {
-            "apiVersion": "2015-04-01",
+            "apiVersion": "2017-05-10",
             "name": "web",
             "type": "sourcecontrols",
             "dependsOn": [
