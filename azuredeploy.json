@@ -126,8 +126,9 @@
       },
       {
         
-        "apiVersion": "2014-04-01-preview",
+        "apiVersion": "2017-05-10",
         "name": "[variables('sqlServerName')]",
+        "condition": "[parameters('EnableAuditLogging')]",
         "type": "Microsoft.Sql/servers",
         "location": "[parameters('siteLocation')]",
         "tags": {
