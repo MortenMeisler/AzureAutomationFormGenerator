@@ -64,12 +64,16 @@
         }
       },
       "EnableAuditLogging": {
-        "type": "bool",
-        "defaultValue": false,
+        "type": "string",
+        "allowedValues": [
+            "Yes",
+            "No"
+        ],
+        "defaultValue": "No",
         "metadata": {
           "description": "Enable SQL Logging everytime a user submits a runbook"
         }
-      }
+    }
     },
     "variables": {
       "hostingPlanName": "[concat(parameters('siteName'), '-plan')]",
@@ -128,7 +132,7 @@
         
         "apiVersion": "2014-04-01-preview",
         "name": "[variables('sqlServerName')]",
-        "condition": "[parameters('EnableAuditLogging')]",
+        "condition": "[equals(parameters('EnableAuditLogging'),'Yes')]",
         "type": "Microsoft.Sql/servers",
         "location": "[parameters('siteLocation')]",
         "tags": {
@@ -256,7 +260,6 @@
           {
             "apiVersion": "2015-04-01",
             "name": "connectionstrings",
-            "condition": "[parameters('EnableAuditLogging')]",
             "type": "config",
             "dependsOn": [
               "[resourceId('Microsoft.Web/Sites', parameters('siteName'))]",
