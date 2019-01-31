@@ -15,10 +15,13 @@ using Microsoft.AspNetCore.SignalR;
 using static AzureAutomationFormGenerator.WebUI.Repos.StaticRepo;
 using AzureAutomationFormGenerator.Persistence;
 using AzureAutomationFormGenerator.Persistence.Models;
+using Microsoft.AspNetCore.Authorization;
+using AzureAutomationFormGenerator.WebUI.Security;
 
 namespace AzureAutomationFormGenerator.WebUI.Controllers
 {
-
+    //[Authorize(Policy = "ADAuthorizationRequired")]
+    [AzureADAuthorize]
     [ResponseCache(Duration = 1, NoStore = true, Location = ResponseCacheLocation.None)]
     public class HomeController : Controller
     {

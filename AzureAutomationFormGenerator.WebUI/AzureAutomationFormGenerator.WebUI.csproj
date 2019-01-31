@@ -3,7 +3,7 @@
   <PropertyGroup>
     
 
-    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <TargetFramework>netcoreapp2.2</TargetFramework>
     <TypeScriptToolsVersion>2.8</TypeScriptToolsVersion>
     <TieredCompilation>true</TieredCompilation>
     <UserSecretsId>28f12efa-768b-4fbd-b22a-984ed9e17c65</UserSecretsId>
@@ -11,9 +11,10 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="2.2.0" />
     <PackageReference Include="Microsoft.Azure.Management.Automation" Version="3.8.0-preview" />
     <PackageReference Include="Microsoft.Azure.Management.ResourceManager.Fluent" Version="1.17.0" />
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.6" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.1" />
     <PackageReference Include="Microsoft.Web.LibraryManager.Build" Version="1.0.163" />
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
   </ItemGroup>

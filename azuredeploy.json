@@ -63,6 +63,14 @@
           "description": "Set Cross Origin if you want to run the website from another site"
         }
       },
+      "AzureADDomain (Only required if using authorization)":{
+        "type": "string",
+        "metadata": {
+          "description": "Set Cross Origin if you want to run the website from another site"
+        },
+        "defaultValue": "https://MyDomain.onmicrosoft.com/"
+      },
+
       "EnableAuditLogging": {
         "type": "string",
         "allowedValues": [
@@ -214,6 +222,7 @@
               "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
               "webSocketsEnabled": true,
               "EnableAuditLogging": "[parameters('EnableAuditLogging')]",
+              "AzureAd:Domain": "[parameters('AzureADDomain (Only required if using authorization)')]",
               "AzureSettings:ClientId": "[parameters('ApplicationId')]",
               "ClientSecret": "[parameters('ApplicationSecret')]",
               "AzureSettings:AutomationAccount": "[parameters('AutomationAccount')]",

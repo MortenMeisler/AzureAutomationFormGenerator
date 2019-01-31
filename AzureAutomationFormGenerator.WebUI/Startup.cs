@@ -3,10 +3,15 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using AzureAutomationFormGenerator.Persistence;
+using Microsoft.AspNetCore.Authentication.AzureAD.UI;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
+using AzureAutomationFormGenerator.WebUI.Security;
 
 namespace AzureAutomationFormGenerator.WebUI
 {
@@ -22,6 +27,7 @@ namespace AzureAutomationFormGenerator.WebUI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            
             services.AddSingleton<IConfiguration>(Configuration);
 
             services.AddTransient<ICustomAzureOperations>(cap => new CustomAzureOperations(Configuration));
@@ -35,8 +41,37 @@ namespace AzureAutomationFormGenerator.WebUI
 
             services.AddCors();
             services.AddSignalR();
-            services.AddSession();
+            //services.AddSession();
+
+            //Authentication & Authorization
+            #region AUTHENTICATION / AUTHORICATION
+            //var section = Configuration.GetSection($"AzureAd:AuthorizedAdUsersOrGroups");
+            //var roles = section.Get<string[]>();
+            //services.AddAuthorization(options =>
+            //{
+            //    options.AddPolicy("ADAuthorizationRequired", policy => policy.RequireRole(roles));
+            //});
+
+            //services.AddMvc(config =>
+            //{
+            //    var policy = new AuthorizationPolicyBuilder()
+            //        .RequireAuthenticatedUser()
+            //        .Build();
+
+            //    config.Filters.Add(new AuthorizeFilter(policy));
+            //}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            StaticRepo.Configuration = Configuration;
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    AzureADPolicies.Name,AzureADPolicies.Build);
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
+              .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+            #endregion
 
             //Enable Audit logging DbContext
             if (Configuration.GetValue<bool>("EnableAuditLogging") == true)
@@ -59,6 +94,8 @@ namespace AzureAutomationFormGenerator.WebUI
 
             //Add empty DbContext
             services.AddDbContext<AutomationPortalDbContext>();
+
+           
 
         }
 
@@ -89,7 +126,8 @@ namespace AzureAutomationFormGenerator.WebUI
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.UseSession();
+            //app.UseSession();
+            app.UseAuthentication();
 
             app.UseSignalR(routes =>
             {
