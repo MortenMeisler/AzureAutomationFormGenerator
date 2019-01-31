@@ -85,17 +85,17 @@
           "description": "Enable Authorization via Azure AD Security Groups"
         }
       },
-      "AzureAdDomain (Only required if using authorization)":{
+      "AzureAdDomain":{
         "type": "string",
         "metadata": {
-          "description": "Set Cross Origin if you want to run the website from another site"
+          "description": "Azure AD Domain for authorization"
         },
         "defaultValue": "https://MyDomain.onmicrosoft.com/"
       },
-      "AuthorizedAdGroups Object Ids (Only required if using authorization)":{
+      "AuthorizedAdGroups":{
         "type": "array",
         "metadata": {
-          "description": "Set Cross Origin if you want to run the website from another site"
+          "description": "Azure AD Security Group(s) for authorization"
         },
         "defaultValue": ["568bd325-283f-4909-9fcc-a493d19f98e8"]
       }
@@ -238,12 +238,12 @@
               "PROJECT": "[variables('project-web')]",
               "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
               "webSocketsEnabled": true,
-              "EnableAuditLogging": "[if(equals(parameters('EnableAuditLogging'),'Yes'),'True','False')]",
-              "EnableAuthorization": "[if(equals(parameters('EnableAuthorization'),'Yes'),'True','False')]",
-              "AzureAd:Domain": "[parameters('AzureAdDomain (Only required if using authorization)')]",
+              "EnableAuditLogging": "[if(equals(parameters('EnableAuditLogging'),'Yes'),'true','false')]",
+              "EnableAuthorization": "[if(equals(parameters('EnableAuthorization'),'Yes'),'true','false')]",
+              "AzureAd:Domain": "[parameters('AzureAdDomain')]",
+              "AzureAd:AuthorizedAdGroups": "[parameters('AuthorizedAdGroups')]",
               "AzureAd:TenantId": "[parameters('TenantId')]",
               "AzureAd:ClientId": "[parameters('ApplicationId')]",
-              "AzureAd:AuthorizedAdGroups": "[parameters('AuthorizedAdGroups Object Ids (Only required if using authorization)')]",
               "AzureSettings:ClientId": "[parameters('ApplicationId')]",
               "ClientSecret": "[parameters('ApplicationSecret')]",
               "AzureSettings:AutomationAccount": "[parameters('AutomationAccount')]",
