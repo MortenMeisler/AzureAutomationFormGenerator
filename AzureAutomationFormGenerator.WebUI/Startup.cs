@@ -45,28 +45,17 @@ namespace AzureAutomationFormGenerator.WebUI
 
             //Authentication & Authorization
             #region AUTHENTICATION / AUTHORICATION
-            //var section = Configuration.GetSection($"AzureAd:AuthorizedAdUsersOrGroups");
-            //var roles = section.Get<string[]>();
-            //services.AddAuthorization(options =>
-            //{
-            //    options.AddPolicy("ADAuthorizationRequired", policy => policy.RequireRole(roles));
-            //});
-
-            //services.AddMvc(config =>
-            //{
-            //    var policy = new AuthorizationPolicyBuilder()
-            //        .RequireAuthenticatedUser()
-            //        .Build();
-
-            //    config.Filters.Add(new AuthorizeFilter(policy));
-            //}).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             StaticRepo.Configuration = Configuration;
-            services.AddAuthorization(options =>
-            {
-                options.AddPolicy(
-                    AzureADPolicies.Name,AzureADPolicies.Build);
-            });
+            
+            
+                services.AddAuthorization(options =>
+                {
+                    options.AddPolicy(
+                        AzureADPolicies.Name, AzureADPolicies.Build);
+                });
+            
+            
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)

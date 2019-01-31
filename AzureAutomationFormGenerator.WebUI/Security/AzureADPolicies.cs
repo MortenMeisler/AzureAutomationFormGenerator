@@ -15,9 +15,18 @@ namespace AzureAutomationFormGenerator.WebUI.Security
 
         public static void Build(AuthorizationPolicyBuilder builder)
             {
-                var section = StaticRepo.Configuration.GetSection($"AzureAd:AuthorizedAdGroups");
-                var groups = section.Get<string[]>();
-                builder.RequireClaim("groups", groups); 
+                if (StaticRepo.Configuration.GetValue<bool>("EnableAuthorization") == true)
+                {
+                    var section = StaticRepo.Configuration.GetSection($"AzureAd:AuthorizedAdGroups");
+                    var groups = section.Get<string[]>();
+                    builder.RequireClaim("groups", groups);
+
+            }
+            else
+            {
+                builder.RequireAuthenticatedUser();
+            }
+                
             }
     }
 }
