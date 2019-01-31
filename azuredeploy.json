@@ -74,6 +74,17 @@
           "description": "Enable SQL Logging everytime a user submits a runbook"
         }
       },
+      "EnableAuthorization": {
+        "type": "string",
+        "allowedValues": [
+            "Yes",
+            "No"
+        ],
+        "defaultValue": "No",
+        "metadata": {
+          "description": "Enable Authorization via Azure AD Security Groups"
+        }
+      },
       "AzureAdDomain (Only required if using authorization)":{
         "type": "string",
         "metadata": {
@@ -227,7 +238,8 @@
               "PROJECT": "[variables('project-web')]",
               "clientPath": "[concat('http://', parameters('siteName'), '.azurewebsites.net')]",
               "webSocketsEnabled": true,
-              "EnableAuditLogging": "[parameters('EnableAuditLogging')]",
+              "EnableAuditLogging": "[if(equals(parameters('EnableAuditLogging'),'Yes'),'True','False')]",
+              "EnableAuthorization": "[if(equals(parameters('EnableAuthorization'),'Yes'),'True','False')]",
               "AzureAd:Domain": "[parameters('AzureAdDomain (Only required if using authorization)')]",
               "AzureAd:TenantId": "[parameters('TenantId')]",
               "AzureAd:ClientId": "[parameters('ApplicationId')]",
