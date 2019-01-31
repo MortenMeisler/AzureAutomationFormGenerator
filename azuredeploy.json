@@ -72,7 +72,8 @@
         "defaultValue": "No",
         "metadata": {
           "description": "Enable SQL Logging everytime a user submits a runbook"
-        },
+        }
+      },
       "AzureAdDomain (Only required if using authorization)":{
         "type": "string",
         "metadata": {
@@ -81,13 +82,12 @@
         "defaultValue": "https://MyDomain.onmicrosoft.com/"
       },
       "AuthorizedAdGroups Object Ids (Only required if using authorization)":{
-        "type": "string[]",
+        "type": "array",
         "metadata": {
           "description": "Set Cross Origin if you want to run the website from another site"
         },
         "defaultValue": "568bd325-283f-4909-9fcc-a493d19f98e8"
       }
-    }
     },
     "variables": {
       "hostingPlanName": "[concat(parameters('siteName'), '-plan')]",
