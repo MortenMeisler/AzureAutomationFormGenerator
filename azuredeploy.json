@@ -63,7 +63,6 @@
           "description": "Set Cross Origin if you want to run the website from another site"
         }
       },
-
       "EnableAuditLogging": {
         "type": "string",
         "allowedValues": [
@@ -232,7 +231,7 @@
               "AzureAd:Domain": "[parameters('AzureAdDomain (Only required if using authorization)')]",
               "AzureAd:TenantId": "[parameters('TenantId')]",
               "AzureAd:ClientId": "[parameters('ApplicationId')]",
-              "AzureAd:AuthorizedAdGroups": "[parameters('AuthorizedAdGroups (Only required if using authorization)')]",
+              "AzureAd:AuthorizedAdGroups": "[parameters('AuthorizedAdGroups Object Ids (Only required if using authorization)')]",
               "AzureSettings:ClientId": "[parameters('ApplicationId')]",
               "ClientSecret": "[parameters('ApplicationSecret')]",
               "AzureSettings:AutomationAccount": "[parameters('AutomationAccount')]",
