@@ -86,7 +86,7 @@
         "metadata": {
           "description": "Set Cross Origin if you want to run the website from another site"
         },
-        "defaultValue": "568bd325-283f-4909-9fcc-a493d19f98e8"
+        "defaultValue": ["568bd325-283f-4909-9fcc-a493d19f98e8"]
       }
     },
     "variables": {
