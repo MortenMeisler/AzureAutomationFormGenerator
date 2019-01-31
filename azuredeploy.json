@@ -93,11 +93,11 @@
         "defaultValue": "https://MyDomain.onmicrosoft.com/"
       },
       "AuthorizedAdGroups":{
-        "type": "array",
+        "type": "string",
         "metadata": {
           "description": "Azure AD Security Group(s) for authorization"
         },
-        "defaultValue": ["568bd325-283f-4909-9fcc-a493d19f98e8"]
+        "defaultValue": "568bd325-283f-4909-9fcc-a493d19f98e8"
       }
     },
     "variables": {
