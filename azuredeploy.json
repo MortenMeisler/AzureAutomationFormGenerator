@@ -249,7 +249,7 @@
               "AzureSettings:AutomationAccount": "[parameters('AutomationAccount')]",
               "AzureSettings:TenantId": "[parameters('TenantId')]",
               "AzureSettings:ResourceGroup": "[parameters('AutomationResourceGroup')]",
-              "AzureSettings:SubscriptionId": "[if(empty(parameters('SubscriptionIdForAutomationAccount')), parameters('SubscriptionIdForAutomationAccount'), subscription().subscriptionId)]",
+              "AzureSettings:SubscriptionId": "[if(empty(parameters('SubscriptionIdForAutomationAccount')), subscription().subscriptionId,parameters('SubscriptionIdForAutomationAccount'))]",
               "AzureSettings:CrossOriginAddress": "[parameters('CrossOriginAddress')]"
               
             }
