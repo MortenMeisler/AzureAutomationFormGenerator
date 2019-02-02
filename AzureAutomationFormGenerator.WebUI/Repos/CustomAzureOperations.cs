@@ -106,7 +106,6 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
                     //Subsequent parameter configs - get everything between '<nameofpreviousvariable>' and '<nameofcurrentvariable>'
                     pattern = $@"(?s)(?<={runbookParameters.ToList()[i - 1].Key})(.*?)(?=\${runbookVariable.Key})";
                 }
-
                 Regex regex = new Regex(pattern,RegexOptions.IgnoreCase);
                 MatchCollection paramSettingsMatches = regex.Matches(runbookContent);
 
