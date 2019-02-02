@@ -99,7 +99,7 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
                 if (i == 0)
                 {
                     //First parameter configs - get everything between 'Param(' and '<nameoffirstvariable>'
-                    pattern = $@"(?s)(?<=Param\()(.*?)(?=\${runbookVariable.Key})";
+                    pattern = $@"(?s)(?<=param\()(.*?)(?=\${runbookVariable.Key})";
                 }
                 else
                 {
@@ -107,7 +107,7 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
                     pattern = $@"(?s)(?<={runbookParameters.ToList()[i - 1].Key})(.*?)(?=\${runbookVariable.Key})";
                 }
 
-                Regex regex = new Regex(pattern);
+                Regex regex = new Regex(pattern,RegexOptions.IgnoreCase);
                 MatchCollection paramSettingsMatches = regex.Matches(runbookContent);
 
                 if (paramSettingsMatches != null && paramSettingsMatches.Count > 0)
