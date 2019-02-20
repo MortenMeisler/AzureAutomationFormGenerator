@@ -56,9 +56,9 @@ Default landing page will have a left menu with you runbooks listed. This will o
 ### Syntax and parameter options
 - Use ```[Alias("My Name of Parameter")]``` in powershell runbook to have friendly names of your parameters
 - Use ```[ValidateSet("Value1", "Value2", "Value3")]``` for selection dropdown list
-- Use ```[string[]]``` or ```[object[]]`` or ```[PSObject[]]``` to make an array parameter for adding/removing items
+- Use ```[string[]]``` or ```[object[]]``` or ```[PSObject[]]``` to make an array parameter for adding/removing items
 - Use ```[Parameter(Mandatory=$true)]``` to make fields required
-
+- Set your parameter equal something to have a default value. Example: ```$MyVariable = "This is my default value"```
 
 
 
