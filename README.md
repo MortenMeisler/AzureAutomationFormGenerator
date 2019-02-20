@@ -47,7 +47,7 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 5. You can now build project and if you want publish to own website host.
 
 ## Usage
-Default landing page will have a right-pane menu with you runbooks listed. This will only grap your runbooks with the following **tag**:
+Default landing page will have a left menu with you runbooks listed. This will only grap your runbooks with the following **tag**:
 - Key: `FormGenerator` Value: `Public`
 ### Other page types
 - Full Width page: https://`<NameOfYourWebSite>`.azurewebsites.net/`<NameOfYourRunbook>`**?pageType=1**
