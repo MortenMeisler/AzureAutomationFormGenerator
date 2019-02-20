@@ -20,15 +20,15 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 
 ## Requirements
 
- - Create a Service Principal that has permission to your Azure Automation Account. [Read more here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
+ - create an Azure AD application and service principal that can access your Azure Automation Account. [Read more here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
  
 ## Getting Started
 
 ### Publish to Azure
-1. Create a new azure ad app that has access to your Azure Automation account (or use existing)
+1. Create a new Azure AD App that has access to your Azure Automation account (or use existing)
 2. Hit Deploy to Azure button
-3. Fill out the fields
-4. Create a new Redirect URI in your azure app. Under Authentication. Paste the following: https://`<NameOfYourWebSite`>.azurewebsites.net/signin-oidc
+3. Fill out the fields and deploy.
+4. Once deployed, create a new Redirect URI in your azure app under Authentication. Paste the following: https://`<NameOfYourWebSite`>.azurewebsites.net/signin-oidc
 
 
 ### Development
