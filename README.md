@@ -67,6 +67,6 @@ Example:
 By default the website uses Azure AD authentication. In Appsettings you can control if you want no authentication, Azure AD authentication or Azure AD authentication with group authorization.
 
 #### Group Authorization
-To enable group authorization open your manifest file of your Azure AD app and change the `groupMembershipClaims` to `SecurityGroup`. This change can take up to an hour to have effect.
+To enable group authorization open your manifest file of your Azure AD app and change the `groupMembershipClaims` to `SecurityGroup`. This change can take up to an hour to take effect.
 
 In Appsettings change the Object Id's of the AD Security Groups that gives access to the site.
