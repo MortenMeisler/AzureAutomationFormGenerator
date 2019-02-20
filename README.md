@@ -28,7 +28,7 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 1. Create a new Azure AD App that has access to your Azure Automation account (or use existing)
 2. Hit Deploy to Azure button
 3. Fill out the fields and deploy.
-4. Once deployed, create a new Redirect URI in your azure app under Authentication. Paste the following: https://`<NameOfYourWebSite`>.azurewebsites.net/signin-oidc
+4. Once deployed, create a new Redirect URI in your azure app under Authentication. Paste the following: https://`<NameOfYourWebSite>`.azurewebsites.net/signin-oidc
 
 
 ### Development
@@ -50,8 +50,8 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 Default landing page will have a right-pane menu with you runbooks listed. This will only grap your runbooks with the following tag:
 - Key: FormGenerator Value: Public
 ### Other page types
-- Full Width page: https://`<NameOfYourWebSite`>.azurewebsites.net/`<NameOfYourRunbook`>**?pageType=1**
-- Centered page: https://`<NameOfYourWebSite`>.azurewebsites.net/`<NameOfYourRunbook`>**?pageType=2**
+- Full Width page: https://`<NameOfYourWebSite>`.azurewebsites.net/`<NameOfYourRunbook>`**?pageType=1**
+- Centered page: https://`<NameOfYourWebSite>`.azurewebsites.net/`<NameOfYourRunbook>`**?pageType=2**
 
 ### Syntax and parameter options
 - Use ```[Alias("My Name of Parameter")]``` in powershell runbook to have friendly names of your parameters
