@@ -50,8 +50,8 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 Default landing page will have a left menu with you runbooks listed. This will only grap your runbooks with the following **tag**:
 - Key: `FormGenerator` Value: `Public`
 ### Other page types
-- Full Width page: https://`<NameOfYourWebSite>`.azurewebsites.net/`<NameOfYourRunbook>`**?pageType=1**
-- Centered page: https://`<NameOfYourWebSite>`.azurewebsites.net/`<NameOfYourRunbook>`**?pageType=2**
+- Full Width page: `https://<NameOfYourWebSite>.azurewebsites.net/<NameOfYourRunbook>`**`?pageType=1`**
+- Centered page: `https://<NameOfYourWebSite>.azurewebsites.net/<NameOfYourRunbook>`**`?pageType=2`**
 
 ### Syntax and parameter options
 - Use ```[Alias("My Name of Parameter")]``` in powershell runbook to have friendly names of your parameters
