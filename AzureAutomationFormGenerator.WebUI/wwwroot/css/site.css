@@ -1,13 +1,35 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification\ 
 for details on configuring this project to bundle and minify static web assets. */
+
+/*Animation*/
+#automation-form {
+    animation-duration: 2s;
+    animation-delay: 0s;
+}
+
+#status-table {
+    animation-duration: 2s;
+    animation-delay: 0s;
+}
+
+.table td, .table th
+{
+    border: none;
+}
+.table thead th {
+    border-bottom: 1px solid #dee2e6;
+}
+
 body {
     padding-top: 50px;
     padding-bottom: 20px;
+    padding-left: 4%;
+    padding-right: 7%;
 }
 
 /* Array string[] elements */
 .array-table {
-width: 115%;
+    width: 100%;
 }
 
 .array-form {
@@ -17,6 +39,12 @@ width: 115%;
 input#submitButton {
     margin-left: -5px;
 }
+
+/*submit button*/
+.btn.btn-primary{
+    white-space: nowrap;
+}
+
 
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
@@ -67,10 +95,10 @@ p#jobstatus {
     height: 45px;*/
     animation: spin 2s cubic-bezier(0.22, 0.61, 0.36, 1) infinite;
 }
-#loader-aa {
+/*#loader-aa {
 
     width: 60%;
-}
+}*/
 
 @keyframes spin {
     0% {

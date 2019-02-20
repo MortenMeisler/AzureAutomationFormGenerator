@@ -1,8 +1,7 @@
-﻿
+﻿@model AzureRunbookFormViewModel
 @{
     ViewData["Title"] = "Result";
 }
 <div class="container col-md-5">
-   <vc:result></vc:result>
-
+    <vc:results automation-account="@Model.AutomationAccount" resource-group="@Model.ResourceGroup" inputs="@Model.ResultsModel.JobInputs"></vc:results>
 </div>

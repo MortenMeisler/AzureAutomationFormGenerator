@@ -1,0 +1,65 @@
+﻿@model ResultsModel
+@{
+    ViewData["Title"] = "Result";
+}
+
+<h3 class="about-heading runbook-name">@AzureAutomationFormGenerator.WebUI.Repos.StaticRepo.RunbookName</h3>
+<hr />
+@if (!string.IsNullOrEmpty(Model.JobOutput))
+{
+<div class="animated bounceInLeft">
+    <table id="status-table" class="table animated bounceInLeft">
+        <thead>
+            <tr>
+                <th scope="col">Output:</th>
+            </tr>
+        </thead>
+    </table>
+   
+        @Html.Raw(Model.JobOutput)
+    </div>
+
+    }
+
+
+    @if (!string.IsNullOrEmpty(Model.JobOutputError))
+    {
+        <div class="animated bounceInLeft">
+            <table id="status-table" class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Output:</th>
+                    </tr>
+                </thead>
+            </table>
+
+            <p>The runbook execution failed, this is the error exception from the script:</p>
+            <br>
+            <p class="text-danger">@Html.Raw(Model.JobOutputError)</p>
+
+            <h3>Input:</h3>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th scope="col">Name</th>
+                        <th scope="col">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.JobInputs)
+                    {
+                        <tr>
+                            <td scope="row">
+                                @Html.DisplayFor(modelItem => item.Key)
+                            </td>
+                            <td scope="row">
+                                @Html.DisplayFor(modelItem => item.Value)
+                            </td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+

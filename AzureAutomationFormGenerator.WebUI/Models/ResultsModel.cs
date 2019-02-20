@@ -7,16 +7,27 @@ using System.Threading.Tasks;
 
 namespace AzureAutomationFormGenerator.WebUI.Models
 {
-    public class JobOutput
+    public class ResultsModel
     {
-       
-        public string Output { get; set; }
+       /// <summary>
+       /// Output from jobstream of type output
+       /// </summary>
+        public string JobOutput { get; set; }
 
-        public  string OutputError { get; set; }
+        /// <summary>
+        /// Output from jobstream of type error
+        /// </summary>
+        public string JobOutputError { get; set; }
 
-        //public JobStatusWrapper JobStatus { get; set; }
-
+        /// <summary>
+        /// Job Status returned by runbook Job
+        /// </summary>
         public string JobStatus { get; set; }
+
+        /// <summary>
+        /// User Input from form submitted by user
+        /// </summary>
+        public Dictionary<string, string> JobInputs { get; set; }
         
     }
 

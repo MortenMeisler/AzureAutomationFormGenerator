@@ -1,0 +1,26 @@
+﻿@model AzureRunbookFormViewModel
+
+@{
+    ViewData["Title"] = "Result";
+}
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-4">
+                <vc:side-menu-table automation-account="@Model.AutomationAccount" resource-group="@Model.ResourceGroup"></vc:side-menu-table>
+            </div>
+                <div class="col-8" style="padding-left: 5%">
+                   <vc:results automation-account="@Model.AutomationAccount" resource-group="@Model.ResourceGroup" inputs="@Model.ResultsModel.JobInputs"></vc:results>
+                </div>
+        </div>
+
+    </div>
+
+
+</body>
+
+
+
+
+
+

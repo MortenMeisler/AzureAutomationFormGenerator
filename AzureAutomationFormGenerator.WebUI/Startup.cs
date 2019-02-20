@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authentication.AzureAD.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using AzureAutomationFormGenerator.WebUI.Security;
+using System;
 
 namespace AzureAutomationFormGenerator.WebUI
 {
@@ -20,6 +21,7 @@ namespace AzureAutomationFormGenerator.WebUI
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            
         }
 
         public IConfiguration Configuration { get; }
@@ -41,7 +43,15 @@ namespace AzureAutomationFormGenerator.WebUI
 
             services.AddCors();
             services.AddSignalR();
-            //services.AddSession();
+            services.AddDistributedMemoryCache();
+
+            services.AddSession(options =>
+            {
+                // Set a short timeout for easy testing.
+                options.IdleTimeout = TimeSpan.FromSeconds(60);
+                options.Cookie.HttpOnly = true;
+            });
+
 
             //Authentication & Authorization
             #region AUTHENTICATION / AUTHORICATION
@@ -115,7 +125,8 @@ namespace AzureAutomationFormGenerator.WebUI
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            //app.UseSession();
+            app.UseSession();
+           
             app.UseAuthentication();
 
             app.UseSignalR(routes =>

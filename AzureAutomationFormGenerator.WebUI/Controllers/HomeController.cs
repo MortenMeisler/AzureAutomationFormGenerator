@@ -2,6 +2,7 @@
 using AzureAutomationFormGenerator.WebUI.Repos;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Azure.Management.Automation.Models;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
@@ -17,6 +18,7 @@ using AzureAutomationFormGenerator.Persistence;
 using AzureAutomationFormGenerator.Persistence.Models;
 using Microsoft.AspNetCore.Authorization;
 using AzureAutomationFormGenerator.WebUI.Security;
+using Microsoft.Rest.Azure;
 
 namespace AzureAutomationFormGenerator.WebUI.Controllers
 {
@@ -33,7 +35,8 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
       
         private readonly ICustomAzureOperations _customAzureOperations;
         public string htmlInput;
-        private Tuple<string, string> _results;
+        private AzureRunbookFormViewModel _azureRunbookFormViewModel;
+        private KeyValuePair<string, string> _automationTag;
 
 
         private readonly IHubContext<SignalHub> _signalHubContext;
@@ -51,6 +54,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
             _customAzureOperations = customAzureOperations;
             _resourceGroup = _configuration["AzureSettings:ResourceGroup"];
             _automationAccount = _configuration["AzureSettings:AutomationAccount"];
+            _automationTag = new KeyValuePair<string, string>(_configuration["AzureSettings:AutomationTag:Key"], _configuration["AzureSettings:AutomationTag:Value"]);
 
             if (!string.IsNullOrEmpty(_configuration["AzureSettings:RunbookName"]))
             {
@@ -90,21 +94,25 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         public IActionResult Index(PageType? pageType, [FromRoute]string runbookName, string resourceGroup, string automationAccount)
         {
             //Set type of page to return. If nothing is passed set Full Width as default
-            pageType = pageType.HasValue ? pageType : PageType.Centered;
+            pageType = pageType.HasValue ? pageType : PageType.Default;
             currentPageType = pageType.GetValueOrDefault();
 
             //save runbook variables
             StaticRepo.RunbookName = runbookName;
             StaticRepo.AutomationAccount = automationAccount;
             StaticRepo.ResourceGroup = resourceGroup;
+
             var azureRunbookFormViewModel = new AzureRunbookFormViewModel
             {
                 ResourceGroup = resourceGroup,
                 AutomationAccount = automationAccount,
                 RunbookName = runbookName
             };
+           
+            _azureRunbookFormViewModel = azureRunbookFormViewModel;
 
-          
+
+
             return View($"Index{pageType.Value}",azureRunbookFormViewModel);
             
         }
@@ -120,9 +128,14 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         {
             StaticRepo.ConnectionId = signalRconnectionId;
 
-            JobOutput jobOutput = new JobOutput();
-
-            jobOutput.JobStatus = JobStatusWrapper.Completed;
+            //Initialize viewmodel
+            AzureRunbookFormViewModel azureRunbookFormViewModel = new AzureRunbookFormViewModel
+            {
+                ResourceGroup = _resourceGroup,
+                AutomationAccount = _automationAccount,
+                RunbookName = RunbookName,
+                ResultsModel = new ResultsModel() { JobInputs = inputs}
+            };
 
             //AUDIT LOG - START
             if (Configuration.GetValue<bool>("EnableAuditLogging") == true)
@@ -130,7 +143,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
                 AuditLog logEntry = new AuditLog
                 {
                     RequestName = StaticRepo.RunbookName,
-                    RequestUser = HttpContext.User.Identity.Name, //TODO: Not working
+                    RequestUser = HttpContext.User.Identity.Name,
                     RequestInput = JsonConvert.SerializeObject(inputs, Formatting.None)
 
                 };
@@ -140,19 +153,34 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
             }
             //AUDIT LOG - END
 
-
             //Start runbook and return output
-            _results = await _customAzureOperations.StartRunbookAndReturnResult(_resourceGroup, _automationAccount, StaticRepo.RunbookName, inputs);
+            //ResultsModel _results = await _customAzureOperations.StartRunbookAndReturnResult(_resourceGroup, _automationAccount, StaticRepo.RunbookName, inputs).ConfigureAwait(false);
 
-            ViewData["JobOutput"] = _results.Item1;
-            if (_results.Item2 == JobStatus.Failed)
-            {
+            //if (_results.JobStatus == JobStatus.Failed)
+            //{
                 
-                ViewData["JobOutputError"] = _results.Item1;
-            }
+            //    ViewData["JobOutputError"] = _results.Item1;
+            //    ViewData["JobInput"] = inputs;
+            //}
+            //else
+            //{
+            //    ViewData["JobOutput"] = _results.Item1;
+            //}
             
+            if (currentPageType == PageType.Default)
+            {
+                //Check session cache for existing runbooks if this is null then retrieve runbooks from azure
+                azureRunbookFormViewModel.Runbooks = string.IsNullOrEmpty(HttpContext.Session.GetString("Runbooks")) ? 
+                    await _customAzureOperations.GetRunbooks(_automationTag, _resourceGroup, _automationAccount).ConfigureAwait(false) 
+                    : JsonConvert.DeserializeObject<IList<RunbookSimple>>(HttpContext.Session.GetString("Runbooks"));
+                
+                return View($"Result{currentPageType}", azureRunbookFormViewModel);
+            }
 
-            return View($"Result{currentPageType}");
+            return View($"Result{currentPageType}", azureRunbookFormViewModel);
+
+
+
         }
 
         

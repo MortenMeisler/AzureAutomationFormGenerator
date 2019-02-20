@@ -2,8 +2,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.Azure.Management.Automation.Models;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Primitives;
+using Microsoft.Rest.Azure;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -34,39 +36,26 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
         public async static Task SendMessage(string message)
         {
             await HubContext.Clients.Client(ConnectionId).SendAsync("initMessage", message);
+          
         }
 
         public async static Task SendMessageJobStartedSuccessfully()
         {
-            await SendMessage(Configuration["AzureSettings:OutputMessageJobStarted"]);
+            await SendMessage(Configuration["Text:OutputMessageJobStarted"]);
         }
 
         //Determines the type of view to be returned - ex. full width (default) or centered
         public enum PageType
         {
 
+            Default,
             FullWidth,
             Centered
         }
         public static PageType currentPageType { get; set; }
 
-        public static string GetEmail(HttpContext context)
-        {
-            string identifier = "X-MS-CLIENT-PRINCIPAL-NAME";
-            StringValues headerValues;
-            context.Request.Headers.TryGetValue(identifier, out headerValues);
-            if (headerValues.Count == 0)
-            {
-                //System.Diagnostics.Debug("No email found!");
-                return "";
-            }
-            else
-            {
-                //System.Diagnostics.Debug(headerValues.FirstOrDefault());
-                return headerValues.FirstOrDefault();
-            }
-        }
-
+        
+        public static IList<RunbookSimple> runbooks { get; set; }
 
     }
 

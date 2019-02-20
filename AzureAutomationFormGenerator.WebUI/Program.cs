@@ -18,15 +18,11 @@ namespace AzureAutomationFormGenerator.WebUI
         {
             CreateWebHostBuilder(args).Build().Run();
 
-
-            
-
-
             var host = CreateWebHostBuilder(args).Build();
 
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddCommandLine(args)
                 .Build();
 

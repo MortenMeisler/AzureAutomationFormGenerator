@@ -1,131 +1,148 @@
-﻿@model Dictionary<string, AzureAutomationFormGenerator.WebUI.Models.RunbookParameterSetting>
+﻿@model Dictionary<string, AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions.IRunbookParameterDefinition>
+
 @{
     ViewData["Title"] = "AzureRunbookFormView";
 }
 
-<link rel="stylesheet" href="~/css/site.css" />
 
 
 <h3 class="about-heading runbook-name">@ViewBag.RunbookName</h3>
-@if (Model != null)
-{
-    <form asp-controller="Home" asp-action="Submit" method="post" onsubmit="myFunction()">
-        @{int inputCount = 0;}
+<hr>
+<table id="status-table" class="table" style="display: none">
+    <thead>
+        <tr>
+            <th scope="col">Status:</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
 
-        @foreach (var item in Model)
-        {
-            //Index value
-            <input type="text" name="inputs[@inputCount].Key" hidden value="@item.Key" />
-            <div class="form-group needs-validation has-danger" novalidate>
+            <td id="spinner"></td>
+            <td><p class="text-success" id="jobstatus"></p></td>
+        </tr>
+    </tbody>
+</table>
+<div id="automation-form">
+    @if (Model != null)
+    {
 
-                @*//Label*@
-                <label class="form-control-label" for="@(item.Key)">
-                    @if (item.Value.DisplayName != null)
-                    {
-                        @item.Value.DisplayName
-                    }
-                    else
-                    { @item.Key}
-                </label>
+        <form asp-controller="Home" class="needs-validation" novalidate asp-action="Submit" method="post">
+            @{int inputCount = 0;}
 
-                @* PARAMETER: VALIDATE SET *@
-                @if (item.Value.ValidateSet != null)
-                {
+            @* class="animated bounceOutUp infinite" *@
+            @foreach (var item in Model)
+            {
+                //Index value
+                <input type="text" name="inputs[@inputCount].Key" hidden value="@item.Key" />
+                <div class="form-group needs-validation has-danger" novalidate>
 
-                    <select class="form-control" id="@(item.Key)" name="inputs[@inputCount].Value" value="@item.Value.DefaultValue">
-                        @foreach (var validateItem in item.Value.ValidateSet)
+                    @*//Label*@
+
+                    <label class="form-control-label" for="@(item.Key)">
+                        @if (item.Value.DisplayName != null)
                         {
-                            if (item.Value.DefaultValue != null && item.Value.DefaultValue.Equals(validateItem))
+                            @item.Value.DisplayName
+                        }
+                        else
+                        { @item.Key}
+                    </label>
+
+                    @* PARAMETER: VALIDATE SET *@
+                    @if (item.Value.SelectionValues != null)
+                    {
+
+                        <select class="form-control" id="@(item.Key)" name="inputs[@inputCount].Value" value="@item.Value.DefaultValue">
+                            @foreach (var validateItem in item.Value.SelectionValues)
                             {
-                                <option selected>@validateItem</option>
+                                if (item.Value.DefaultValue != null && item.Value.DefaultValue.Equals(validateItem, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    <option selected>@validateItem</option>
+                                }
+                                else
+                                {
+                                    @item.Value.DefaultValue
+                                    <option>@validateItem</option>
+                                }
+
                             }
-                            else
-                            {
-                                @item.Value.DefaultValue
-                                <option>@validateItem</option>
+                        </select>
+                    }
+                    else if (item.Value.IsArray == true)
+                    {
+                        @* PARAMETER: STRING[] *@
+
+                        <div id="formarray_@(item.Key)" class="array-form">
+                            <table id="itemTable_@(item.Key)" class="array-table">
+                                <tr>
+                                    <td>
+                                        <input type="text" id="itemInput_@(item.Key)" name="placeholder123" class="form-control form-control-danger" placeholder="" />
+                                    </td>
+                                    <td style="text-align: right; width: 15px">
+                                        <button type="submit" value="@(item.Key)" class="btn btn-primary itemAdd" id="itemAdd_@inputCount">
+                                            <span class="fa fa-plus"></span> Add
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <p class="empty-list" id="@(item.Key)">The list is empty</p>
+                            <p class="non-empty-list"></p>
+                            <input type="text" name="inputs[@inputCount].Value" id="@item.Key" hidden />
+                        </div>
+
+                        <style>
+                            .validation-summary-errors ul {
+                                list-style-type: none;
+                                color: red;
+                                padding: 0;
+                                margin: 0;
                             }
 
-                        }
-                    </select>
-                }
-                else if (item.Value.IsArray == true)
-                {
-                    @* PARAMETER: STRING[] *@
-                    
-                    <div id="formarray_@(item.Key)" class="array-form">
-                        <table id="itemTable_@(item.Key)" class="array-table">
-                            <tr>
-                                <td><input type="text" id="itemInput_@(item.Key)" name="placeholder123" class="form-control form-control-danger" placeholder="" required/></td>
-                                <td><button type="submit" value="@(item.Key)" class="btn btn-primary itemAdd" id="itemAdd_@inputCount"><span class="fa fa-plus"></span> Add</button>      </td>
+                            .empty-list {
+                                color: lightgray;
+                            }
 
-                            </tr>
-                        </table>
-                        <p class="empty-list" id="@(item.Key)">The list is empty</p>
-                        <p class="non-empty-list"></p>
-                        <input type="text" name="inputs[@inputCount].Value" id="@item.Key" hidden />
-                    </div>
-
-
-                    <style>
-                        .validation-summary-errors ul {
-                            list-style-type: none;
-                            color: red;
-                            padding: 0;
-                            margin: 0;
-                        }
-
-                        .empty-list {
-                            color: lightgray;
-                        }
-
-                        .non-empty-list {
-                            list-style-type: none;
-                        }
-
-                    </style>
-
-                }
-                else { 
-
-
-                if (item.Value.IsRequired)
-                {
-                        <input type="text" name="inputs[@inputCount].Value" class="form-control form-control-danger" id="@item.Key" value="@item.Value.DefaultValue" required />
+                            .non-empty-list {
+                                list-style-type: none;
+                            }
+                        </style>
 
                     }
                     else
                     {
-                        <input type="text" name="inputs[@inputCount].Value" class="form-control" id="@item.Key" value="@item.Value.DefaultValue" />
+                        <input type="text" name="inputs[@inputCount].Value" class="form-control form-control-danger" id="@item.Key" value="@item.Value.DefaultValue" />
+
                     }
-                }
-            </div>
-                        inputCount++;
-                        }
-                        <input type="text" id="signalRconnectionId" name="signalRconnectionId" hidden value="" />
 
-                        <table>
-                            <tr>
+                </div>
 
-                                <td><input id="submitButton" class="btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin fa-fw' aria-hidden='true'>" type="submit" value="Submit" /></td>
-                                <td><p class="text-success" id="jobstatus"></p></td>
-                                <td id="spinner"></td>
+                inputCount++;
+            }
+            <input type="text" id="signalRconnectionId" name="signalRconnectionId" hidden value="" />
 
-                            </tr>
-                        </table>
+            <table>
+                <tr>
 
-</form>
-}
-<br />
+                    <td><input id="submitButton" class="btn btn-primary" data-loading-text="<i class='fa fa-spinner fa-spin fa-fw' aria-hidden='true'>" type="submit" value="Submit" /></td>
 
-<p id="errormessage" class="alert-danger"></p>
 
+                </tr>
+            </table>
+
+        </form>
+    }
+    <br />
+
+    <p id="errormessage" class="alert-danger"></p>
+</div>
+
+
+
+<script>
+    var myModel = @{@Html.Raw(Json.Serialize(Model))};
+</script>
 <script src="~/lib/signalr/signalr.js"></script>
 <script src="~/js/signal.js" defer></script>
-<script src="~/js/site.js" defer></script>
+@*<script src="~/js/site.js" defer></script>*@
 
-<script type="text/javascript">
-  
-   
-
-</script>
 

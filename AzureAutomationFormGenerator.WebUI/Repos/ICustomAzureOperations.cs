@@ -1,21 +1,10 @@
-﻿using Microsoft.Azure.Management.Automation;
-using Microsoft.Azure.Management.Automation.Models;
-using Microsoft.Rest.Azure;
+﻿using Microsoft.Azure.Management.Automation.Models;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Rest;
-using Microsoft.Rest.Azure.OData;
-using Newtonsoft.Json;
-using System.Collections;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Threading;
-using Microsoft.Azure.Management.ResourceManager.Fluent.Authentication;
-using Microsoft.Extensions.Configuration;
 using AzureAutomationFormGenerator.WebUI.Models;
+using AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions;
+using Microsoft.Rest.Azure;
 
 namespace AzureAutomationFormGenerator.WebUI.Repos
 {
@@ -45,8 +34,16 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
         /// <param name="parameters"></param>
         /// <param name="timeOutSeconds"></param>
         /// <returns></returns>
-        Task<Tuple<string, string>> StartRunbookAndReturnResult(string resourceGroup, string automationAccount, string runbookName, string jobName, Dictionary<string, string> parameters, int timeOutSeconds = 300);
+        Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroup, string automationAccount, string runbookName, string jobName, Dictionary<string, string> parameters, int timeOutSeconds = 300);
 
+        /// <summary>
+        /// Get a runbook by name
+        /// </summary>
+        /// <param name="resourceGroup"></param>
+        /// <param name="automationAccount"></param>
+        /// <param name="runbookName"></param>
+        /// <returns></returns>
+        Task<Runbook> GetRunbook(string resourceGroup, string automationAccount, string runbookName);
 
         /// <summary>
         /// Start runbook and return output. Job Name defaults to random guid
@@ -57,7 +54,7 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
         /// <param name="parameters"></param>
         /// <param name="timeOutSeconds"></param>
         /// <returns></returns>
-        Task<Tuple<string, string>> StartRunbookAndReturnResult(string resourceGroup, string automationAccount, string runbookName, Dictionary<string, string> parameters, int timeOutSeconds = 300);
+        Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroup, string automationAccount, string runbookName, Dictionary<string, string> parameters, int timeOutSeconds = 300);
         /// <summary>
         /// Return runbook with specified Resource Group, Automation Account and Runbook Name
         /// </summary>
@@ -74,7 +71,10 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
         /// <param name="automationAccount"></param>
         /// <param name="runbookName"></param>
         /// <returns></returns>
-        Task<Dictionary<string, RunbookParameterSetting>> GetRunbookParameterSettings(string resourceGroup, string automationAccount, string runbookName);
+        Task<Dictionary<string, IRunbookParameterDefinition>> GetRunbookParameterDefinitions(string resourceGroup, string automationAccount, string runbookName);
 
+        //Task<IPage<Runbook>> GetRunbooks(KeyValuePair<string, string> runbookTagName, string resourceGroup, string automationAccount);
+
+        Task<IList<RunbookSimple>> GetRunbooks(KeyValuePair<string, string> runbookTagName, string resourceGroup, string automationAccount);
     }
 }

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<AzureAutomationFormGenerator.WebUI.Models.RunbookSimple>
+
+    <table class="table table-hover" style="margin-right: 200px">
+        <thead>
+            <tr>
+                <th scope="col">@ViewBag.RunbooksTitle</th>
+                <th scope="col">
+                    <a class="text-muted" href="https://google.com" data-toggle="tooltip" data-placement="top" title="Help meee!">
+                        <i class="fa fa-question-circle">
+                        </i>
+                    </a>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+           @if (!string.IsNullOrEmpty(ViewBag.NoRunbooks)){<tr><td>@ViewBag.NoRunbooks</td></tr>}
+           @foreach (var item in Model)
+            {
+                <tr>
+                    <td scope="row" colspan="2">
+                        <a asp-controller="Home"
+                           asp-action="Index"
+                           asp-route-runbookName="@item.Name">@Html.DisplayFor(modelItem => item.Name)</a>
+                        <p style="font-size: 12px">
+                            @item.Description
+                        </p>
+                    </td>
+
+                </tr>
+            }
+
+        </tbody>
+        
+    </table>
+
