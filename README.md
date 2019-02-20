@@ -64,7 +64,7 @@ Example:
 - Set your parameter equal something to have a default value. Example: ```$MyVariable = "This is my default value"```
 
 ### Authentication
-By default the website uses Azure AD authentication, in Appsettings you can control if you want no authentication, Azure AD authentication or Azure AD authentication with group authorization.
+By default the website uses Azure AD authentication. In Appsettings you can control if you want no authentication, Azure AD authentication or Azure AD authentication with group authorization.
 
 #### Group Authorization
 To enable group authorization open your manifest file of your Azure AD app and change the `groupMembershipClaims` to `SecurityGroup`. This change can take up to an hour to have effect.
