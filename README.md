@@ -22,7 +22,7 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 1. Create a new azure ad app that has access to your Azure Automation account (or use existing)
 2. Hit Deploy to Azure button
 3. Fill out the fields
-4. Create a new Redirect URI in your azure app. Under Authentication. Paste the following: https://<NameOfYourWebSite>.azurewebsites.net/signin-oidc
+4. Create a new Redirect URI in your azure app. Under Authentication. Paste the following: https://`<NameOfYourWebSite`>.azurewebsites.net/signin-oidc
 
 
 ## Getting Started - Development
