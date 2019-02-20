@@ -50,8 +50,11 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 Default landing page will have a left menu with you runbooks listed. This will only grap your runbooks with the following **tag**:
 - Key: `FormGenerator` Value: `Public`
 ### Other page types
-- Full Width page: https://`<NameOfYourWebSite>`.azurewebsites.net/`<NameOfYourRunbook>`**?pageType=1**
-- Centered page: https://`<NameOfYourWebSite>`.azurewebsites.net/`<NameOfYourRunbook>`**?pageType=2**
+- Full Width page: `https://<NameOfYourWebSite>.azurewebsites.net/<NameOfYourRunbook>`**`?pageType=1`**
+- Centered page: `https://<NameOfYourWebSite>.azurewebsites.net/<NameOfYourRunbook>`**`?pageType=2`**
+
+Example:
+`https://automationformgeneratordemo.azurewebsites.net/Do-Stuff3?pageType=2`
 
 ### Syntax and parameter options
 - Use ```[Alias("My Name of Parameter")]``` in powershell runbook to have friendly names of your parameters
@@ -60,5 +63,10 @@ Default landing page will have a left menu with you runbooks listed. This will o
 - Use ```[Parameter(Mandatory=$true)]``` to make fields required
 - Set your parameter equal something to have a default value. Example: ```$MyVariable = "This is my default value"```
 
+### Authentication
+By default the website uses Azure AD authentication. In Appsettings you can control if you want no authentication, Azure AD authentication or Azure AD authentication with group authorization.
 
+#### Group Authorization
+To enable group authorization open your manifest file of your Azure AD app and change the `groupMembershipClaims` to `SecurityGroup`. This change can take up to an hour to have effect.
 
+In Appsettings change the Object Id's of the AD Security Groups that gives access to the site.
