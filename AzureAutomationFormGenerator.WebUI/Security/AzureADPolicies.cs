@@ -21,12 +21,16 @@ namespace AzureAutomationFormGenerator.WebUI.Security
                     var groups = section.Get<string[]>();
                     builder.RequireClaim("groups", groups);
 
-            }
-            else
-            {
-                builder.RequireAuthenticatedUser();
-            }
-                
+                }
+                else if (StaticRepo.Configuration.GetValue<bool>("EnableAuthentication") == true)
+                {
+                    builder.RequireAuthenticatedUser();
+                }else
+                {
+                    builder
+                    .RequireAssertion(_ => true)
+                    .Build();
+                }             
             }
     }
 }

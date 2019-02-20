@@ -1,105 +1,116 @@
 {
     "$schema": "http://schema.management.azure.com/schemas/2014-04-01-preview/deploymentTemplate.json",
     "contentVersion": "1.0.0.0",
-    "parameters": {
-      "siteName": {
-        "type": "string"
-      },
-      "siteLocation": {
-        "type": "string"
-      },
-  
-      "repoUrl": {
-        "type": "string"
-      },
-      "branch": {
-        "type": "string",
-        "defaultValue": "master"
-      },
-      "ApplicationId": {
-        "type": "string",
-        "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68",
-        "metadata": {
-          "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Application ID"
-        }
-      },
-      "SubscriptionIdForAutomationAccount": {
-        "type": "string",
-        "defaultValue": "",
-        "metadata": {
-          "description": "Change",
-          "name": "Subscription Automation Account"
-        }
-      },
-      "ApplicationSecret": {
-        "type": "securestring",
-        "defaultValue": "mysecretkey",
-        "metadata": {
-          "description": "Secret password from your vault thingy"
-        }
-      },
-      "AutomationAccount": {
-        "type": "string",
-        "defaultValue": "MyAutomationAccountName"
-      },
-      "AutomationResourceGroup": {
-        "type": "string",
-        "defaultValue": "AutomationAccountResourceGroup",
-        "metadata": {
-          "description": "Resource Group Name where Automation Account is located"
-        }
-      },
-      "TenantId": {
-        "type": "string",
-        "defaultValue": "b6909603-e5a8-497d-8fdb-7f10240fdc14",
-        "metadata": {
-          "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Tenant ID"
-        }
-      },
-      "CrossOriginAddress": {
-        "type": "string",
-        "defaultValue": "https://mysite.company.net",
-        "metadata": {
-          "description": "Set Cross Origin if you want to run the website from another site"
-        }
-      },
-      "EnableAuditLogging": {
-        "type": "string",
-        "allowedValues": [
-            "Yes",
-            "No"
-        ],
-        "defaultValue": "No",
-        "metadata": {
-          "description": "Enable SQL Logging everytime a user submits a runbook"
-        }
-      },
-      "EnableAuthorization": {
-        "type": "string",
-        "allowedValues": [
-            "Yes",
-            "No"
-        ],
-        "defaultValue": "No",
-        "metadata": {
-          "description": "Enable Authorization via Azure AD Security Groups"
-        }
-      },
-      "AzureAdDomain":{
-        "type": "string",
-        "metadata": {
-          "description": "Azure AD Domain for authorization"
-        },
-        "defaultValue": "https://MyDomain.onmicrosoft.com/"
-      },
-      "AuthorizedAdGroups":{
-        "type": "string",
-        "metadata": {
-          "description": "Azure AD Security Group(s) for authorization"
-        },
-        "defaultValue": "568bd325-283f-4909-9fcc-a493d19f98e8"
+  "parameters": {
+    "siteName": {
+      "type": "string"
+    },
+    "siteLocation": {
+      "type": "string"
+    },
+
+    "repoUrl": {
+      "type": "string"
+    },
+    "branch": {
+      "type": "string",
+      "defaultValue": "master"
+    },
+    "ApplicationId": {
+      "type": "string",
+      "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68",
+      "metadata": {
+        "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Application ID"
       }
     },
+    "SubscriptionIdForAutomationAccount": {
+      "type": "string",
+      "defaultValue": "",
+      "metadata": {
+        "description": "Change",
+        "name": "Subscription Automation Account"
+      }
+    },
+    "ApplicationSecret": {
+      "type": "securestring",
+      "defaultValue": "mysecretkey",
+      "metadata": {
+        "description": "Secret password from your vault thingy"
+      }
+    },
+    "AutomationAccount": {
+      "type": "string",
+      "defaultValue": "MyAutomationAccountName"
+    },
+    "AutomationResourceGroup": {
+      "type": "string",
+      "defaultValue": "AutomationAccountResourceGroup",
+      "metadata": {
+        "description": "Resource Group Name where Automation Account is located"
+      }
+    },
+    "TenantId": {
+      "type": "string",
+      "defaultValue": "b6909603-e5a8-497d-8fdb-7f10240fdc14",
+      "metadata": {
+        "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Tenant ID"
+      }
+    },
+    "CrossOriginAddress": {
+      "type": "string",
+      "defaultValue": "https://mysite.company.net",
+      "metadata": {
+        "description": "Set Cross Origin if you want to run the website from another site"
+      }
+    },
+    "EnableAuditLogging": {
+      "type": "string",
+      "allowedValues": [
+        "Yes",
+        "No"
+      ],
+      "defaultValue": "No",
+      "metadata": {
+        "description": "Enable SQL Logging everytime a user submits a runbook"
+      }
+    },
+    "EnableAuthentication": {
+      "type": "string",
+      "allowedValues": [
+        "Yes",
+        "No"
+      ],
+      "defaultValue": "Yes",
+      "metadata": {
+        "description": "Enable Authentication via Azure AD"
+      }
+    },
+    "EnableAuthorization": {
+      "type": "string",
+      "allowedValues": [
+        "Yes",
+        "No"
+      ],
+      "defaultValue": "No",
+      "metadata": {
+        "description": "Enable Authorization via Azure AD Security Groups"
+      }
+    },
+    "AzureAdDomain": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure AD Domain for authorization"
+      },
+      "defaultValue": "https://MyDomain.onmicrosoft.com/"
+    },
+    "AuthorizedAdGroups": {
+      "type": "string",
+      "metadata": {
+        "description": "Azure AD Security Group(s) for authorization"
+      },
+      "defaultValue": "568bd325-283f-4909-9fcc-a493d19f98e8"
+    }
+  },
     "variables": {
       "hostingPlanName": "[concat(parameters('siteName'), '-plan')]",
       "project-web": "AzureAutomationFormGenerator.WebUI\\AzureAutomationFormGenerator.WebUI.csproj",
@@ -240,6 +251,7 @@
               "webSocketsEnabled": true,
               "EnableAuditLogging": "[if(equals(parameters('EnableAuditLogging'),'Yes'),'true','false')]",
               "EnableAuthorization": "[if(equals(parameters('EnableAuthorization'),'Yes'),'true','false')]",
+              "EnableAuthentication": "[if(equals(parameters('EnableAuthentication'),'Yes'),'true','false')]",
               "AzureAd:Domain": "[parameters('AzureAdDomain')]",
               "AzureAd:AuthorizedAdGroups": "[parameters('AuthorizedAdGroups')]",
               "AzureAd:TenantId": "[parameters('TenantId')]",

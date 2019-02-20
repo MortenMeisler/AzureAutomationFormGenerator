@@ -22,7 +22,7 @@ using Microsoft.Rest.Azure;
 
 namespace AzureAutomationFormGenerator.WebUI.Controllers
 {
-    //[Authorize(Policy = "ADAuthorizationRequired")]
+    
     [AzureADAuthorize]
     [ResponseCache(Duration = 1, NoStore = true, Location = ResponseCacheLocation.None)]
     public class HomeController : Controller

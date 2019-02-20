@@ -64,13 +64,16 @@ namespace AzureAutomationFormGenerator.WebUI
                     options.AddPolicy(
                         AzureADPolicies.Name, AzureADPolicies.Build);
                 });
-            
-            
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
-              .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+             .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+
             #endregion
+
+
+
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            
 
             //Enable Audit logging DbContext
             if (Configuration.GetValue<bool>("EnableAuditLogging") == true)
