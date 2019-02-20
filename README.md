@@ -53,6 +53,9 @@ Default landing page will have a left menu with you runbooks listed. This will o
 - Full Width page: `https://<NameOfYourWebSite>.azurewebsites.net/<NameOfYourRunbook>`**`?pageType=1`**
 - Centered page: `https://<NameOfYourWebSite>.azurewebsites.net/<NameOfYourRunbook>`**`?pageType=2`**
 
+Example:
+`https://automationformgeneratordemo.azurewebsites.net/Do-Stuff3?pageType=2`
+
 ### Syntax and parameter options
 - Use ```[Alias("My Name of Parameter")]``` in powershell runbook to have friendly names of your parameters
 - Use ```[ValidateSet("Value1", "Value2", "Value3")]``` for selection dropdown list
