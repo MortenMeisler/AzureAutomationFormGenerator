@@ -15,6 +15,9 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 2. Fetch the runbook from the url
 ![Fetch the runbook from the url](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto01.PNG?raw=true)
 
+#### Default landing page ####
+![Fetch the runbook from the url](https://raw.githubusercontent.com/MortenMeisler/AzureAutomationFormGenerator/master/doc/howto02.png)
+
 ## Requirements
 
  - Create a Service Principal that has permission to your Azure Automation Account. [Read more here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
