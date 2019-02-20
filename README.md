@@ -20,7 +20,7 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 
 ## Requirements
 
- - create an Azure AD application and service principal that can access your Azure Automation Account. [Read more here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
+ - Create an Azure AD application and service principal that can access your Azure Automation Account. [Read more here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
  
 ## Getting Started
 
