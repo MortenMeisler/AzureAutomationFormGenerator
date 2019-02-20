@@ -7,7 +7,7 @@
 <hr />
 @if (!string.IsNullOrEmpty(Model.JobOutput))
 {
-<div class="animated bounceInLeft">
+<div id="result-page" class="animated bounceInLeft">
     <table id="status-table" class="table animated bounceInLeft">
         <thead>
             <tr>
@@ -15,16 +15,16 @@
             </tr>
         </thead>
     </table>
-   
-        @Html.Raw(Model.JobOutput)
-    </div>
+
+    @Html.Raw(Model.JobOutput)
+</div>
 
     }
 
 
     @if (!string.IsNullOrEmpty(Model.JobOutputError))
     {
-        <div class="animated bounceInLeft">
+        <div id="result-page" class="animated bounceInLeft">
             <table id="status-table" class="table">
                 <thead>
                     <tr>
@@ -61,5 +61,7 @@
                 </tbody>
             </table>
         </div>
+   
     }
+    
 
