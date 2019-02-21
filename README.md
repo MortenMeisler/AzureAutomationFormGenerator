@@ -25,7 +25,8 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 ## Getting Started
 
 ### Publish to Azure
-1. Create a new Azure AD App that has access to your Azure Automation account (or use existing)
+1. Create a new Azure AD App that has access to your Azure Automation account (or use existing) used for authentication.
+2. Create or use existing Automation Azure Automation Run As account [Read more here](https://docs.microsoft.com/en-us/azure/automation/manage-runas-account)
 2. Hit Deploy to Azure button
 3. Fill out the fields and deploy.
 4. Once deployed, create a new Redirect URI in your azure app under Authentication. Paste the following: https://`<NameOfYourWebSite>`.azurewebsites.net/signin-oidc
