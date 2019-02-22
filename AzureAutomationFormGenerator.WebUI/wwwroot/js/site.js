@@ -27,9 +27,9 @@ function loadSpinner() {
     $("#spinner").html('<img id="loader-aa" src="~/../images/azureautomationIcon.svg" class="loader">');
     
     $("#automation-form").addClass("animated bounceOutRight");
-    setTimeout(function () {
-        $("#automation-form").css("display", "none");
-    }, 1000);
+    //setTimeout(function () {
+    //    $("#automation-form").css("display", "none");
+    //}, 2000);
 
     $("#status-table").addClass("animated bounceInLeft");
 
