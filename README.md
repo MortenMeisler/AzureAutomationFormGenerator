@@ -25,7 +25,8 @@ Microsoft documentation: [https://docs.microsoft.com/en-us/azure/app-service/app
 ## Getting Started
 
 ### Publish to Azure
-1. Create a new Azure AD App that has access to your Azure Automation account (or use existing)
+1. Create a new Azure AD App that has access to your Azure Automation account (or use existing) used for authentication.
+2. Create or use existing Automation Azure Automation Run As account [Read more here](https://docs.microsoft.com/en-us/azure/automation/manage-runas-account)
 2. Hit Deploy to Azure button
 3. Fill out the fields and deploy.
 4. Once deployed, create a new Redirect URI in your azure app under Authentication. Paste the following: https://`<NameOfYourWebSite>`.azurewebsites.net/signin-oidc
@@ -67,6 +68,6 @@ Example:
 By default the website uses Azure AD authentication. In Appsettings you can control if you want no authentication, Azure AD authentication or Azure AD authentication with group authorization.
 
 #### Group Authorization
-To enable group authorization open your manifest file of your Azure AD app and change the `groupMembershipClaims` to `SecurityGroup`. This change can take up to an hour to have effect.
+To enable group authorization open your manifest file of your Azure AD app and change the `groupMembershipClaims` to `SecurityGroup`. This change can take up to an hour to take effect.
 
 In Appsettings change the Object Id's of the AD Security Groups that gives access to the site.
