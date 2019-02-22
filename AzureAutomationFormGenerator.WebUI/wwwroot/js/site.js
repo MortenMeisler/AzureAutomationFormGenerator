@@ -27,15 +27,16 @@ function loadSpinner() {
     $("#spinner").html('<img id="loader-aa" src="~/../images/azureautomationIcon.svg" class="loader">');
     
     $("#automation-form").addClass("animated bounceOutRight");
-    //setTimeout(function () {
-    //    $("#automation-form").css("display", "none");
-    //}, 2000);
+    setTimeout(function () {
+        $("#automation-form").css("display", "none");
+    }, 800);
 
-    $("#status-table").addClass("animated bounceInLeft");
+    
 
     setTimeout(function () {
+        $("#status-table").addClass("animated bounceInLeft");
         $("#status-table").show();
-    }, 600);
+    }, 1000);
    
 }
 
