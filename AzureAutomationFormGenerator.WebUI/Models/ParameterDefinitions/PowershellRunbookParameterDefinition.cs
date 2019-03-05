@@ -35,7 +35,8 @@ namespace AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions
             {
                 SelectionValues = new List<string>() { "" }; //Initialize with first value empty
                 SelectionValues.AddRange((matchesValidateSet[0].Value.Replace("\"", "").Replace("'", "")).Split(",").ToList<string>());
-                DefaultValue = System.Web.HttpUtility.HtmlDecode(DefaultValue).Replace("\"", "");
+                var decodedDefaultvalue = System.Web.HttpUtility.HtmlDecode(DefaultValue);
+                DefaultValue = decodedDefaultvalue == null ? null : decodedDefaultvalue.Replace("\"", "");
             }
         }
         /// <summary>

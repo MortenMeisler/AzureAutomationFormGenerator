@@ -147,7 +147,7 @@
                 else
                 {
                     //Subsequent parameter configs - get everything between '<nameofpreviousvariable>' and '<nameofcurrentvariable>'
-                    pattern = $@"(?s)(?<={runbookParameters.ToList()[i - 1].Key})(.*?)(?=\${runbookParameter.Key})";
+                    pattern = $@"(?s)(?<=\${runbookParameters.ToList()[i - 1].Key})(.*?)(?=\${runbookParameter.Key})";
                 }
                 Regex regex = new Regex(pattern,RegexOptions.IgnoreCase);
                 MatchCollection paramSettingsMatches = regex.Matches(runbookContent);
