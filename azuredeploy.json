@@ -56,13 +56,6 @@
       "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Tenant ID"
     }
   },
-  "CrossOriginAddress": {
-    "type": "string",
-    "defaultValue": "https://mysite.company.net",
-    "metadata": {
-      "description": "Set Cross Origin if you want to run the website from another site"
-    }
-  },
   "EnableAuditLogging": {
     "type": "string",
     "allowedValues": [
