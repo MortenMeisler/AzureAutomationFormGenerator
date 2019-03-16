@@ -85,6 +85,13 @@
       "description": "Enable Authentication via Azure AD"
     }
   },
+  "ApplicationIdAuthentication": {
+    "type": "string",
+    "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68",
+    "metadata": {
+      "description": "Application Id for Authentication Azure AD App"
+    }
+  },
   "EnableAuthorization": {
     "type": "string",
     "allowedValues": [
