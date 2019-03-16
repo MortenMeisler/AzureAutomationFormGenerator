@@ -90,7 +90,8 @@
       "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68",
       "metadata": {
         "description": "Application Id for your authentication app"
-      },
+      }
+    },
     "EnableAuthorization": {
       "type": "string",
       "allowedValues": [
