@@ -262,7 +262,7 @@
             "AzureAd:Domain": "[parameters('AzureAdDomain')]",
             "AzureAd:AuthorizedAdGroups": "[parameters('AuthorizedAdGroups')]",
             "AzureAd:TenantId": "[parameters('TenantId')]",
-            "AzureAd:ClientId": "[parameters('ApplicationId')]",
+            "AzureAd:ClientId": "[parameters('ApplicationIdAuthentication')]",
             "AzureSettings:ClientId": "[parameters('ApplicationId')]",
             "ClientSecret": "[parameters('ApplicationSecret')]",
             "CrossOriginAddress": "[parameters('CrossOriginAddress')]",
