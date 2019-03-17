@@ -13,6 +13,7 @@
     using System;
     using System.Collections.Generic;
     using System.Diagnostics;
+    using System.IO;
     using System.Linq;
     using System.Net.Http;
     using System.Text;
@@ -131,7 +132,17 @@
             Dictionary<string, IRunbookParameterDefinition> PSParameterDefinitions = new Dictionary<string, IRunbookParameterDefinition>();
 
             //Get runbook powershell content
-            string runbookContent = (await GetContentWithHttpMessagesAsync(resourceGroup, automationAccount, runbookName)).Body;
+            //string runbookContent = (await GetContentWithHttpMessagesAsync(resourceGroup, automationAccount, runbookName)).Body;
+            var stream = await Client.Runbook.GetContentWithHttpMessagesAsync(resourceGroup, automationAccount, runbookName);
+            string runbookContent = "";
+            using (StreamReader sr = new StreamReader(stream.Body))
+            {
+                //This allows you to do one Read operation.
+                runbookContent = sr.ReadToEnd();
+            }
+
+
+            
 
             int i = 0;
             foreach (KeyValuePair<string, RunbookParameter> runbookParameter in runbookParameters)
