@@ -36,7 +36,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         private readonly ICustomAzureOperations _customAzureOperations;
         public string htmlInput;
         private AzureRunbookFormViewModel _azureRunbookFormViewModel;
-        private KeyValuePair<string, string> _automationTag;
+        
 
 
         private readonly IHubContext<SignalHub> _signalHubContext;
@@ -54,7 +54,6 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
             _customAzureOperations = customAzureOperations;
             _resourceGroup = _configuration["AzureSettings:ResourceGroup"];
             _automationAccount = _configuration["AzureSettings:AutomationAccount"];
-            _automationTag = new KeyValuePair<string, string>(_configuration["AzureSettings:AutomationTag:Key"], _configuration["AzureSettings:AutomationTag:Value"]);
 
             if (!string.IsNullOrEmpty(_configuration["AzureSettings:RunbookName"]))
             {
@@ -171,7 +170,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
             {
                 //Check session cache for existing runbooks if this is null then retrieve runbooks from azure
                 azureRunbookFormViewModel.Runbooks = string.IsNullOrEmpty(HttpContext.Session.GetString("Runbooks")) ? 
-                    await _customAzureOperations.GetRunbooks(_automationTag, _resourceGroup, _automationAccount).ConfigureAwait(false) 
+                    await _customAzureOperations.GetRunbooks(_resourceGroup, _automationAccount).ConfigureAwait(false) 
                     : JsonConvert.DeserializeObject<IList<RunbookSimple>>(HttpContext.Session.GetString("Runbooks"));
                 
                 return View($"Result{currentPageType}", azureRunbookFormViewModel);

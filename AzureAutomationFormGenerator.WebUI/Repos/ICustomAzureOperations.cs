@@ -75,6 +75,6 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
 
         //Task<IPage<Runbook>> GetRunbooks(KeyValuePair<string, string> runbookTagName, string resourceGroup, string automationAccount);
 
-        Task<IList<RunbookSimple>> GetRunbooks(KeyValuePair<string, string> runbookTagName, string resourceGroup, string automationAccount);
+        Task<IList<RunbookSimple>> GetRunbooks(string resourceGroup, string automationAccount);
     }
 }

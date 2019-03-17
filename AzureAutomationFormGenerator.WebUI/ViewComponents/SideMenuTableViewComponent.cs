@@ -27,8 +27,7 @@ namespace AzureAutomationFormGenerator.WebUI.ViewComponents
             if (runbooksNotLoaded)
             {
                 //Load runbooks from Azure
-                var automationTag = new KeyValuePair<string, string>(_configuration["AzureSettings:AutomationTag:Key"], _configuration["AzureSettings:AutomationTag:Value"]);
-                runbooks = await _customAzureOperations.GetRunbooks(automationTag, resourceGroup, automationAccount).ConfigureAwait(false);
+                runbooks = await _customAzureOperations.GetRunbooks(resourceGroup, automationAccount).ConfigureAwait(false);
 
                 //Getting descriptions foreach runbook (these are not retrieved from ListRunbooks method) //TODO: only get runbook if LastModified is changed to save some miliseconds)
                 await Task.Run(() => Parallel.ForEach(runbooks, runbook =>

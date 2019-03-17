@@ -106,7 +106,9 @@ namespace AzureAutomationFormGenerator.WebUI
         {
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Home/Error");
+              
+                //app.UseDeveloperExceptionPage();
             }
             else
             {

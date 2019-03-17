@@ -47,6 +47,12 @@
         private readonly IConfiguration _configuration;
 
         /// <summary>
+        /// Runbook Tag
+        /// </summary>
+        private KeyValuePair<string, string> _automationTag;
+        private string _lotto;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CustomAzureOperations"/> class.
         /// </summary>
         /// <param name="configuration">The configuration<see cref="IConfiguration"/></param>
@@ -56,6 +62,8 @@
             _resourceGroup = _configuration["AzureSettings:ResourceGroup"];
             _automationAccount = _configuration["AzureSettings:AutomationAccount"];
 
+            var _lotto = _configuration["AzureSettings:lotto"];
+            _automationTag = new KeyValuePair<string, string>(_configuration["AzureSettings:AutomationTag:Key"], _configuration["AzureSettings:AutomationTag:Value"]);
             Client = new AutomationClient(GetCredentials()) { SubscriptionId = _configuration["AzureSettings:SubscriptionId"] };
         }
 
@@ -83,10 +91,10 @@
                     .WithDefaultSubscription(_configuration["AzureSettings:SubscriptionId"]);
         }
 
-        public async Task<IList<RunbookSimple>> GetRunbooks(KeyValuePair<string,string> runbookTagName, string resourceGroup, string automationAccount)
+        public async Task<IList<RunbookSimple>> GetRunbooks(string resourceGroup, string automationAccount)
         {
 
-            var runbooks = (await Client.Runbook.ListByAutomationAccountAsync(resourceGroup, automationAccount)).Where(x => x.Tags.Contains(runbookTagName)).Select(r => new RunbookSimple
+            var runbooks = (await Client.Runbook.ListByAutomationAccountAsync(resourceGroup, automationAccount)).Where(x => x.Tags.Contains(_automationTag)).Select(r => new RunbookSimple
             {
                 Name = r.Name,
             }).ToList<RunbookSimple>() ;
@@ -127,6 +135,10 @@
 
         public async Task<Dictionary<string, IRunbookParameterDefinition>> GetPowershellRunbookParameterDefinitions(string resourceGroup, string automationAccount, string runbookName, IOrderedEnumerable<KeyValuePair<string, RunbookParameter>> runbookParameters)
         {
+            if (_lotto.Contains("hej"))
+            {
+                //do stuff
+            }
 
             //Create empty dictionary
             Dictionary<string, IRunbookParameterDefinition> PSParameterDefinitions = new Dictionary<string, IRunbookParameterDefinition>();
@@ -620,7 +632,18 @@
         /// <returns></returns>
         public async Task<Runbook> GetRunbook(string resourceGroup, string automationAccount, string runbookName)
         {
-            return await Client.Runbook.GetAsync(resourceGroup, automationAccount, runbookName);
+            var runbook = await Client.Runbook.GetAsync(resourceGroup, automationAccount, runbookName);
+
+            //Return runbook only if it adheres to the default tag
+            if (runbook.Tags.Contains(_automationTag))
+            {
+                return runbook;
+            }
+            else
+            {
+                return null;
+            }
+           
         }
 
         /// <summary>
