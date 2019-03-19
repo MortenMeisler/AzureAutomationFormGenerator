@@ -26,11 +26,12 @@ Generate input forms from Azure Automation Runbooks and run them.
 ## Getting Started
 
 ### Publish to Azure
-1. Create a new Azure AD App that has access to your Azure Automation account (or use existing) used for authentication.
-2. Create or use existing Automation Azure Automation Run As account [Read more here](https://docs.microsoft.com/en-us/azure/automation/manage-runas-account)
+1. Create or use existing Automation Azure Automation Run As account [Read more here](https://docs.microsoft.com/en-us/azure/automation/manage-runas-account). 
+2. Go to Azure Active Directory -> App Registrations -> Find your Automation App and create a new client secret. Note down the Application Id and Client Secret
+3. (Optional) Create an Azure AD App for authentication on the website (or use previous app)
 2. Hit Deploy to Azure button
 3. Fill out the fields and deploy.
-4. Once deployed, create a new Redirect URI in your azure app under Authentication. Paste the following: https://`<NameOfYourWebSite>`.azurewebsites.net/signin-oidc
+4. Once deployed, create a new Redirect URI in your azure app (from step 3) under Authentication. Paste the following: https://`<NameOfYourWebSite>`.azurewebsites.net/signin-oidc
 
 
 ### Development
