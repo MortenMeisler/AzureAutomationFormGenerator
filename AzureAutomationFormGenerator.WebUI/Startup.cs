@@ -31,8 +31,9 @@ namespace AzureAutomationFormGenerator.WebUI
         {
             
             services.AddSingleton<IConfiguration>(Configuration);
-
-            services.AddTransient<ICustomAzureOperations>(cap => new CustomAzureOperations(Configuration));
+            services.AddScoped<IMessageSender, MessageSender>();
+            services.AddScoped<ICustomAzureOperations, CustomAzureOperations>();
+            //services.AddTransient<ICustomAzureOperations>(cap => new CustomAzureOperations(Configuration));
 
             services.Configure<CookiePolicyOptions>(options =>
             {
@@ -136,7 +137,8 @@ namespace AzureAutomationFormGenerator.WebUI
 
             app.UseSignalR(routes =>
             {
-                routes.MapHub<SignalHub>("/signalHub");
+                //routes.MapHub<SignalHub>("/signalHub");
+                routes.MapHub<MessageSender>("/signalHub");
             });
 
             app.UseMvc(routes =>

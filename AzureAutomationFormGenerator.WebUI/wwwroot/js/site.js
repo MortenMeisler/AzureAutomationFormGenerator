@@ -6,16 +6,14 @@
 // ***********************************************
 // BEGIN - General logic
 // ***********************************************
-if (myModel !== null){
+if (typeof myModel !== 'undefined'){
     for (var propertyName in myModel) {
-
         if (myModel[propertyName].isRequired === true) {
             $("#" + propertyName).attr('required', true);
             $("#itemInput_" + propertyName).attr('required', true);
         }
     }
 }
-
 
 // ***********************************************
 // END - General logic

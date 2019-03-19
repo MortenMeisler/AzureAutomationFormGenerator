@@ -13,39 +13,50 @@ const connection = new signalR.HubConnectionBuilder()
     .build();
 
 //Start
-connection.start().catch(err => console.error(err.toString())).then(function(){
-    connection.invoke('getConnectionId')
-        .then(function (connectionId) {
-            // Send the connectionId to controller
-            console.log("connectionID: " + connectionId);
-            $("#signalRconnectionId").attr("value", connectionId);
-        });
-});
-
+//connection.start().catch(err => console.error(err.toString())).then(function(){
+//    connection.invoke('getConnectionId')
+//        .then(function (connectionId) {
+//            // Send the connectionId to controller
+//            console.log("connectionID: " + connectionId);
+//            $("#signalRconnectionId").attr("value", connectionId);
+//        });
+//});
+connection.start().catch(err => console.error(err.toString()));
 //Reconnect on disconnect
 $(connection).bind("onDisconnect", function (e, data) {
-    connection.start().catch(err => console.error(err.toString())).then(function () {
-        connection.invoke('getConnectionId')
-            .then(function (connectionId) {
-                // Send the connectionId to controller
-                console.log("Reconnecting... connectionID: " + connectionId);
-                $("#signalRconnectionId").attr("value", connectionId);
-            });
-    });
+    connection.start().catch(err => console.error(err.toString()));
 });
 
+//$(connection).bind("onDisconnect", function (e, data) {
+//    connection.start().catch(err => console.error(err.toString())).then(function () {
+//        connection.invoke('getConnectionId')
+//            .then(function (connectionId) {
+//                // Send the connectionId to controller
+//                console.log("Reconnecting... connectionID: " + connectionId);
+//                $("#signalRconnectionId").attr("value", connectionId);
+//            });
+//    });
+//});
 
 
 
 
-//Signal method invoked from server
+
+//Send Message - Signal method invoked from server
 connection.on("initMessage", (message) => {
 
     console.log("We got signal! and the message is: " + message);
 
     //Update paragraph tag with the message sent
-    $("#jobstatus").html(message);
+    $("#jobmessage").html(message);
 
+});
+
+//Send Status - Signal method invoked from server
+connection.on("initStatus", (status) => {
+
+    //Update paragraph tag with status
+    $("#jobstatus").html(status);
 });
 
 

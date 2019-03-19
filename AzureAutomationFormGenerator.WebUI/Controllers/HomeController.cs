@@ -30,26 +30,21 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         private readonly IConfiguration _configuration;
         private readonly AutomationPortalDbContext _automationPortalDbContext;
 
-        private string _resourceGroup;
-        private string _automationAccount;
+        private readonly string _resourceGroup;
+        private readonly string _automationAccount;
       
         private readonly ICustomAzureOperations _customAzureOperations;
         public string htmlInput;
-        private AzureRunbookFormViewModel _azureRunbookFormViewModel;
         
-
-
-        private readonly IHubContext<SignalHub> _signalHubContext;
+        private readonly IMessageSender _messageSender;
 
         //TODO: Feedback when submitted immediately - spinning wheel or something or go to next page
 
-        public HomeController(IConfiguration configuration, ICustomAzureOperations customAzureOperations, IHubContext<SignalHub> signalHubContext, AutomationPortalDbContext automationPortalDbContext)
+        public HomeController(IConfiguration configuration, ICustomAzureOperations customAzureOperations, AutomationPortalDbContext automationPortalDbContext, IMessageSender messageSender)
         {
-
+            _messageSender = messageSender;
             _automationPortalDbContext = automationPortalDbContext;
-            _signalHubContext = signalHubContext;
             StaticRepo.Configuration = configuration;
-            StaticRepo.HubContext = signalHubContext;
             _configuration = configuration;
             _customAzureOperations = customAzureOperations;
             _resourceGroup = _configuration["AzureSettings:ResourceGroup"];
@@ -94,7 +89,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         {
             //Set type of page to return. If nothing is passed set Full Width as default
             pageType = pageType.HasValue ? pageType : PageType.Default;
-            currentPageType = pageType.GetValueOrDefault();
+            CurrentPageType = pageType.GetValueOrDefault();
 
             //save runbook variables
             StaticRepo.RunbookName = runbookName;
@@ -107,25 +102,19 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
                 AutomationAccount = automationAccount,
                 RunbookName = runbookName
             };
-           
-            _azureRunbookFormViewModel = azureRunbookFormViewModel;
-
-
 
             return View($"Index{pageType.Value}",azureRunbookFormViewModel);
             
         }
-
-       
 
         //POST Jobs/Approve
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Submit(string signalRconnectionId, Dictionary<string, string> inputs)
+        public async Task<IActionResult> Submit(Dictionary<string, string> inputs)
         {
-            StaticRepo.ConnectionId = signalRconnectionId;
+            await _messageSender.SendMessage(_configuration["Text:OutputMessageJobStarted"]);
 
             //Initialize viewmodel
             AzureRunbookFormViewModel azureRunbookFormViewModel = new AzureRunbookFormViewModel
@@ -151,64 +140,20 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
                 await _automationPortalDbContext.SaveChangesAsync();
             }
             //AUDIT LOG - END
-
-            //Start runbook and return output
-            //ResultsModel _results = await _customAzureOperations.StartRunbookAndReturnResult(_resourceGroup, _automationAccount, StaticRepo.RunbookName, inputs).ConfigureAwait(false);
-
-            //if (_results.JobStatus == JobStatus.Failed)
-            //{
-                
-            //    ViewData["JobOutputError"] = _results.Item1;
-            //    ViewData["JobInput"] = inputs;
-            //}
-            //else
-            //{
-            //    ViewData["JobOutput"] = _results.Item1;
-            //}
             
-            if (currentPageType == PageType.Default)
+            if (CurrentPageType == PageType.Default)
             {
                 //Check session cache for existing runbooks if this is null then retrieve runbooks from azure
                 azureRunbookFormViewModel.Runbooks = string.IsNullOrEmpty(HttpContext.Session.GetString("Runbooks")) ? 
                     await _customAzureOperations.GetRunbooks(_resourceGroup, _automationAccount).ConfigureAwait(false) 
                     : JsonConvert.DeserializeObject<IList<RunbookSimple>>(HttpContext.Session.GetString("Runbooks"));
                 
-                return View($"Result{currentPageType}", azureRunbookFormViewModel);
+                return View($"Result{CurrentPageType}", azureRunbookFormViewModel);
             }
 
-            return View($"Result{currentPageType}", azureRunbookFormViewModel);
-
-
+            return View($"Result{CurrentPageType}", azureRunbookFormViewModel);
 
         }
-
-        
-
-
-
-        private WebResponse RunWebHook(string webHookUri, string input)
-        {
-            HttpWebRequest http = (HttpWebRequest)WebRequest.Create(new Uri(webHookUri));
-            http.Accept = "application/json";
-            http.ContentType = "application/json";
-            http.Method = "POST";
-
-            string parsedContent = input;
-            ASCIIEncoding encoding = new ASCIIEncoding();
-            byte[] bytes = encoding.GetBytes(parsedContent);
-
-            Stream newStream = http.GetRequestStream();
-            newStream.Write(bytes, 0, bytes.Length);
-            newStream.Close();
-
-            WebResponse response = http.GetResponse();
-
-            Stream stream = response.GetResponseStream();
-            StreamReader sr = new StreamReader(stream);
-            return response;
-        }
-
-
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

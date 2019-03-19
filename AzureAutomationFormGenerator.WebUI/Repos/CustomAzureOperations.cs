@@ -29,12 +29,12 @@
         /// <summary>
         /// Defines the _resourceGroup
         /// </summary>
-        private string _resourceGroup;
+        private readonly string _resourceGroup;
 
         /// <summary>
         /// Defines the _automationAccount
         /// </summary>
-        private string _automationAccount;
+        private readonly string _automationAccount;
 
         /// <summary>
         /// Gets the Client
@@ -49,20 +49,20 @@
         /// <summary>
         /// Runbook Tag
         /// </summary>
-        private KeyValuePair<string, string> _automationTag;
-        private string _lotto;
+        private readonly KeyValuePair<string, string> _automationTag;
 
+        private readonly IMessageSender _messageSender;
         /// <summary>
         /// Initializes a new instance of the <see cref="CustomAzureOperations"/> class.
         /// </summary>
         /// <param name="configuration">The configuration<see cref="IConfiguration"/></param>
-        public CustomAzureOperations(IConfiguration configuration)
+        public CustomAzureOperations(IConfiguration configuration, IMessageSender messageSender)
         {
             _configuration = configuration;
             _resourceGroup = _configuration["AzureSettings:ResourceGroup"];
             _automationAccount = _configuration["AzureSettings:AutomationAccount"];
+            _messageSender = messageSender;
 
-            var _lotto = _configuration["AzureSettings:lotto"];
             _automationTag = new KeyValuePair<string, string>(_configuration["AzureSettings:AutomationTag:Key"], _configuration["AzureSettings:AutomationTag:Value"]);
             Client = new AutomationClient(GetCredentials()) { SubscriptionId = _configuration["AzureSettings:SubscriptionId"] };
         }
@@ -135,11 +135,6 @@
 
         public async Task<Dictionary<string, IRunbookParameterDefinition>> GetPowershellRunbookParameterDefinitions(string resourceGroup, string automationAccount, string runbookName, IOrderedEnumerable<KeyValuePair<string, RunbookParameter>> runbookParameters)
         {
-            if (_lotto.Contains("hej"))
-            {
-                //do stuff
-            }
-
             //Create empty dictionary
             Dictionary<string, IRunbookParameterDefinition> PSParameterDefinitions = new Dictionary<string, IRunbookParameterDefinition>();
 
@@ -152,9 +147,6 @@
                 //This allows you to do one Read operation.
                 runbookContent = sr.ReadToEnd();
             }
-
-
-            
 
             int i = 0;
             foreach (KeyValuePair<string, RunbookParameter> runbookParameter in runbookParameters)
@@ -219,9 +211,8 @@
             }
             catch (Exception ex)
             {
-                await StaticRepo.SendErrorMessage(ex.Message); 
-
-                return null;
+                throw new Exception($"Runbook job could not be created. Error: {ex}");
+                
             }
         }
 
@@ -257,7 +248,8 @@
 
                 if (job != null)
                 {
-                    await StaticRepo.SendMessageJobStartedSuccessfully();
+
+                    await _messageSender.SendStatus(job.Status);
 
                     //Wait for job to complete or fail
                     job = await WaitForJobCompletion(resourceGroup, automationAccount, job, timeOutSeconds);
@@ -373,203 +365,6 @@
         }
 
         /// <summary>
-        /// The GetContentWithHttpMessagesAsync
-        /// </summary>
-        /// <param name="resourceGroupName">The resourceGroupName<see cref="string"/></param>
-        /// <param name="automationAccountName">The automationAccountName<see cref="string"/></param>
-        /// <param name="runbookName">The runbookName<see cref="string"/></param>
-        /// <param name="customHeaders">The customHeaders<see cref="Dictionary{string, List{string}}"/></param>
-        /// <param name="cancellationToken">The cancellationToken<see cref="CancellationToken"/></param>
-        /// <returns>The <see cref="Task{AzureOperationResponse{string}}"/></returns>
-        public async Task<AzureOperationResponse<string>> GetContentWithHttpMessagesAsync(string resourceGroupName, string automationAccountName, string runbookName, Dictionary<string, List<string>> customHeaders = null, CancellationToken cancellationToken = default(CancellationToken))
-        {
-            if (Client.SubscriptionId == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "this.Client.SubscriptionId");
-            }
-            if (resourceGroupName == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "resourceGroupName");
-            }
-            if (resourceGroupName != null)
-            {
-                if (resourceGroupName.Length > 90)
-                {
-                    throw new ValidationException(ValidationRules.MaxLength, "resourceGroupName", 90);
-                }
-                if (resourceGroupName.Length < 1)
-                {
-                    throw new ValidationException(ValidationRules.MinLength, "resourceGroupName", 1);
-                }
-                if (!System.Text.RegularExpressions.Regex.IsMatch(resourceGroupName, "^[-\\w\\._]+$"))
-                {
-                    throw new ValidationException(ValidationRules.Pattern, "resourceGroupName", "^[-\\w\\._]+$");
-                }
-            }
-            if (automationAccountName == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "automationAccountName");
-            }
-            if (runbookName == null)
-            {
-                throw new ValidationException(ValidationRules.CannotBeNull, "runbookName");
-            }
-            //string apiVersion = "2015-10-31";
-            string apiVersion = "2017-05-15-preview";
-            // Tracing
-            bool _shouldTrace = ServiceClientTracing.IsEnabled;
-            string _invocationId = null;
-            if (_shouldTrace)
-            {
-                _invocationId = ServiceClientTracing.NextInvocationId.ToString();
-                Dictionary<string, object> tracingParameters = new Dictionary<string, object>();
-                tracingParameters.Add("resourceGroupName", resourceGroupName);
-                tracingParameters.Add("automationAccountName", automationAccountName);
-                tracingParameters.Add("runbookName", runbookName);
-                tracingParameters.Add("apiVersion", apiVersion);
-                tracingParameters.Add("cancellationToken", cancellationToken);
-                ServiceClientTracing.Enter(_invocationId, this, "GetContent", tracingParameters);
-            }
-            // Construct URL
-            string _baseUrl = Client.BaseUri.AbsoluteUri;
-            string _url = new System.Uri(new System.Uri(_baseUrl + (_baseUrl.EndsWith("/") ? "" : "/")), "subscriptions/{subscriptionId}/resourceGroups/{resourceGroupName}/providers/Microsoft.Automation/automationAccounts/{automationAccountName}/runbooks/{runbookName}/content").ToString();
-            _url = _url.Replace("{subscriptionId}", System.Uri.EscapeDataString(Client.SubscriptionId));
-            _url = _url.Replace("{resourceGroupName}", System.Uri.EscapeDataString(resourceGroupName));
-            _url = _url.Replace("{automationAccountName}", System.Uri.EscapeDataString(automationAccountName));
-            _url = _url.Replace("{runbookName}", System.Uri.EscapeDataString(runbookName));
-            List<string> _queryParameters = new List<string>();
-            if (apiVersion != null)
-            {
-                _queryParameters.Add(string.Format("api-version={0}", System.Uri.EscapeDataString(apiVersion)));
-            }
-            if (_queryParameters.Count > 0)
-            {
-                _url += (_url.Contains("?") ? "&" : "?") + string.Join("&", _queryParameters);
-            }
-            // Create HTTP transport objects
-            HttpRequestMessage _httpRequest = new HttpRequestMessage();
-            HttpResponseMessage _httpResponse = null;
-            _httpRequest.Method = new HttpMethod("GET");
-            _httpRequest.RequestUri = new System.Uri(_url);
-            // Set Headers
-            if (Client.GenerateClientRequestId != null && Client.GenerateClientRequestId.Value)
-            {
-                _httpRequest.Headers.TryAddWithoutValidation("x-ms-client-request-id", System.Guid.NewGuid().ToString());
-            }
-            if (Client.AcceptLanguage != null)
-            {
-                if (_httpRequest.Headers.Contains("accept-language"))
-                {
-                    _httpRequest.Headers.Remove("accept-language");
-                }
-                _httpRequest.Headers.TryAddWithoutValidation("accept-language", Client.AcceptLanguage);
-            }
-
-
-            if (customHeaders != null)
-            {
-                foreach (KeyValuePair<string, List<string>> _header in customHeaders)
-                {
-                    if (_httpRequest.Headers.Contains(_header.Key))
-                    {
-                        _httpRequest.Headers.Remove(_header.Key);
-                    }
-                    _httpRequest.Headers.TryAddWithoutValidation(_header.Key, _header.Value);
-                }
-            }
-
-            // Serialize Request
-            string _requestContent = null;
-            // Set Credentials
-            if (Client.Credentials != null)
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-                await Client.Credentials.ProcessHttpRequestAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            }
-            // Send Request
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.SendRequest(_invocationId, _httpRequest);
-            }
-            cancellationToken.ThrowIfCancellationRequested();
-            _httpResponse = await Client.HttpClient.SendAsync(_httpRequest, cancellationToken).ConfigureAwait(false);
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.ReceiveResponse(_invocationId, _httpResponse);
-            }
-            System.Net.HttpStatusCode _statusCode = _httpResponse.StatusCode;
-            cancellationToken.ThrowIfCancellationRequested();
-            string _responseContent = null;
-            if ((int)_statusCode != 200)
-            {
-                CloudException ex = new CloudException(string.Format("Operation returned an invalid status code '{0}'", _statusCode));
-                try
-                {
-                    _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    CloudError _errorBody = Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<CloudError>(_responseContent, Client.DeserializationSettings);
-                    if (_errorBody != null)
-                    {
-                        ex = new CloudException(_errorBody.Message);
-                        ex.Body = _errorBody;
-                    }
-                }
-                catch (JsonException)
-                {
-                    // Ignore the exception
-                }
-                ex.Request = new HttpRequestMessageWrapper(_httpRequest, _requestContent);
-                ex.Response = new HttpResponseMessageWrapper(_httpResponse, _responseContent);
-                if (_httpResponse.Headers.Contains("x-ms-request-id"))
-                {
-                    ex.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-                }
-                if (_shouldTrace)
-                {
-                    ServiceClientTracing.Error(_invocationId, ex);
-                }
-                _httpRequest.Dispose();
-                if (_httpResponse != null)
-                {
-                    _httpResponse.Dispose();
-                }
-                throw ex;
-            }
-            // Create Result
-            AzureOperationResponse<string> _result = new AzureOperationResponse<string>();
-            _result.Request = _httpRequest;
-            _result.Response = _httpResponse;
-            if (_httpResponse.Headers.Contains("x-ms-request-id"))
-            {
-                _result.RequestId = _httpResponse.Headers.GetValues("x-ms-request-id").FirstOrDefault();
-            }
-            // Deserialize Response
-            if ((int)_statusCode == 200)
-            {
-                _responseContent = await _httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
-                try
-                {
-                    //Custom: No deserialize, just return string
-                    _result.Body = _responseContent;
-                    //Microsoft.Rest.Serialization.SafeJsonConvert.DeserializeObject<string>(_responseContent, Client.DeserializationSettings);
-                }
-                catch (JsonException ex)
-                {
-                    _httpRequest.Dispose();
-                    if (_httpResponse != null)
-                    {
-                        _httpResponse.Dispose();
-                    }
-                    throw new SerializationException("Unable to deserialize the response.", _responseContent, ex);
-                }
-            }
-            if (_shouldTrace)
-            {
-                ServiceClientTracing.Exit(_invocationId, _result);
-            }
-            return _result;
-        }
-
-        /// <summary>
         /// The GetJobStreams
         /// </summary>
         /// <param name="resourceGroup">The resourceGroup<see cref="string"/></param>
@@ -593,21 +388,44 @@
         /// <returns></returns>
         public async Task<Job> WaitForJobCompletion(string resourceGroup, string automationAccount, Job job, int timeOutSeconds = 300)
         {
-
+           
             Stopwatch sw = new Stopwatch();
             sw.Start();
-            while (job.Status == JobStatus.Running || job.Status == JobStatus.Activating || job.Status == JobStatus.New)
+            do
             {
-                //await Task.Delay(500);
-                
-                job = await GetJob(resourceGroup, automationAccount, job.Name);
-                //Timeout
+                if (sw.ElapsedMilliseconds % 300 == 0)
+                {
+                    await _messageSender.SendStatus(job.Status);
+                    job = await GetJob(resourceGroup, automationAccount, job.Name);
+                }
+
+                if(job.Status == JobStatus.Completed || job.Status == JobStatus.Failed)
+                {
+                    sw.Stop();
+                }
+
                 if (sw.ElapsedMilliseconds > timeOutSeconds * 1000)
                 {
+                    sw.Stop();
                     throw new TimeoutException($"Could not get job '{job.Name}'. Timeout after {timeOutSeconds} seconds");
                 }
-            }
+
+            } while (sw.IsRunning);
             sw.Stop();
+
+
+            //while (job.Status == JobStatus.Running || job.Status == JobStatus.Activating || job.Status == JobStatus.New)
+            //{
+            //    await Task.Delay(100);
+
+            //    job = await GetJob(resourceGroup, automationAccount, job.Name);
+            //    //Timeout
+            //    if (sw.ElapsedMilliseconds > timeOutSeconds * 1000)
+            //    {
+            //        throw new TimeoutException($"Could not get job '{job.Name}'. Timeout after {timeOutSeconds} seconds");
+            //    }
+            //}
+
 
             return job;
         }
@@ -641,7 +459,7 @@
             }
             else
             {
-                return null;
+                throw new Exception($"No proper Tag found on runbook: {runbookName}. Resolve this by placing a Tag. Example: {_automationTag.Key}:{_automationTag.Value}");
             }
            
         }

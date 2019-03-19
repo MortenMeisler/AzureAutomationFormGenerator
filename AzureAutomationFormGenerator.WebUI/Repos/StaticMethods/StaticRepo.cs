@@ -23,39 +23,17 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
 
         public static string ConnectionId { get; set; }
 
-
-        public static IHubContext<SignalHub> HubContext { get; set; }
-
         public static IConfiguration Configuration { get; set; }
-
-        public async static Task SendErrorMessage(string message)
-        {
-            await HubContext.Clients.Client(ConnectionId).SendAsync("initErrorMessage", message);
-        }
-
-        public async static Task SendMessage(string message)
-        {
-            await HubContext.Clients.Client(ConnectionId).SendAsync("initMessage", message);
-          
-        }
-
-        public async static Task SendMessageJobStartedSuccessfully()
-        {
-            await SendMessage(Configuration["Text:OutputMessageJobStarted"]);
-        }
-
+        
         //Determines the type of view to be returned - ex. full width (default) or centered
         public enum PageType
         {
-
             Default,
             FullWidth,
             Centered
         }
-        public static PageType currentPageType { get; set; }
+        public static PageType CurrentPageType { get; set; }
 
-        
-        public static IList<RunbookSimple> runbooks { get; set; }
 
     }
 
