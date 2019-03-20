@@ -31,7 +31,7 @@ namespace AzureAutomationFormGenerator.WebUI
         {
             
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddScoped<IMessageSender, MessageSender>();
+            services.AddTransient<IMessageSender, MessageSender>();
             services.AddScoped<ICustomAzureOperations, CustomAzureOperations>();
             //services.AddTransient<ICustomAzureOperations>(cap => new CustomAzureOperations(Configuration));
 
