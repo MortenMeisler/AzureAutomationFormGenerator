@@ -43,9 +43,9 @@ $(connection).bind("onDisconnect", function (e, data) {
 
 
 //Send Message - Signal method invoked from server
-connection.on("initMessage", (message) => {
+connection.on("initMessage", (message, connId) => {
 
-    console.log("We got signal! and the message is: " + message);
+    console.log("We got signal! ConnectionID:" + connId + " message: " + message);
 
     //Update paragraph tag with the message sent
     $("#jobmessage").html(message);

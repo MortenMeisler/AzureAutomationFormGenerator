@@ -34,7 +34,7 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
 
         public async Task SendMessage(string message)
         {
-            await _signalHubContext.Clients.Client(connectionId).SendAsync("initMessage", message);
+            await _signalHubContext.Clients.Client(connectionId).SendAsync("initMessage", message, connectionId);
         }
 
         public async Task SendStatus(string status)

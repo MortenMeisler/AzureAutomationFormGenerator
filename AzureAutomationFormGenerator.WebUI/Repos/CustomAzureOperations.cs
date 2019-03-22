@@ -386,20 +386,22 @@
         /// <param name="job"></param>
         /// <param name="timeOutSeconds">The timeOutSeconds<see cref="int"/></param>
         /// <returns></returns>
-        public async Task<Job> WaitForJobCompletion(string resourceGroup, string automationAccount, Job job, int timeOutSeconds = 300)
+        public async Task<Job> WaitForJobCompletion(string resourceGroup, string automationAccount, Job job, int timeOutSeconds = 600)
         {
            
             Stopwatch sw = new Stopwatch();
             sw.Start();
             do
             {
-                if (sw.ElapsedMilliseconds % 300 == 0)
+                if (sw.ElapsedMilliseconds % 200 == 0)
                 {
-                    await _messageSender.SendStatus(job.Status);
                     job = await GetJob(resourceGroup, automationAccount, job.Name);
+                    await _messageSender.SendStatus(job.Status);
+                    
                 }
 
-                if(job.Status == JobStatus.Completed || job.Status == JobStatus.Failed)
+                if(job.Status == JobStatus.Completed || job.Status == JobStatus.Failed || job.Status == JobStatus.Blocked 
+                    || job.Status == JobStatus.Stopped || job.Status == JobStatus.Suspended || job.Status == JobStatus.Disconnected)
                 {
                     sw.Stop();
                 }
@@ -412,20 +414,6 @@
 
             } while (sw.IsRunning);
             sw.Stop();
-
-
-            //while (job.Status == JobStatus.Running || job.Status == JobStatus.Activating || job.Status == JobStatus.New)
-            //{
-            //    await Task.Delay(100);
-
-            //    job = await GetJob(resourceGroup, automationAccount, job.Name);
-            //    //Timeout
-            //    if (sw.ElapsedMilliseconds > timeOutSeconds * 1000)
-            //    {
-            //        throw new TimeoutException($"Could not get job '{job.Name}'. Timeout after {timeOutSeconds} seconds");
-            //    }
-            //}
-
 
             return job;
         }
