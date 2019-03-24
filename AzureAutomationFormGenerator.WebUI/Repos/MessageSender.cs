@@ -15,6 +15,7 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
 
         private readonly IHubContext<MessageSender> _signalHubContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        //lotto
         public override Task OnConnectedAsync()
         {
             
