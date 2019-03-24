@@ -398,6 +398,7 @@
                     job = await GetJob(resourceGroup, automationAccount, job.Name);
                     await _messageSender.SendStatus(job.Status);
                     
+                    
                 }
 
                 if(job.Status == JobStatus.Completed || job.Status == JobStatus.Failed || job.Status == JobStatus.Blocked 

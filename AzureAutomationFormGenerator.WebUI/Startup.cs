@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using AzureAutomationFormGenerator.WebUI.Security;
 using System;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace AzureAutomationFormGenerator.WebUI
 {
@@ -31,8 +32,9 @@ namespace AzureAutomationFormGenerator.WebUI
         {
             
             services.AddSingleton<IConfiguration>(Configuration);
-            services.AddTransient<IMessageSender, MessageSender>();
+            services.AddScoped<IMessageSender, MessageSender>();
             services.AddScoped<ICustomAzureOperations, CustomAzureOperations>();
+            services.AddHttpContextAccessor();
             //services.AddTransient<ICustomAzureOperations>(cap => new CustomAzureOperations(Configuration));
 
             services.Configure<CookiePolicyOptions>(options =>
@@ -40,17 +42,20 @@ namespace AzureAutomationFormGenerator.WebUI
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
+                options.ConsentCookie.IsEssential = true;
             });
 
             services.AddCors();
             services.AddSignalR();
             services.AddDistributedMemoryCache();
 
+
             services.AddSession(options =>
             {
                 // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromSeconds(60);
+                options.IdleTimeout = TimeSpan.FromSeconds(300);
                 options.Cookie.HttpOnly = true;
+
             });
 
 
@@ -68,6 +73,7 @@ namespace AzureAutomationFormGenerator.WebUI
 
             services.AddAuthentication(AzureADDefaults.AuthenticationScheme)
              .AddAzureAD(options => Configuration.Bind("AzureAd", options));
+           
 
             #endregion
 
@@ -132,6 +138,7 @@ namespace AzureAutomationFormGenerator.WebUI
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseSession();
+            
            
             app.UseAuthentication();
 
