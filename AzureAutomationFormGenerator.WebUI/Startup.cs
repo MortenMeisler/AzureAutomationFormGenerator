@@ -113,14 +113,14 @@ namespace AzureAutomationFormGenerator.WebUI
         {
             if (env.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
+                //app.UseExceptionHandler("/Home/Error");
               
-                //app.UseDeveloperExceptionPage();
+                app.UseDeveloperExceptionPage();
             }
             else
             {
-                app.UseDeveloperExceptionPage();
-                //app.UseExceptionHandler("/Home/Error");
+                //app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Home/Error");
                 //app.UseHsts();
             }
             app.Use(async (context, next) =>

@@ -87,6 +87,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Index(PageType? pageType, [FromRoute]string runbookName, string resourceGroup, string automationAccount)
         {
+            
             //Set type of page to return. If nothing is passed set Full Width as default
             pageType = pageType.HasValue ? pageType : PageType.Default;
             CurrentPageType = pageType.GetValueOrDefault();
@@ -112,8 +113,9 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Submit(Dictionary<string, string> inputs)
+        public async Task<IActionResult> Submit(string signalRconnectionId, Dictionary<string, string> inputs)
         {
+            _messageSender.ConnectionId = signalRconnectionId;
             await _messageSender.SendMessage(_configuration["Text:OutputMessageJobStarted"]);
 
             //Initialize viewmodel

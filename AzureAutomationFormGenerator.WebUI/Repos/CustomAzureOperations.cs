@@ -257,7 +257,10 @@
                     //Get job output for failed or something else
                     switch (job.Status)
                     {
+                        
                         case JobStatus.Failed:
+                        case JobStatus.Suspended:
+                        case JobStatus.Stopped:
                             return new ResultsModel() { JobOutputError = job.Exception, JobStatus = JobStatus.Failed, JobInputs = parameters };
                         default:
                             //Get job streams and format into output string
@@ -393,17 +396,17 @@
             sw.Start();
             do
             {
-                if (sw.ElapsedMilliseconds % 200 == 0)
+                if (sw.ElapsedMilliseconds % 500 == 0)
                 {
                     job = await GetJob(resourceGroup, automationAccount, job.Name);
                     await _messageSender.SendStatus(job.Status);
-                    
                     
                 }
 
                 if(job.Status == JobStatus.Completed || job.Status == JobStatus.Failed || job.Status == JobStatus.Blocked 
                     || job.Status == JobStatus.Stopped || job.Status == JobStatus.Suspended || job.Status == JobStatus.Disconnected)
                 {
+                    await _messageSender.SendStatus(job.Status);
                     sw.Stop();
                 }
 

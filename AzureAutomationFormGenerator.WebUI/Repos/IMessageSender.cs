@@ -4,6 +4,8 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
 {
     public interface IMessageSender
     {
+        string ConnectionId { get; set; }
+
         Task SendErrorMessage(string message);
         /// <summary>
         /// Set Job Message value on AzureRunbookForm view instantly using SignalR

@@ -10,45 +10,48 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
 {
     public class MessageSender : Hub, IMessageSender
     {
-        //todo: might be shared/not thread safe, are we scoped pr user? though messagesender is added pr. scope aka websession as DI
-        private static string connectionId;
+        
+        public string ConnectionId { get; set; }
 
-        private readonly IHubContext<MessageSender> _signalHubContext;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        //lotto
+        private readonly IHubContext<MessageSender> _signalHubContext;
+
+        public MessageSender(IHttpContextAccessor httpContextAccessor, IHubContext<MessageSender> signalHubContext)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _signalHubContext = signalHubContext;
+        }
+
         public override Task OnConnectedAsync()
         {
-            
-            _signalHubContext.Groups.AddToGroupAsync(Context.ConnectionId, _httpContextAccessor.HttpContext.Request.Cookies[".AspNetCore.Antiforgery.10K41XpMUM8"]);
-           
+
+            //Groups.AddToGroupAsync(Context.ConnectionId, _httpContextAccessor.HttpContext.Request.Cookies["SomeCookieCreatedForSessionX"]);
+
             return base.OnConnectedAsync();
         }
-
         public string GetConnectionId()
         {
-           
             return Context.ConnectionId;
-        }
-
-        public MessageSender(IHubContext<MessageSender> signalHubContext, IHttpContextAccessor httpContextAccessor)
-        {
-            _signalHubContext = signalHubContext;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task SendErrorMessage(string message)
         {
-            await _signalHubContext.Clients.Group(_httpContextAccessor.HttpContext.Request.Cookies[".AspNetCore.Antiforgery.10K41XpMUM8"]).SendAsync("initMessage", message, connectionId);
+            await _signalHubContext.Clients.Client(ConnectionId).SendAsync("initErrorMessage", message, ConnectionId);
         }
-
+    
+    
         public async Task SendMessage(string message)
-        { 
-            await _signalHubContext.Clients.Group(_httpContextAccessor.HttpContext.Request.Cookies[".AspNetCore.Antiforgery.10K41XpMUM8"]).SendAsync("initMessage", message, connectionId);
+        {
+
+            await _signalHubContext.Clients.Client(ConnectionId).SendAsync("initMessage", message, ConnectionId);
+            //await Clients.Group(_httpContextAccessor.HttpContext.Request.Cookies[".AspNetCore.Antiforgery.10K41XpMUM8"]).SendAsync("initMessage", message, connectionId);
         }
 
         public async Task SendStatus(string status)
         {
-            await _signalHubContext.Clients.Group(_httpContextAccessor.HttpContext.Request.Cookies[".AspNetCore.Antiforgery.10K41XpMUM8"]).SendAsync("initMessage", status);
+            await _signalHubContext.Clients.Client(ConnectionId).SendAsync("initStatus", status);
+            //await Clients.Group(_httpContextAccessor.HttpContext.Request.Cookies[".AspNetCore.Antiforgery.10K41XpMUM8"]).SendAsync("initMessage", status);
         }
+
     }
 }

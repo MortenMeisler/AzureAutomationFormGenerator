@@ -13,30 +13,30 @@ const connection = new signalR.HubConnectionBuilder()
     .build();
 
 //Start
-//connection.start().catch(err => console.error(err.toString())).then(function(){
-//    connection.invoke('getConnectionId')
-//        .then(function (connectionId) {
-//            // Send the connectionId to controller
-//            console.log("connectionID: " + connectionId);
-//            $("#signalRconnectionId").attr("value", connectionId);
-//        });
-//});
-connection.start().catch(err => console.error(err.toString()));
-//Reconnect on disconnect
-$(connection).bind("onDisconnect", function (e, data) {
-    connection.start().catch(err => console.error(err.toString()));
+connection.start().catch(err => console.error(err.toString())).then(function(){
+    connection.invoke('getConnectionId')
+        .then(function (connectionId) {
+            // Send the connectionId to controller
+            console.log("connectionID: " + connectionId);
+            $("#signalRconnectionId").attr("value", connectionId);
+        });
 });
-
+//connection.start().catch(err => console.error(err.toString()));
+//Reconnect on disconnect
 //$(connection).bind("onDisconnect", function (e, data) {
-//    connection.start().catch(err => console.error(err.toString())).then(function () {
-//        connection.invoke('getConnectionId')
-//            .then(function (connectionId) {
-//                // Send the connectionId to controller
-//                console.log("Reconnecting... connectionID: " + connectionId);
-//                $("#signalRconnectionId").attr("value", connectionId);
-//            });
-//    });
+//    connection.start().catch(err => console.error(err.toString()));
 //});
+
+$(connection).bind("onDisconnect", function (e, data) {
+    connection.start().catch(err => console.error(err.toString())).then(function () {
+        connection.invoke('getConnectionId')
+            .then(function (connectionId) {
+                // Send the connectionId to controller
+                console.log("Reconnecting... connectionID: " + connectionId);
+                $("#signalRconnectionId").attr("value", connectionId);
+            });
+    });
+});
 
 
 

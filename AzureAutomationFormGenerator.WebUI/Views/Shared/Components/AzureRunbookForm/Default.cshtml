@@ -139,7 +139,7 @@
 
 
 <script>
-    var myModel = @{@Html.Raw(Json.Serialize(Model))};
+    var myModel = @Html.Raw(Json.Serialize(Model));
 </script>
 <script src="~/lib/signalr/signalr.js"></script>
 <script src="~/js/signal.js" defer></script>
