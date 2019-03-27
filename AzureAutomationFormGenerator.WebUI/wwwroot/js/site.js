@@ -11,6 +11,7 @@ if (typeof myModel !== 'undefined'){
         if (myModel[propertyName].isRequired === true) {
             $("#" + propertyName).attr('required', true);
             $("#itemInput_" + propertyName).attr('required', true);
+            $(".form-control-label[for='" + propertyName + "']").prepend("<b>*</b>");
         }
     }
 }

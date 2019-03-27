@@ -38,15 +38,8 @@
 
                     @*//Label*@
 
-                    <label class="form-control-label" for="@(item.Key)">
-                        @if (item.Value.DisplayName != null)
-                        {
-                            @item.Value.DisplayName
-                        }
-                        else
-                        { @item.Key}
-                    </label>
-
+                    <label class="form-control-label" for="@(item.Key)">@if (item.Value.DisplayName != null){@item.Value.DisplayName}else{@item.Key}</label>
+                    
                     @* PARAMETER: VALIDATE SET *@
                     @if (item.Value.SelectionValues != null)
                     {
