@@ -157,7 +157,7 @@
                 if (i == 0)
                 {
                     //First parameter configs - get everything between 'Param(' and '<nameoffirstvariable>'
-                    pattern = $@"(?s)(?<=param\()(.*?)(?=\${runbookParameter.Key})";
+                    pattern = $@"(?s)(?<=param(.*?)\()(.*?)(?=\${runbookParameter.Key})";
                 }
                 else
                 {

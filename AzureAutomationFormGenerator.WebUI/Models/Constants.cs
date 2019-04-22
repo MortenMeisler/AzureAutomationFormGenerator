@@ -11,13 +11,13 @@ namespace AzureAutomationFormGenerator.WebUI.Models
         /// Regex pattern for [ValidateSet()]
         /// </summary>
         // language=regex,ExplicitCapture
-        public const string RegexPatternValidateSet = @"(?s)(?<=ValidateSet\()(.*?)(?=\)])";
+        //public const string RegexPatternValidateSet = @"(?s)(?<=ValidateSet\()(.*?)(?=\)])";
 
         /// <summary>
         /// Regex pattern for [Alias()] - if more Alias exist the first one will be used
         /// </summary>
         // language=regex,ExplicitCapture
-        public const string RegexPatternAlias = @"(?s)(?<=Alias\()(.*?)(?=\)])";
+        //public const string RegexPatternAlias = @"(?s)(?<=Alias\()(.*?)(?=\)])";
 
 
 
