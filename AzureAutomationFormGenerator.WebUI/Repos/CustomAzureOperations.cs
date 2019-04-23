@@ -265,7 +265,7 @@
                         default:
                             //Get job streams and format into output string
                             IPage<JobStream> jobStreams = await GetJobStreams(resourceGroup, automationAccount, job);
-                            return new ResultsModel() { JobOutput = GetJobOutputs(jobStreams), JobStatus = job.Status, JobInputs = parameters };
+                            return new ResultsModel() { JobOutput = await GetJobOutputs(jobStreams, job), JobStatus = job.Status, JobInputs = parameters };
                     }
                 }
                     return null;
@@ -307,7 +307,7 @@
         /// <param name="jobOuputType">Select to only return output, only error or all (default)</param>
         /// <param name="toHTML">Appends html break tag at the end of line, otherwise a new line control string character</param>
         /// <returns></returns>
-        private string GetJobOutputs(IPage<JobStream> jobStreams, JobOuputType jobOuputType = JobOuputType.All, bool? toHTML = true)
+        private async Task<string> GetJobOutputs(IPage<JobStream> jobStreams, Job job, JobOuputType jobOuputType = JobOuputType.All, bool? toHTML = true)
         {
             StringBuilder sb = new StringBuilder();
             foreach (JobStream output in jobStreams)
@@ -317,20 +317,20 @@
                     case JobOuputType.OnlyOutput:
                         if (output.StreamType == StreamType.Output)
                         {
-                            sb.Append(GetJobOutput(output, toHTML));
+                            sb.Append(await GetJobOutput(output, job, toHTML));
                         }
                         break;
                     case JobOuputType.OnlyError:
                         if (output.StreamType == StreamType.Error)
                         {
-                            sb.Append(GetJobOutput(output, toHTML));
+                            sb.Append(await GetJobOutput(output, job,  toHTML));
                         }
                         break;
                     case JobOuputType.All:
-                        sb.Append(GetJobOutput(output, toHTML));
+                        sb.Append(await GetJobOutput(output, job, toHTML));
                         break;
                     default:
-                        sb.Append(GetJobOutput(output, toHTML));
+                        sb.Append(await GetJobOutput(output,job, toHTML));
                         break;
                 }
                 
@@ -345,18 +345,45 @@
         /// <param name="js"></param>
         /// <param name="toHTML"></param>
         /// <returns></returns>
-        private string GetJobOutput(JobStream js, bool? toHTML)
+        private async Task<string> GetJobOutput(JobStream js, Job job, bool? toHTML)
         {
-            
-            if (toHTML != null && toHTML == true)
+            string output = null;
+            if (js.Summary == null)
             {
-                if (js.StreamType == StreamType.Error)
+                //Get long output stream (when summary is null it means the output are kept in the individual stream)
+                var stream = await Client.JobStream.GetAsync(_resourceGroup, _automationAccount, job.Name, js.JobStreamId);
+                if (stream == null)
                 {
-                    return string.Format("{0}", $"<p style='color: red'>{System.Net.WebUtility.HtmlEncode(js.Summary)}</p>");
+                    output = $"No jobstream found for job: {job.Name} and jobstream: {js.JobStreamId}";
                 }
                 else
                 {
-                    return string.Format("{0}", $"<p>{System.Net.WebUtility.HtmlEncode(js.Summary)}</p>");
+                    output = stream.StreamText;
+                }
+            }
+            else
+            {
+                output = js.Summary;
+            }
+              
+
+            if (toHTML != null && toHTML == true)
+            {
+                
+                if (js.StreamType == StreamType.Error)
+                {
+                    return string.Format("{0}", $"<p><pre style='color: red; white-space: pre-wrap'>{System.Net.WebUtility.HtmlEncode(output)}</pre></p>");
+                }
+                else
+                {
+                //    string[] texts = output.Split("\r\n");
+                //    string text = string.Empty;
+                //    foreach (var t in texts)
+                //    {
+                //        text += $"<p>{System.Net.WebUtility.HtmlEncode(t)}</p>";
+                //    }
+                //    return text;
+                    return string.Format("{0}", $"<p><pre style='white-space: pre-wrap'>{System.Net.WebUtility.HtmlEncode(output)}</pre></p>");
                 }
 
                 
@@ -367,13 +394,6 @@
             }
         }
 
-        /// <summary>
-        /// The GetJobStreams
-        /// </summary>
-        /// <param name="resourceGroup">The resourceGroup<see cref="string"/></param>
-        /// <param name="automationAccount">The automationAccount<see cref="string"/></param>
-        /// <param name="job">The job<see cref="Job"/></param>
-        /// <returns>The <see cref="Task{IPage{JobStream}}"/></returns>
         public async Task<IPage<JobStream>> GetJobStreams(string resourceGroup, string automationAccount, Job job)
         {
             Job completedJob = await WaitForJobCompletion(resourceGroup, automationAccount, job);
@@ -399,8 +419,17 @@
                 if (sw.ElapsedMilliseconds % 500 == 0)
                 {
                     job = await GetJob(resourceGroup, automationAccount, job.Name);
-                    await _messageSender.SendStatus(job.Status);
                     
+                    if (job.Status == JobStatus.New)
+                    {
+                        //Azure job shows queued in the portal but New in API, so we are using the portal convention.
+                        await _messageSender.SendStatus("Queued");
+                    }
+                    else
+                    {
+                        await _messageSender.SendStatus(job.Status);
+                    }
+
                 }
 
                 if(job.Status == JobStatus.Completed || job.Status == JobStatus.Failed || job.Status == JobStatus.Blocked 
