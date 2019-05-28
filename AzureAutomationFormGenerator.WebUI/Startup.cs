@@ -14,6 +14,8 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using AzureAutomationFormGenerator.WebUI.Security;
 using System;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using AzureAutomationFormGenerator.WebUI.Extensions;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace AzureAutomationFormGenerator.WebUI
 {
@@ -34,6 +36,7 @@ namespace AzureAutomationFormGenerator.WebUI
             services.AddSingleton<IConfiguration>(Configuration);
             services.AddScoped<IMessageSender, MessageSender>();
             services.AddScoped<ICustomAzureOperations, CustomAzureOperations>();
+
             services.AddHttpContextAccessor();
             //services.AddTransient<ICustomAzureOperations>(cap => new CustomAzureOperations(Configuration));
 
@@ -79,9 +82,13 @@ namespace AzureAutomationFormGenerator.WebUI
 
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            
+            services.AddMvc(config =>
+                    {
+                        config.Filters.Add(typeof(GlobalExceptionFilter));
+                    }
+                ).SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
+         
             //Enable Audit logging DbContext
             if (Configuration.GetValue<bool>("EnableAuditLogging") == true)
             {
@@ -113,15 +120,37 @@ namespace AzureAutomationFormGenerator.WebUI
         {
             if (env.IsDevelopment())
             {
-                //app.UseExceptionHandler("/Home/Error");
-              
-                app.UseDeveloperExceptionPage();
+                app.UseExceptionHandler("/Home/Error");
+
+                app.UseExceptionHandler(errorApp =>
+                {
+                    errorApp.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        context.Response.ContentType = "text/html";
+
+                        await context.Response.WriteAsync($"<html lang=\"en\">Oh this error occured even before any pages was loaded my dear. Error message:<body><br><br>");
+                      
+
+                        var exceptionHandlerPathFeature =
+                            context.Features.Get<IExceptionHandlerPathFeature>();
+                        await context.Response.WriteAsync($"<pre>{exceptionHandlerPathFeature.Error.Message}</pre><br><br>\r\n");
+                        // Use exceptionHandlerPathFeature to process the exception (for example, 
+                        // logging), but do NOT expose sensitive error information directly to 
+                        // the client.
+
+                        await context.Response.WriteAsync("<a href=\"/\">Home</a><br>\r\n");
+                        await context.Response.WriteAsync("</body></html>\r\n");
+                        await context.Response.WriteAsync(new string(' ', 512)); // IE padding
+                    });
+                });
+
+                //app.UseDeveloperExceptionPage();
             }
             else
             {
-                //app.UseDeveloperExceptionPage();
                 app.UseExceptionHandler("/Home/Error");
-                //app.UseHsts();
+                app.UseHsts();
             }
             app.Use(async (context, next) =>
             {

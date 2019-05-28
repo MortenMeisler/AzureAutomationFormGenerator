@@ -8,6 +8,11 @@ namespace AzureAutomationFormGenerator.WebUI.Models
 
         public string ErrorMessage { get; set; }
 
+        public string ExceptionMessage { get; set; }
+        public bool ShowExceptionMessage => !string.IsNullOrEmpty(ExceptionMessage);
+
+        public string Exception { get; set; }
+
         public bool ShowRequestId => !string.IsNullOrEmpty(RequestId);
     }
 }

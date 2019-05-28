@@ -19,6 +19,8 @@ using AzureAutomationFormGenerator.Persistence.Models;
 using Microsoft.AspNetCore.Authorization;
 using AzureAutomationFormGenerator.WebUI.Security;
 using Microsoft.Rest.Azure;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Diagnostics;
 
 namespace AzureAutomationFormGenerator.WebUI.Controllers
 {
@@ -34,11 +36,10 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         private readonly string _automationAccount;
       
         private readonly ICustomAzureOperations _customAzureOperations;
-        public string htmlInput;
         
         private readonly IMessageSender _messageSender;
+        private string defaultRunbookName;
 
-        //TODO: Feedback when submitted immediately - spinning wheel or something or go to next page
 
         public HomeController(IConfiguration configuration, ICustomAzureOperations customAzureOperations, AutomationPortalDbContext automationPortalDbContext, IMessageSender messageSender)
         {
@@ -52,7 +53,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
 
             if (!string.IsNullOrEmpty(_configuration["AzureSettings:RunbookName"]))
             {
-                StaticRepo.RunbookName = _configuration["AzureSettings:RunbookName"];
+                defaultRunbookName = _configuration["AzureSettings:RunbookName"];
             }
 
         }
@@ -62,7 +63,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         /// </summary>
         public IActionResult Index(PageType? pageType)
         {
-            return Index(pageType, StaticRepo.RunbookName);
+            return Index(pageType, defaultRunbookName);
         }
 
         /// <summary>
@@ -77,23 +78,20 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         }
 
         /// <summary>
-        /// Return view with Runbook Name specified in the URL. Take Resource Group Name and Automation Account Name from static configuration
-        /// </s1ummary>
+        /// Return view with Runbook Name specified
+        /// </summary>
         /// <param name="runbookName"></param>
         /// <returns></returns>
-        /// 
-        
         [HttpGet("{resourceGroup}/{automationAccount}/{runbookName}")]
         [ValidateAntiForgeryToken]
         public IActionResult Index(PageType? pageType, [FromRoute]string runbookName, string resourceGroup, string automationAccount)
         {
             
-            //Set type of page to return. If nothing is passed set Full Width as default
+            //Set type of page to return. If nothing is passed set Default pagetype
             pageType = pageType.HasValue ? pageType : PageType.Default;
             CurrentPageType = pageType.GetValueOrDefault();
 
             //save runbook variables
-            StaticRepo.RunbookName = runbookName;
             StaticRepo.AutomationAccount = automationAccount;
             StaticRepo.ResourceGroup = resourceGroup;
 
@@ -101,7 +99,8 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
             {
                 ResourceGroup = resourceGroup,
                 AutomationAccount = automationAccount,
-                RunbookName = runbookName
+                RunbookName = runbookName,
+                Runbook = new RunbookSimple { Name = runbookName }
             };
 
             return View($"Index{pageType.Value}",azureRunbookFormViewModel);
@@ -113,7 +112,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Submit(string signalRconnectionId, Dictionary<string, string> inputs)
+        public async Task<IActionResult> Submit(string signalRconnectionId, string runbookDisplayName, string runbookName, Dictionary<string, string> inputs)
         {
             _messageSender.ConnectionId = signalRconnectionId;
             await _messageSender.SendMessage(_configuration["Text:OutputMessageJobStarted"]);
@@ -123,7 +122,8 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
             {
                 ResourceGroup = _resourceGroup,
                 AutomationAccount = _automationAccount,
-                RunbookName = RunbookName,
+                RunbookName = runbookName,
+                Runbook = new RunbookSimple { Name = runbookName, DisplayName = runbookDisplayName },
                 ResultsModel = new ResultsModel() { JobInputs = inputs}
             };
 
@@ -132,7 +132,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
             {
                 AuditLog logEntry = new AuditLog
                 {
-                    RequestName = StaticRepo.RunbookName,
+                    RequestName = runbookName,
                     RequestUser = HttpContext.User.Identity.Name,
                     RequestInput = JsonConvert.SerializeObject(inputs, Formatting.None)
 
@@ -159,9 +159,33 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        [AllowAnonymous]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var errorModel = new ErrorViewModel { RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier };
+            // Do NOT expose sensitive error information directly to the client.
+            #region snippet_ExceptionHandlerPathFeature
+            var exceptionHandlerPathFeature =
+                HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            if (exceptionHandlerPathFeature?.Error is FileNotFoundException)
+            {
+                errorModel.ErrorMessage = "File error thrown";
+            }
+            if (exceptionHandlerPathFeature?.Error is ArgumentNullException && exceptionHandlerPathFeature?.Path == "/")
+            {
+                errorModel.ErrorMessage = $"Some settings in Appsettings are probably wrong or missing.";
+            }
+            if (exceptionHandlerPathFeature?.Path == "/index")
+            {
+                errorModel.ErrorMessage += " from home page";
+            }
+            else
+            {
+                errorModel.ExceptionMessage += exceptionHandlerPathFeature.Error.Message;
+            }
+            #endregion
+            return View(errorModel);
         }
+
     }
 }

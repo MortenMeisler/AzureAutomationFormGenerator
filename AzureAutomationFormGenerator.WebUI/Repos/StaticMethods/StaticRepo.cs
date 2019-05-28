@@ -16,7 +16,7 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
     public static class StaticRepo
     {
         public static readonly IHttpContextAccessor httpContextAccessor;
-        public static string RunbookName { get; set; }
+        //public static string RunbookName { get; set; }
 
         public static string AutomationAccount { get; set; }
 

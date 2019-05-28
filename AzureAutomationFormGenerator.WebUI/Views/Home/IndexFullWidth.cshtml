@@ -4,7 +4,7 @@
         Layout = "_Layout";
     }
 <body>
-    <vc:azure-runbook-form resource-group="@Model.ResourceGroup" automation-account="@Model.AutomationAccount" runbook-name="@Model.RunbookName"></vc:azure-runbook-form>
+    <vc:azure-runbook-form resource-group-name="@Model.ResourceGroup" automation-account-name="@Model.AutomationAccount" runbook-name="@Model.RunbookName" runbook="@Model.Runbook"></vc:azure-runbook-form>
 </body>
 
 

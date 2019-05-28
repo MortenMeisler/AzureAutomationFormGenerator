@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions;
 using Microsoft.Extensions.Configuration;
+using AzureAutomationFormGenerator.WebUI.Models.Runbook;
 
 namespace AzureAutomationFormGenerator.ViewComponents
 {
@@ -22,16 +23,16 @@ namespace AzureAutomationFormGenerator.ViewComponents
         }
 
         //TODO Text should be put elsewhere
-        public async Task<IViewComponentResult> InvokeAsync(string resourceGroup, string automationAccount, string runbookName)
+        public async Task<IViewComponentResult> InvokeAsync(string resourceGroupName, string automationAccountName, string runbookName, RunbookSimple runbook)
         {
-            if (string.IsNullOrEmpty(resourceGroup))
+            if (string.IsNullOrEmpty(resourceGroupName))
             {
                 var errorMessage = $"No Resource Group defined. Please set either a static resource group in appsettings on the server or define one in the URL like this<br><br>" +
                     Constants.HelpTipURLParametersAll;
                 return View("ErrorNoInput", new ErrorViewModel {ErrorMessage = errorMessage, RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
             }
 
-            if (string.IsNullOrEmpty(automationAccount))
+            if (string.IsNullOrEmpty(automationAccountName))
             {
                 var errorMessage = $"No Automation Account defined. Please set either a static resource group in appsettings on the server or define one in the URL like this<br><br>" +
                     $"{Constants.HelpTipURLParametersAll}";
@@ -49,10 +50,11 @@ namespace AzureAutomationFormGenerator.ViewComponents
                 return View("ErrorNoInput", new ErrorViewModel { ErrorMessage = errorMessage, RequestId = System.Diagnostics.Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 
             }
-            Dictionary<string,IRunbookParameterDefinition> runbookParameterSettings;
+            IRunbookGenerated runbookGenerated;
             try
             {
-                runbookParameterSettings = await _customAzureOperations.GetRunbookParameterDefinitions(resourceGroup, automationAccount, runbookName);
+                runbookGenerated = await _customAzureOperations.GetRunbookGenerated(resourceGroupName, automationAccountName, runbookName);
+                //runbookParameterSettings = await _customAzureOperations.GetRunbookParameterDefinitions(resourceGroup, automationAccount);
             }catch(Exception ex)
             {
 
@@ -63,10 +65,10 @@ namespace AzureAutomationFormGenerator.ViewComponents
 
             }
 
-            ViewBag.RunbookName = runbookName;
+            ViewBag.Runbook = runbook;
 
 
-            return View(runbookParameterSettings);
+            return View(runbookGenerated);
         }
     }
 }

@@ -3,7 +3,8 @@
     ViewData["Title"] = "Result";
 }
 
-<h3 class="about-heading runbook-name">@AzureAutomationFormGenerator.WebUI.Repos.StaticRepo.RunbookName</h3>
+@*<h3 class="about-heading runbook-name">@AzureAutomationFormGenerator.WebUI.Repos.StaticRepo.RunbookName</h3>*@
+<h3 class="about-heading runbook-name">@Model.Runbook.DisplayName</h3>
 <hr />
 @if (!string.IsNullOrEmpty(Model.JobOutput))
 {

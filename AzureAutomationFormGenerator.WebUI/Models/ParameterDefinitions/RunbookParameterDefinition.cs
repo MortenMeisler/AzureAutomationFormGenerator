@@ -13,8 +13,6 @@ namespace AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions
         {
             IsRequired = (bool)runbookParameter.IsMandatory;
             SetDefaultValue(runbookParameter);
-            
-
         }
 
         public string DisplayName { get; set; }

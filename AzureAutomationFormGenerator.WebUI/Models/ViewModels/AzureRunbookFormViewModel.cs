@@ -14,6 +14,8 @@ namespace AzureAutomationFormGenerator.WebUI.Models
 
         public string RunbookName { get; set; }
 
+        public RunbookSimple Runbook { get; set; }
+
         public IList<RunbookSimple> Runbooks {get; set;}
 
         public ResultsModel ResultsModel { get; set; }

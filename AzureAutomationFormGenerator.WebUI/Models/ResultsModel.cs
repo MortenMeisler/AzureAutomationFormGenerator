@@ -9,7 +9,8 @@ namespace AzureAutomationFormGenerator.WebUI.Models
 {
     public class ResultsModel
     {
-       /// <summary>
+       public RunbookSimple Runbook { get; set; }
+        /// <summary>
        /// Output from jobstream of type output
        /// </summary>
         public string JobOutput { get; set; }

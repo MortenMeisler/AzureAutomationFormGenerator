@@ -3,5 +3,5 @@
     ViewData["Title"] = "Result";
 }
 <div class="container col-md-5">
-    <vc:results automation-account="@Model.AutomationAccount" resource-group="@Model.ResourceGroup" inputs="@Model.ResultsModel.JobInputs"></vc:results>
+    <vc:results automation-account="@Model.AutomationAccount" resource-group="@Model.ResourceGroup" runbook="@Model.Runbook" inputs="@Model.ResultsModel.JobInputs"></vc:results>
 </div>

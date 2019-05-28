@@ -1,4 +1,5 @@
-﻿@model Dictionary<string, AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions.IRunbookParameterDefinition>
+﻿@*@model Dictionary<string, AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions.IRunbookParameterDefinition>*@
+@model IRunbookGenerated
 
 @{
     ViewData["Title"] = "AzureRunbookFormView";
@@ -6,7 +7,7 @@
 
 
 
-<h3 class="about-heading runbook-name">@ViewBag.RunbookName</h3>
+<h3 class="about-heading runbook-name">@Model.DisplayName</h3>
 <hr>
 <table id="status-table" class="table" style="display: none">
     <thead>
@@ -30,17 +31,25 @@
             @{int inputCount = 0;}
 
             @* class="animated bounceOutUp infinite" *@
-            @foreach (var item in Model)
+            @foreach (var item in Model.ParameterDefinitions)
             {
                 //Index value
                 <input type="text" name="inputs[@inputCount].Key" hidden value="@item.Key" />
                 <div class="form-group needs-validation has-danger" novalidate>
 
-                    @*//Label*@
+                    @*************************************************************************
+                        * LABEL - label name for each parameter
+                        *************************************************************************@
+                    <label class="form-control-label" for="@(item.Key)">
+                        @if (item.Value.DisplayName != null)
+                        {@item.Value.DisplayName}
+                    else
+                    {@item.Key}
+                    </label>
 
-                    <label class="form-control-label" for="@(item.Key)">@if (item.Value.DisplayName != null){@item.Value.DisplayName}else{@item.Key}</label>
-                    
-                    @* PARAMETER: VALIDATE SET *@
+                    @*************************************************************************
+                         * SELECTION VALUES - Create dropdown box field type if selectionvalues present
+                        *************************************************************************@
                     @if (item.Value.SelectionValues != null)
                     {
 
@@ -60,10 +69,11 @@
                             }
                         </select>
                     }
+                    @*************************************************************************
+                        * ARRAY - Create array field type if IsArray is true
+                        *************************************************************************@
                     else if (item.Value.IsArray == true)
                     {
-                        @* PARAMETER: STRING[] *@
-
                         <div id="formarray_@(item.Key)" class="array-form">
                             <table id="itemTable_@(item.Key)" class="array-table">
                                 <tr>
@@ -101,6 +111,9 @@
                         </style>
 
                     }
+                    @*************************************************************************
+                        * STRING - Create string field type by default
+                        *************************************************************************@
                     else
                     {
                         <input type="text" name="inputs[@inputCount].Value" class="form-control form-control-danger" id="@item.Key" value="@item.Value.DefaultValue" />
@@ -112,6 +125,8 @@
                 inputCount++;
             }
             <input type="text" id="signalRconnectionId" name="signalRconnectionId" hidden value="" />
+            <input type="hidden" id="runbookName" name="runbookName" value="@ViewBag.Runbook.Name" />
+            <input type="hidden" id="runbookDisplayName" name="runbookDisplayName" value="@ViewBag.Runbook.DisplayName" />
 
             <table>
                 <tr>

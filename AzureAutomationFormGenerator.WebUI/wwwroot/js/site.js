@@ -7,11 +7,11 @@
 // BEGIN - General logic
 // ***********************************************
 if (typeof myModel !== 'undefined'){
-    for (var propertyName in myModel) {
-        if (myModel[propertyName].isRequired === true) {
+    for (var propertyName in myModel.parameterDefinitions) {
+        if (myModel.parameterDefinitions[propertyName].isRequired === true) {
             $("#" + propertyName).attr('required', true);
             $("#itemInput_" + propertyName).attr('required', true);
-            $(".form-control-label[for='" + propertyName + "']").append("<b>*</b>");
+            $(".form-control-label[for='" + propertyName + "']").append("<b style='color: red'>*</b>");
         }
     }
 }

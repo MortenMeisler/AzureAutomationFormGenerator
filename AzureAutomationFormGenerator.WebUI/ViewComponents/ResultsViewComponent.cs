@@ -17,11 +17,11 @@ namespace AzureAutomationFormGenerator.WebUI.ViewComponents
         {
             _customAzureOperations = customAzureOperations;
         }
-        public async Task<IViewComponentResult> InvokeAsync(string resourceGroup, string automationAccount, Dictionary<string, string> inputs)
+        public async Task<IViewComponentResult> InvokeAsync(string resourceGroup, string automationAccount, RunbookSimple runbook, Dictionary<string, string> inputs)
         {
             //Start runbook and return output
-            ResultsModel results = await _customAzureOperations.StartRunbookAndReturnResult(resourceGroup, automationAccount, StaticRepo.RunbookName, inputs).ConfigureAwait(false);
-            
+            ResultsModel results = await _customAzureOperations.StartRunbookAndReturnResult(resourceGroup, automationAccount, runbook.Name, inputs).ConfigureAwait(false);
+            results.Runbook = runbook;
             return View(results);
         }
     }
