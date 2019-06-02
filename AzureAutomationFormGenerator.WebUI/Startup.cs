@@ -120,7 +120,13 @@ namespace AzureAutomationFormGenerator.WebUI
         {
             if (env.IsDevelopment())
             {
-                app.UseExceptionHandler("/Home/Error");
+               
+                app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                
+                //app.UseExceptionHandler("/Home/Error");
 
                 app.UseExceptionHandler(errorApp =>
                 {
@@ -130,7 +136,7 @@ namespace AzureAutomationFormGenerator.WebUI
                         context.Response.ContentType = "text/html";
 
                         await context.Response.WriteAsync($"<html lang=\"en\">Oh this error occured even before any pages was loaded my dear. Error message:<body><br><br>");
-                      
+
 
                         var exceptionHandlerPathFeature =
                             context.Features.Get<IExceptionHandlerPathFeature>();
@@ -144,12 +150,6 @@ namespace AzureAutomationFormGenerator.WebUI
                         await context.Response.WriteAsync(new string(' ', 512)); // IE padding
                     });
                 });
-
-                //app.UseDeveloperExceptionPage();
-            }
-            else
-            {
-                app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
             }
             app.Use(async (context, next) =>

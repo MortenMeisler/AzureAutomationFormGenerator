@@ -116,6 +116,7 @@
             var runbooks = (await Client.Runbook.ListByAutomationAccountAsync(resourceGroupName, automationAccountName)).Where(x => x.Tags.Contains(_automationTagVisibility)).Select(r => new RunbookSimple
             {
                 Name = r.Name,
+                DisplayName = r.Tags.Where(tag => tag.Key == _automationTagDisplayName.Key).FirstOrDefault().Value
             }).ToList<RunbookSimple>() ;
 
             return runbooks;

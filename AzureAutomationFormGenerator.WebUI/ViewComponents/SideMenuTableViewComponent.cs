@@ -32,7 +32,8 @@ namespace AzureAutomationFormGenerator.WebUI.ViewComponents
                 //Getting descriptions foreach runbook (these are not retrieved from ListRunbooks method) //TODO: only get runbook if LastModified is changed to save some miliseconds)
                 await Task.Run(() => Parallel.ForEach(runbooks, runbook =>
                 {
-                    runbook.Description = _customAzureOperations.GetRunbook(resourceGroup, automationAccount, runbook.Name).GetAwaiter().GetResult().Description;                 
+                    runbook.Description = _customAzureOperations.GetRunbook(resourceGroup, automationAccount, runbook.Name).GetAwaiter().GetResult().Description;
+                   
                 }));
 
                 var serializedRunbooks = JsonConvert.SerializeObject(runbooks);

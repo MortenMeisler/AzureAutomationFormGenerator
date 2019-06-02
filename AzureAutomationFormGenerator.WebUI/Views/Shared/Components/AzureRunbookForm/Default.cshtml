@@ -6,8 +6,13 @@
 }
 
 
+@if (@Model.DisplayName != null)
+{
+    <h3 class="about-heading runbook-name">@Model.DisplayName</h3>
+}else{
+    <h3 class="about-heading runbook-name">@Model.Name</h3>
+}
 
-<h3 class="about-heading runbook-name">@Model.DisplayName</h3>
 <hr>
 <table id="status-table" class="table" style="display: none">
     <thead>
