@@ -10,13 +10,16 @@ Generate input forms from Azure Automation Runbooks and run them.
 *Deployment based on [this sample](https://github.com/azure-appservice-samples/ToDoApp) / [Microsoft documentation](https://docs.microsoft.com/en-us/azure/app-service/app-service-deploy-complex-application-predictably)
 ## Overview
 
-1. Create Runbook with powershell parameters:
-![Create Runbook with powershell parameters](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto00.png?raw=true)
+1. Create a Runbook with powershell parameters:
+<br><br>
+![Create a Runbook with powershell parameters](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto00.png?raw=true)
 
 2. Fetch the runbook from the url
+<br><br>
 ![Fetch the runbook from the url](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto01.PNG?raw=true)
 
-#### Default landing page ####
+#### ...or just use the default landing page to get a list of runbook that you have tagged to be published ####
+<br><br>
 ![Fetch the runbook from the url](https://raw.githubusercontent.com/MortenMeisler/AzureAutomationFormGenerator/master/doc/howto02.png)
 
 ## Requirements
