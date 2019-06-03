@@ -26,7 +26,7 @@ Generate input forms from Azure Automation Runbooks and run them.
 
 ## Requirements
 
- - Create an Azure AD application and service principal that can access your Azure Automation Account. [Read more here](https://docs.microsoft.com/en-us/azure/azure-resource-manager/resource-group-create-service-principal-portal)
+The website relies on a RunAsAccount (Service Principal) for executing the runbooks (this is created through the Automation Account setup) and a Azure AD application for authentication and authorization of the user accessing the site.
  
 ## Getting Started
 
@@ -55,9 +55,17 @@ Generate input forms from Azure Automation Runbooks and run them.
 5. You can now build project and if you want publish to own website host.
 
 ## Usage
-Default landing page will have a left menu with you runbooks listed. This will only grap your runbooks with the following **tag**:
-- Key: `FormGenerator` Value: `Public`
-### Other page types
+Default landing page will have a left menu with you runbooks listed. This will only grap your runbooks that has a tag of Key: `FormGenerator:Visibility` Value: `Public`. Neither will it be possible to fetch a runbook without this tag.
+
+### Other tags
+`FormGenerator:DisplayName` Value: `My Runbook Name` Make a friendly runbook name with spaces, otherwise it uses the current runbook name. 
+
+Example:
+<br><br>
+![tags](https://raw.githubusercontent.com/MortenMeisler/AzureAutomationFormGenerator/master/doc/tagshowto03.png)
+
+## Page types
+Instead of using the default landing page, you can use other page options to only show the individual runbook and then integrate the site in another site of yours:
 - Full Width page: `https://<NameOfYourWebSite>.azurewebsites.net/<NameOfYourRunbook>`**`?pageType=1`**
 - Centered page: `https://<NameOfYourWebSite>.azurewebsites.net/<NameOfYourRunbook>`**`?pageType=2`**
 
