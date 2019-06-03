@@ -18,9 +18,11 @@ Generate input forms from Azure Automation Runbooks and run them.
 <br><br>
 ![Fetch the runbook from the url](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto01.PNG?raw=true)
 
-#### ...or just use the default landing page to get a list of runbook that you have tagged to be published ####
+#### ...or just use the default landing page to get a list of runbooks that you have tagged to be published ####
 <br><br>
-![Fetch the runbook from the url](https://raw.githubusercontent.com/MortenMeisler/AzureAutomationFormGenerator/master/doc/howto02.png)
+![default landingpage](https://raw.githubusercontent.com/MortenMeisler/AzureAutomationFormGenerator/master/doc/howto02.png)
+
+(page can be styled as you like through the site.css file)
 
 ## Requirements
 
