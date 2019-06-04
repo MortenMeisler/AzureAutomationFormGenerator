@@ -14,11 +14,15 @@ Generate input forms from Azure Automation Runbooks and run them.
 <br><br>
 ![Create a Runbook with powershell parameters](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto00.png?raw=true)
 
-2. Fetch the runbook from the url
+2. Fetch the runbook from the url:
 <br><br>
 ![Fetch the runbook from the url](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto01.PNG?raw=true)
 
-#### ...or just use the default landing page to get a list of runbooks that you have tagged to be published ####
+3. Fill out the form and submit the runbook to create a new job:
+<br><br>
+![Form Generator demo](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/formgenerator.gif?raw=true)
+
+#### ...or just use the default landing page to get a list of runbooks that you have tagged to be published: ####
 <br><br>
 ![default landingpage](https://raw.githubusercontent.com/MortenMeisler/AzureAutomationFormGenerator/master/doc/howto02.png)
 
