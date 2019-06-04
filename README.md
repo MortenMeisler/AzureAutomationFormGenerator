@@ -26,7 +26,7 @@ Generate input forms from Azure Automation Runbooks and run them.
 <br><br>
 ![default landingpage](https://raw.githubusercontent.com/MortenMeisler/AzureAutomationFormGenerator/master/doc/howto02.png)
 
-Check Usage section for other page options get the runbook without sidemenu. The page can be styled as you like through the site.css file
+Check Usage section for other page options, like getting the runbook without a sidemenu. The page can be styled as you like through the site.css file
 
 ## Requirements
 
