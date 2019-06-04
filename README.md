@@ -26,7 +26,7 @@ Generate input forms from Azure Automation Runbooks and run them.
 
 ## Requirements
 
-The website relies on a RunAsAccount (Service Principal) for executing the runbooks (this is created through the Automation Account setup) and a Azure AD application for authentication and authorization of the user accessing the site.
+The website relies on a Run As Account (Service Principal) for executing the runbooks (this is created through the Automation Account setup) and an Azure AD application for authentication and authorization of the user accessing the site. Authentication is optional in case you want to embed the site as an iframe inside another site of yours (ex. sharepoint, ITSM platform etc.). There are support for Cross-origin resource sharing (CORS) where you specify your primary site address. Check Page types section.
  
 ## Getting Started
 
