@@ -59,7 +59,7 @@ The website relies on a Run As Account (Service Principal) for executing the run
 5. You can now build project and if you want publish to own website host.
 
 ## Usage
-Default landing page will have a left menu with your runbooks listed. This will only grap your runbooks that has a tag of Key: `FormGenerator:Visibility` Value: `Public`. Neither will it be possible to fetch a runbook without this tag.
+Default landing page will have a left menu with your runbooks listed. This will only grap your runbooks that has a tag of Key: `FormGenerator:Visibility` Value: `Public`. It will not be possible to fetch a runbook without this tag.
 
 ### Other tags
 `FormGenerator:DisplayName` Value: `My Runbook Name` Make a friendly runbook name with spaces, otherwise it uses the current runbook name. 
