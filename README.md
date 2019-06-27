@@ -14,15 +14,19 @@ Generate input forms from Azure Automation Runbooks and run them.
 <br><br>
 ![Create a Runbook with powershell parameters](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto00.png?raw=true)
 
-2. Fetch the runbook from the url
+2. Fetch the runbook from the url:
 <br><br>
 ![Fetch the runbook from the url](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto01.PNG?raw=true)
 
-#### ...or just use the default landing page to get a list of runbooks that you have tagged to be published ####
+3. Fill out the form and submit the runbook to create a new job:
+<br><br>
+![Form Generator demo](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/formgenerator.gif?raw=true)
+
+#### Default landing page to get a list of runbooks that you have tagged to be published: ####
 <br><br>
 ![default landingpage](https://raw.githubusercontent.com/MortenMeisler/AzureAutomationFormGenerator/master/doc/howto02.png)
 
-(page can be styled as you like through the site.css file)
+Check Usage section for other page options, like getting the runbook without a sidemenu. The page can be styled as you like through the site.css file
 
 ## Requirements
 
@@ -55,7 +59,7 @@ The website relies on a Run As Account (Service Principal) for executing the run
 5. You can now build project and if you want publish to own website host.
 
 ## Usage
-Default landing page will have a left menu with your runbooks listed. This will only grap your runbooks that has a tag of Key: `FormGenerator:Visibility` Value: `Public`. Neither will it be possible to fetch a runbook without this tag.
+Default landing page will have a left menu with your runbooks listed. This will only grap your runbooks that has a tag of Key: `FormGenerator:Visibility` Value: `Public`. It will not be possible to fetch a runbook without this tag.
 
 ### Other tags
 `FormGenerator:DisplayName` Value: `My Runbook Name` Make a friendly runbook name with spaces, otherwise it uses the current runbook name. 
@@ -76,6 +80,7 @@ Example:
 - Use ```[Alias("My Name of Parameter")]``` in powershell runbook to have friendly names of your parameters
 - Use ```[ValidateSet("Value1", "Value2", "Value3")]``` for selection dropdown list
 - Use ```[string[]]``` or ```[object[]]``` or ```[PSObject[]]``` to make an array parameter for adding/removing items
+- Use ```[datetime]``` to get a datepicker on the field localized to the client browser language.
 - Use ```[Parameter(Mandatory=$true)]``` to make fields required
 - Set your parameter equal something to have a default value. Example: ```$MyVariable = "This is my default value"```
 
