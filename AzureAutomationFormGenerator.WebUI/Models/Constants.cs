@@ -32,7 +32,15 @@ namespace AzureAutomationFormGenerator.WebUI.Models
                     $"If only subscription is specified in appsettings on the server use this URL format:<br>" +
                     $"{HelpTipURLParametersAll}";
             
-        
+        public enum ParameterTypes {
+            @int,
+            @string,
+            @datetime,
+            @array,
+            @dropdown,
+            @bool
+        }
+   
 
     }
 }

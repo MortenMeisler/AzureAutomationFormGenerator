@@ -8,6 +8,7 @@ using Microsoft.Extensions.Primitives;
 using Microsoft.Rest.Azure;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -66,6 +67,41 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
         public static void RemoveCookie(IHttpContextAccessor httpContextAccessor, string key)
         {
             httpContextAccessor.HttpContext.Response.Cookies.Delete(key);
+        }
+
+        /// <summary>
+        /// Responsible for exluding empty input from dictionary input and convert certain types to readable entries for automation engine.
+        /// </summary>
+        /// <param name="httpContext">current httpcontext from the request</param>
+        /// <param name="inputs">form field input values as dictionary</param>
+        /// <returns></returns>
+        public static Dictionary<string, string> SanitizeInput (HttpContext httpContext, IDictionary<string, string> inputs)
+        {
+           
+            var inputsSanitized = new Dictionary<string, string>();
+            var lang = httpContext.Request.GetTypedHeaders().AcceptLanguage[0].Value.ToString(); //.OrderByDescending(x => x.Quality ?? 1);
+            var culture = CultureInfo.GetCultureInfo(lang);
+
+            foreach (var input in inputs)
+            {
+                if (!string.IsNullOrEmpty(input.Value))
+                {
+                    //handle date
+                    DateTime dateResult;
+                    var dt = DateTime.TryParse(input.Value, culture, DateTimeStyles.None, out dateResult);
+                    if (dt == true)
+                    {
+                        var dtstring = dateResult.ToString("o", CultureInfo.InvariantCulture);
+                        inputsSanitized.Add(input.Key, dtstring);
+                    }
+                    else
+                    {
+                        inputsSanitized.Add(input.Key, input.Value);
+                    }
+                }
+            }
+
+            return inputsSanitized;
         }
 
     }

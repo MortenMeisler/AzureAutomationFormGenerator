@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static AzureAutomationFormGenerator.WebUI.Models.Constants;
 
 namespace AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions
 {
@@ -12,21 +13,38 @@ namespace AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions
     {
         public PowershellRunbookParameterDefinition(RunbookParameter runbookParameter) : base(runbookParameter)
         {
-            SetIsArray(runbookParameter);
+            
         }
 
-        public void SetIsArray(RunbookParameter runbookParameter)
+        public override void SetParameterType(RunbookParameter runbookParameter)
         {
-            IsArray = runbookParameter.Type == "System.String[]" ||
-                      runbookParameter.Type == "System.Management.Automation.PSObject[]" ||
-                      runbookParameter.Type == "System.Object[]";
+
+            switch (runbookParameter.Type)
+            {
+                case "System.String[]":
+                case "System.Management.Automation.PSObject[]":
+                case "System.Object[]":
+                    ParameterType = ParameterTypes.array;
+                    break;
+                case "System.DateTime":
+                    ParameterType = ParameterTypes.datetime;
+                    break;
+                case "System.Int32":
+                    ParameterType = ParameterTypes.@int;
+                    break;
+                default:
+                    ParameterType = ParameterTypes.@string;
+                    break;
+            }
+           
+
         }
 
         /// <summary>
         /// Regex check for [ValidateSet("X","Y","Z")] in the parameter and add the values to ValidateSet property
         /// </summary>
         /// <param name="powershellParameterSettingMatch"></param>
-        public void SetSelectionValues(Match powershellParameterSettingMatch)
+        public override void SetSelectionValues(Match powershellParameterSettingMatch)
         {
             Regex regex = new Regex(RegexPatternsPowershell.ValidateSet, RegexOptions.IgnoreCase);
             MatchCollection matchesValidateSet = regex.Matches(powershellParameterSettingMatch.Value);
@@ -43,7 +61,7 @@ namespace AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions
         /// Regex check for [Alias("Display Name X")] in the parameter and add the value to DisplayName property
         /// </summary>
         /// <param name="powershellParameterSettingMatch"></param>
-        public void SetDisplayName(Match powershellParameterSettingMatch)
+        public override void SetDisplayName(Match powershellParameterSettingMatch)
         {
             Regex regex = new Regex(RegexPatternsPowershell.Alias, RegexOptions.IgnoreCase);
             MatchCollection matchesAlias = regex.Matches(powershellParameterSettingMatch.Value);

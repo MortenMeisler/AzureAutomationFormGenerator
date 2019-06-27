@@ -183,17 +183,11 @@
                 //This allows you to do one Read operation.
                 runbookContent = sr.ReadToEnd();
             }
-            //Regex regexRunbookDisplayname = new Regex(RegexPatternsPowershell.DisplayName);
-            //MatchCollection runbookDisplayNameMatches = regexRunbookDisplayname.Matches(runbookContent);
-            //string runbookDisplayName;
-            //if (runbookDisplayNameMatches != null && runbookDisplayNameMatches.Count > 0)
-            //{
-            //    runbookDisplayName = runbookDisplayNameMatches[0].Value;
-            //}
+           
             int i = 0;
             foreach (KeyValuePair<string, RunbookParameter> runbookParameter in runbookParameters)
             {
-                PowershellRunbookParameterDefinition PSParameterDefinition = new PowershellRunbookParameterDefinition(runbookParameter.Value);
+                IRunbookParameterDefinition PSParameterDefinition = new PowershellRunbookParameterDefinition(runbookParameter.Value);
                
                 string pattern;
                 if (i == 0)
@@ -215,6 +209,7 @@
 
                     //ValidateSet - Within the specific parameter config check for ValidateSet and add it to RunbookParameterSetting instance
                     PSParameterDefinition.SetSelectionValues(paramSettings);
+                   
 
                     //Alias - Within the specific parameter config check for Alias and add it to RunbookParameterSetting instance
                     PSParameterDefinition.SetDisplayName(paramSettings);

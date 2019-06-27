@@ -19,6 +19,15 @@
     {
       "library": "animate.css@3.7.0",
       "destination": "wwwroot/lib/animate-css/"
+    },
+    {
+      "library": "tempusdominus-bootstrap-4@5.1.2",
+      "destination": "wwwroot/lib/bootstrap/tempusdominus-datetimepicker"
+    },
+    {
+      "library": "moment.js@2.24.0",
+      "destination": "wwwroot/lib/moment"
     }
+    
         ]
     }

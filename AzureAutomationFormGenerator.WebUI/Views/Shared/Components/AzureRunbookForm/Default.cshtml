@@ -43,8 +43,8 @@
                 <div class="form-group needs-validation has-danger" novalidate>
 
                     @*************************************************************************
-                        * LABEL - label name for each parameter
-                        *************************************************************************@
+        * LABEL - label name for each parameter
+        *************************************************************************@
                     <label class="form-control-label" for="@(item.Key)">
                         @if (item.Value.DisplayName != null)
                         {@item.Value.DisplayName}
@@ -53,8 +53,8 @@
                     </label>
 
                     @*************************************************************************
-                         * SELECTION VALUES - Create dropdown box field type if selectionvalues present
-                        *************************************************************************@
+         * SELECTION VALUES - Create dropdown box field type if selectionvalues present
+        *************************************************************************@
                     @if (item.Value.SelectionValues != null)
                     {
 
@@ -75,9 +75,9 @@
                         </select>
                     }
                     @*************************************************************************
-                        * ARRAY - Create array field type if IsArray is true
-                        *************************************************************************@
-                    else if (item.Value.IsArray == true)
+        * ARRAY - Create array field type if parameter type is array
+        *************************************************************************@
+                    else if (item.Value.ParameterType == Constants.ParameterTypes.array)
                     {
                         <div id="formarray_@(item.Key)" class="array-form">
                             <table id="itemTable_@(item.Key)" class="array-table">
@@ -117,10 +117,28 @@
 
                     }
                     @*************************************************************************
-                        * STRING - Create string field type by default
-                        *************************************************************************@
+        * DATETIME - Create datetime field type
+        *************************************************************************@
+                    else if (item.Value.ParameterType == Constants.ParameterTypes.datetime)
+                    {
+                        
+                        <div class="input-group date needs-validation has-danger" id="datetime_@item.Key" data-target-input="nearest">
+                            <input type="text" class="form-control form-control-danger datetimepicker-input" id="@item.Key" name="inputs[@inputCount].Value" value="@item.Value.DefaultValue" data-target="#datetime_@item.Key" />
+                            <div class="input-group-append" data-target="#datetime_@item.Key" data-toggle="datetimepicker">
+                                <div class="input-group-text"><i class="fa fa-calendar"></i></div>
+                            </div>
+                        </div>
+                      
+                        
+                    }
+
+                    @*************************************************************************
+        * STRING - Create string field type by default
+        *************************************************************************@
                     else
                     {
+
+
                         <input type="text" name="inputs[@inputCount].Value" class="form-control form-control-danger" id="@item.Key" value="@item.Value.DefaultValue" />
 
                     }

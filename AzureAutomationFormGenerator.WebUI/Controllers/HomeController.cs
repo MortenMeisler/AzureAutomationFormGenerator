@@ -21,6 +21,8 @@ using AzureAutomationFormGenerator.WebUI.Security;
 using Microsoft.Rest.Azure;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Diagnostics;
+using System.Globalization;
+
 
 namespace AzureAutomationFormGenerator.WebUI.Controllers
 {
@@ -40,9 +42,12 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         private readonly IMessageSender _messageSender;
         private string defaultRunbookName;
 
+        private IHttpContextAccessor _httpContextAccessor;
 
-        public HomeController(IConfiguration configuration, ICustomAzureOperations customAzureOperations, AutomationPortalDbContext automationPortalDbContext, IMessageSender messageSender)
+
+        public HomeController(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ICustomAzureOperations customAzureOperations, AutomationPortalDbContext automationPortalDbContext, IMessageSender messageSender)
         {
+            _httpContextAccessor = httpContextAccessor;
             _messageSender = messageSender;
             _automationPortalDbContext = automationPortalDbContext;
             StaticRepo.Configuration = configuration;
@@ -114,6 +119,8 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Submit(string signalRconnectionId, string runbookDisplayName, string runbookName, Dictionary<string, string> inputs)
         {
+            Dictionary<string, string> inputsSanitized = SanitizeInput(HttpContext, inputs);
+
             _messageSender.ConnectionId = signalRconnectionId;
             await _messageSender.SendMessage(_configuration["Text:OutputMessageJobStarted"]);
 
@@ -124,7 +131,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
                 AutomationAccount = _automationAccount,
                 RunbookName = runbookName,
                 Runbook = new RunbookSimple { Name = runbookName, DisplayName = runbookDisplayName },
-                ResultsModel = new ResultsModel() { JobInputs = inputs}
+                ResultsModel = new ResultsModel() { JobInputs = inputsSanitized }
             };
 
             //AUDIT LOG - START
@@ -134,7 +141,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
                 {
                     RequestName = runbookName,
                     RequestUser = HttpContext.User.Identity.Name,
-                    RequestInput = JsonConvert.SerializeObject(inputs, Formatting.None)
+                    RequestInput = JsonConvert.SerializeObject(inputsSanitized, Formatting.None)
 
                 };
                 _automationPortalDbContext.Add(logEntry);

@@ -8,6 +8,24 @@
 // ***********************************************
 if (typeof myModel !== 'undefined'){
     for (var propertyName in myModel.parameterDefinitions) {
+       
+        //Datetime
+        if (myModel.parameterDefinitions[propertyName].parameterType === 2) {
+            $("#datetime_" + propertyName).datetimepicker({
+                //date: moment(),
+                //format: 'YYYY-MM-DD hh:mm',
+                locale: navigator.language,//YYYY-MM-DD hh:mm
+                sideBySide: true
+            });
+
+            //Create event listerner
+            //$("#datetime_" + propertyName).on("change.datetimepicker", function (e) {
+            //    dateObj = e.date;
+            //});
+
+        }
+
+        //Required fields
         if (myModel.parameterDefinitions[propertyName].isRequired === true) {
             $("#" + propertyName).attr('required', true);
             $("#itemInput_" + propertyName).attr('required', true);
@@ -141,6 +159,9 @@ $(".btn.btn-primary.itemAdd").on('click', function (event) {
 // ***********************************************
 // END - Parameter: string[]
 // ***********************************************
+
+
+
 
 
 

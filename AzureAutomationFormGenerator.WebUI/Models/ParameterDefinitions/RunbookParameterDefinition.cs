@@ -2,15 +2,19 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static AzureAutomationFormGenerator.WebUI.Models.Constants;
 
 namespace AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions
 {
-    public class RunbookParameterDefinition : IRunbookParameterDefinition
+    public abstract class RunbookParameterDefinition : IRunbookParameterDefinition
     {
+        public ParameterTypes ParameterType { get; set; }
         public List<string> SelectionValues { get; set; }
         public RunbookParameterDefinition(RunbookParameter runbookParameter)
         {
+            SetParameterType(runbookParameter);
             IsRequired = (bool)runbookParameter.IsMandatory;
             SetDefaultValue(runbookParameter);
         }
@@ -20,11 +24,9 @@ namespace AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions
 
         public string DefaultValue { get; set; }
 
-        public bool IsArray { get; set; }
+        public abstract void SetParameterType(RunbookParameter runbookParameter);
 
-        public void SetIsArray(string notused) => throw new NotImplementedException();
-
-        public void SetDisplayName(string notused) => throw new NotImplementedException();
+        public abstract void SetDisplayName(Match parameterSettingMatch);
 
         public void SetDefaultValue(RunbookParameter runbookParameter)
         {
@@ -35,7 +37,7 @@ namespace AzureAutomationFormGenerator.WebUI.Models.ParameterDefinitions
 
         }
 
-        public void SetSelectionValues(string notused) => throw new NotImplementedException();
+        public abstract void SetSelectionValues(Match parameterSettingMatch);
         
     }
 

@@ -69,7 +69,7 @@ connection.on("initErrorMessage", (message) => {
 });
 
 //Submit button clicked event listener
-//document.getElementById("submitButton").addEventListener("click", function (event) {
+document.getElementById("submitButton").addEventListener("click", function (event) {
 
     
-//});
+});

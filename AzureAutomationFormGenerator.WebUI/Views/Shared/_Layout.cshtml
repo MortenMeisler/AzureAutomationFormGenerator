@@ -12,13 +12,15 @@
         <link rel="stylesheet" href="~/css/site.css" />
         <link rel="stylesheet" href="~/lib/font-awesome/css/font-awesome.min.css" />
         <link rel="stylesheet" href="~/lib/animate-css/animate.min.css">
-        
+        <link rel="stylesheet" href="~/lib/bootstrap/tempusdominus-datetimepicker/css/tempusdominus-bootstrap-4.min.css" />
+
 
     </environment>
     <environment exclude="Development">
+
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css"
-        asp-fallback-href="~/lib/animate-css/animate.min.css"
-        asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+              asp-fallback-href="~/lib/animate-css/animate.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
               asp-fallback-href="~/lib/bootstrap/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
@@ -28,6 +30,9 @@
               integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
               crossorigin="anonymous"
               asp-fallback-href="~/lib/font-awesome/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/css/tempusdominus-bootstrap-4.min.css"
+                asp-fallback-href="~/lib/bootstrap/tempusdominus-datetimepicker/css/tempusdominus-bootstrap-4.min.css"
+              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
     </environment>
 </head>
 <body>
@@ -40,7 +45,10 @@
     <environment include="Development">
         <script src="~/lib/jquery/jquery.js"></script>
         <script src="~/lib/bootstrap/js/bootstrap.bundle.js"></script>
+        <script src="~/lib/moment/moment-with-locales.js" asp-append-version="true"></script>
+        <script src="~/lib/bootstrap/tempusdominus-datetimepicker/js/tempusdominus-bootstrap-4.js" asp-append-version="true"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
+
     </environment>
     <environment exclude="Development">
         <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -48,12 +56,17 @@
                 asp-fallback-test="window.jQuery" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
                 crossorigin="anonymous">
         </script>
-        
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js" 
+
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"
                 asp-fallback-src="~/lib/bootstrap/js/bootstrap.bundle.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                ></script>
-        
+                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"></script>
+
+        <script src="~/lib/moment/moment-with-locales.min.js" asp-append-version="true"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.0-alpha14/js/tempusdominus-bootstrap-4.min.js"
+                asp-fallback-src="~/lib/bootstrap/tempusdominus-datetimepicker/js/tempusdominus-bootstrap-4.min.js"></script>
+
+
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
 
