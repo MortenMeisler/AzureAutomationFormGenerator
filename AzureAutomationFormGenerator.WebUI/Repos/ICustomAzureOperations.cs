@@ -41,7 +41,7 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
         /// <param name="parameters"></param>
         /// <param name="timeOutSeconds"></param>
         /// <returns></returns>
-        Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroupName, string automationAccountName, string runbookName, string jobName, Dictionary<string, string> parameters, int timeOutSeconds = 300);
+        Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroupName, string automationAccountName, string runbookName, string jobName,string hybridWorkerGroup, Dictionary<string, string> parameters, int timeOutSeconds = 300);
 
         /// <summary>
         /// Get a runbook by name
@@ -61,7 +61,7 @@ namespace AzureAutomationFormGenerator.WebUI.Repos
         /// <param name="parameters"></param>
         /// <param name="timeOutSeconds"></param>
         /// <returns></returns>
-        Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroupName, string automationAccountName, string runbookName, Dictionary<string, string> parameters, int timeOutSeconds = 300);
+        Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroupName, string automationAccountName, string runbookName, string hybridWorkergroup, Dictionary<string, string> parameters, int timeOutSeconds = 300);
         /// <summary>
         /// Return runbook with specified Resource Group, Automation Account and Runbook Name
         /// </summary>

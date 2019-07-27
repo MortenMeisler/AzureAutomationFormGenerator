@@ -117,7 +117,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Submit(string signalRconnectionId, string runbookDisplayName, string runbookName, Dictionary<string, string> inputs)
+        public async Task<IActionResult> Submit(string signalRconnectionId, string runbookDisplayName, string runbookName, string runbookHybridWorkerGroup,  Dictionary<string, string> inputs)
         {
             Dictionary<string, string> inputsSanitized = SanitizeInput(HttpContext, inputs);
 
@@ -130,6 +130,7 @@ namespace AzureAutomationFormGenerator.WebUI.Controllers
                 ResourceGroup = _resourceGroup,
                 AutomationAccount = _automationAccount,
                 RunbookName = runbookName,
+                HybridWorkerGroup = runbookHybridWorkerGroup,
                 Runbook = new RunbookSimple { Name = runbookName, DisplayName = runbookDisplayName },
                 ResultsModel = new ResultsModel() { JobInputs = inputsSanitized }
             };

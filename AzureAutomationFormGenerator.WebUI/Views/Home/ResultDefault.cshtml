@@ -13,7 +13,7 @@
                 @*@{
                     ViewContext.ViewData.TemplateInfo.HtmlFieldPrefix = "Runbook";
                 }*@
-                <vc:results automation-account="@Model.AutomationAccount" resource-group="@Model.ResourceGroup" runbook="@Model.Runbook" inputs="@Model.ResultsModel.JobInputs"></vc:results>
+                <vc:results automation-account="@Model.AutomationAccount" resource-group="@Model.ResourceGroup" runbook="@Model.Runbook" hybrid-worker-group="@Model.HybridWorkerGroup" inputs="@Model.ResultsModel.JobInputs"></vc:results>
 
             </div>
         </div>

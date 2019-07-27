@@ -45,6 +45,7 @@
         private readonly KeyValuePair<string, string> _automationTagVisibility;
         private readonly KeyValuePair<string, string> _automationTagDisplayName;
         private readonly KeyValuePair<string, string> _automationTagDescription;
+        private readonly KeyValuePair<string, string> _automationTagHybridWorkerGroup;
 
         private readonly IMessageSender _messageSender;
         /// <summary>
@@ -71,7 +72,11 @@
                           },
                           ""Description"": {
                                         ""Key"": ""FormGenerator:Description""
-                          }""
+                          },
+                          ""HybridWorkerGroup"": {
+                                        ""Key"": ""FormGenerator:HybridWorkerGroup""
+                           }
+                            
                         }";
                 throw new Exception(errorstring);
         
@@ -79,6 +84,7 @@
             _automationTagVisibility = new KeyValuePair<string, string>(_configuration["AzureSettings:AutomationTag:Visibility:Key"], _configuration["AzureSettings:AutomationTag:Visibility:Value"]);
             _automationTagDisplayName = new KeyValuePair<string, string>(_configuration["AzureSettings:AutomationTag:DisplayName:Key"], _configuration["AzureSettings:AutomationTag:DisplayName:Value"]);
             _automationTagDescription = new KeyValuePair<string, string>(_configuration["AzureSettings:AutomationTag:Description:Key"], _configuration["AzureSettings:AutomationTag:Description:Value"]);
+            _automationTagHybridWorkerGroup = new KeyValuePair<string, string>(_configuration["AzureSettings:AutomationTag:HybridWorkerGroup:Key"], _configuration["AzureSettings:AutomationTag:HybridWorkerGroup:Value"]);
             Client = new AutomationClient(GetCredentials()) { SubscriptionId = _configuration["AzureSettings:SubscriptionId"] };
         }
 
@@ -134,6 +140,7 @@
             {
                 Name = runbookName,
                 DisplayName = runbook.Tags.Where(tag => tag.Key == _automationTagDisplayName.Key).FirstOrDefault().Value,
+                HybridWorkerGroup = runbook.Tags.Where(tag => tag.Key == _automationTagHybridWorkerGroup.Key).FirstOrDefault().Value,
                 ParameterDefinitions = await GetRunbookParameterDefinitions(resourceGroupName, automationAccountName, runbook)
             };
             return runbookGenerated;
@@ -233,15 +240,20 @@
         /// <param name="jobName"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        public async Task<Job> CreateJob(string resourceGroupName, string automationAccountName, string runbookName, string jobName, Dictionary<string, string> parameters)
+        public async Task<Job> CreateJob(string resourceGroupName, string automationAccountName, string runbookName, string jobName, string hybridWorkergroup, Dictionary<string, string> parameters)
         {
             try
             {
+                //TODO: Check if hybridworkergroup exists
+                
+                
+
                 //Create parameters for job
                 JobCreateParameters jobCreateParameters = new JobCreateParameters(new RunbookAssociationProperty
                 {
                     Name = runbookName
-                }, parameters);
+                   
+                }, parameters, hybridWorkergroup);
 
                 //Create job
                 return await Client.Job.CreateAsync(resourceGroupName, automationAccountName, jobName, jobCreateParameters);
@@ -262,9 +274,9 @@
         /// <param name="parameters"></param>
         /// <param name="timeOutSeconds"></param>
         /// <returns></returns>
-        public async Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroupName, string automationAccountName, string runbookName, Dictionary<string, string> parameters, int timeOutSeconds = 300)
+        public async Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroupName, string automationAccountName, string runbookName, string hybridWorkergroup, Dictionary<string, string> parameters, int timeOutSeconds = 300)
         {
-            return await StartRunbookAndReturnResult(resourceGroupName, automationAccountName, runbookName, Guid.NewGuid().ToString(), parameters, timeOutSeconds: timeOutSeconds);
+            return await StartRunbookAndReturnResult(resourceGroupName, automationAccountName, runbookName, Guid.NewGuid().ToString(), hybridWorkergroup, parameters, timeOutSeconds: timeOutSeconds);
         }
 
         /// <summary>
@@ -277,11 +289,11 @@
         /// <param name="parameters"></param>
         /// <param name="timeOutSeconds"></param>
         /// <returns></returns>
-        public async Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroupName, string automationAccountName, string runbookName, string jobName, Dictionary<string, string> parameters, int timeOutSeconds = 300)
+        public async Task<ResultsModel> StartRunbookAndReturnResult(string resourceGroupName, string automationAccountName, string runbookName, string jobName, string hybridWorkergroup, Dictionary<string, string> parameters, int timeOutSeconds = 300)
         { 
             try {
                 //Create job
-                Job job = await CreateJob(resourceGroupName, automationAccountName, runbookName,jobName, parameters);
+                Job job = await CreateJob(resourceGroupName, automationAccountName, runbookName,jobName, hybridWorkergroup, parameters);
 
                 if (job != null)
                 {

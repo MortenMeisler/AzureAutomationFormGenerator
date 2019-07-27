@@ -9,6 +9,7 @@ namespace AzureAutomationFormGenerator.WebUI.Models.Runbook
         string DisplayName { get; set; }
         string Instruction { get; set; }
         string Name { get; set; }
+        string HybridWorkerGroup { get; set; }
         IDictionary<string, IRunbookParameterDefinition> ParameterDefinitions { get; set; }
     }
 }

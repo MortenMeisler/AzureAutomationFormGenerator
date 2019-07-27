@@ -13,6 +13,7 @@ namespace AzureAutomationFormGenerator.WebUI.Models
         public string AutomationAccount { get; set; }
 
         public string RunbookName { get; set; }
+        public string HybridWorkerGroup { get; set; }
 
         public RunbookSimple Runbook { get; set; }
 

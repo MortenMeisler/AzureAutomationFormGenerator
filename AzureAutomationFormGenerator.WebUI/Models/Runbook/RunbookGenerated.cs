@@ -33,6 +33,11 @@ namespace AzureAutomationFormGenerator.WebUI.Models.Runbook
         public string Instruction { get; set; }
 
         /// <summary>
+        /// Hybrid Worker Group if defined in tags on the runbook
+        /// </summary>
+        public string HybridWorkerGroup { get; set; }
+
+        /// <summary>
         /// A dictionary of the parameter name (key) and its collection of parameter definitions (value)
         /// </summary>
         public IDictionary<string, IRunbookParameterDefinition> ParameterDefinitions { get; set; }
