@@ -96,3 +96,6 @@ By default the website uses Azure AD authentication. In Appsettings you can cont
 To enable group authorization open your manifest file of your Azure AD app and change the `groupMembershipClaims` to `SecurityGroup`. This change can take up to an hour to take effect.
 
 In Appsettings change the Object Id's of the AD Security Groups that gives access to the site.
+
+### Feedback
+If you have any issues or feature requests, just submit an issue in the top or write to me :)
