@@ -8,7 +8,7 @@ Generate input forms from Azure Automation Runbooks and run them.
 [![Deploy to Azure](http://azuredeploy.net/deploybutton.png)](https://azuredeploy.net/)
 
 *Deployment based on [this sample](https://github.com/azure-appservice-samples/ToDoApp) / [Microsoft documentation](https://docs.microsoft.com/en-us/azure/app-service/app-service-deploy-complex-application-predictably)
-## Overview
+## How it works
 
 1. Create a Runbook with powershell parameters:
 <br><br>
