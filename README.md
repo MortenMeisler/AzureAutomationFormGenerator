@@ -14,7 +14,7 @@ Once you have deployed the website,
 <br><br>
 ![Create a Runbook with powershell parameters](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/howto00.png?raw=true)
 
-2. Go to the website and click on your runbook. The parameters you specified will autogenerate a form with form-fields matching the type of parameter. For example ValidateSet("value1", "value2") will create a dropdown-list, string[] will create a multi-select list, [datetime] = datetime picker etc. Fill out the form and submit to create a new runbook job and optionally wait for the results:
+2. Go to the website and click on your runbook. The parameters you specified will autogenerate a form with form-fields matching the type of parameter. For example `[ValidateSet("value1", "value2")]` will create a dropdown-list, `[string[]]` will create a multi-select list, `[datetime]` => datetime picker etc. Fill out the form and submit to create a new runbook job and optionally wait for the results:
 <br><br>
 ![Form Generator demo](https://github.com/MortenMeisler/AzureAutomationFormGenerator/blob/master/doc/formgenerator.gif?raw=true)
 
