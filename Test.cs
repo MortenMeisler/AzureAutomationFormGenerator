@@ -25,6 +25,7 @@ namespace AzureFunctionSubmitForm.Controllers
         private static string _queryString;
         private static Dictionary<string, AzureFunctionSubmitForm.Models.RunbookParameterSetting> _runbookParameterSettings;
         private readonly IHubContext<Hub> _hubContext;
+        string hej;
 
 
         private readonly ICustomAzureOperations _customAzureOperations;
