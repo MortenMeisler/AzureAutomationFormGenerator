@@ -18,7 +18,7 @@
   },
   "ApplicationId": {
     "type": "string",
-    "defaultValue": "f2869f44-2244-4a63-b631-20b2ddb2de68",
+    "defaultValue": "",
     "metadata": {
       "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Application ID"
     }
@@ -51,7 +51,7 @@
   },
   "TenantId": {
     "type": "string",
-    "defaultValue": "b6909603-e5a8-497d-8fdb-7f10240fdc14",
+    "defaultValue": "",
     "metadata": {
       "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Tenant ID"
     }
@@ -263,8 +263,6 @@
             "AzureSettings:TenantId": "[parameters('TenantId')]",
             "AzureSettings:ResourceGroup": "[parameters('AutomationResourceGroup')]",
             "AzureSettings:SubscriptionId": "[if(empty(parameters('SubscriptionIdForAutomationAccount')), subscription().subscriptionId,parameters('SubscriptionIdForAutomationAccount'))]",
-            "AzureSettings:AutomationTag:Key": "FormGenerator",
-            "AzureSettings:AutomationTag:Value": "Public",
             "Text:RunbooksTitle": "Runbooks",
             "Text:NoRunbooks": "No runbooks found with Tag: FormGenerator : Public",
             "Text:OutputMessageJobStarted": "Job succesfully submitted. You can close the browser now or you can wait for the results...",
