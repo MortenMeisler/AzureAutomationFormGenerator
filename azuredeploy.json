@@ -17,10 +17,7 @@
     "defaultValue": "master"
   },
   "ApplicationId": {
-    "type": "string",
-    "metadata": {
-      "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Application ID"
-    }
+    "type": "string"
   },
   "ApplicationSecret": {
     "type": "securestring",
