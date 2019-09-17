@@ -18,9 +18,15 @@
   },
   "ApplicationId": {
     "type": "string",
-    "defaultValue": "",
     "metadata": {
       "description": "Found in Azure -> Automation Account -> Run As Account -> Azure Run As Account -> Application ID"
+    }
+  },
+  "ApplicationSecret": {
+    "type": "securestring",
+    "defaultValue": "mysecretkey",
+    "metadata": {
+      "description": "Secret password from your vault thingy"
     }
   },
   "SubscriptionIdForAutomationAccount": {
@@ -31,13 +37,7 @@
       "name": "Subscription Automation Account"
     }
   },
-  "ApplicationSecret": {
-    "type": "securestring",
-    "defaultValue": "mysecretkey",
-    "metadata": {
-      "description": "Secret password from your vault thingy"
-    }
-  },
+  
   "AutomationAccount": {
     "type": "string",
     "defaultValue": "MyAutomationAccountName"
@@ -258,7 +258,7 @@
             "AzureAd:ClientId": "[parameters('ApplicationIdAuthentication')]",
             "AzureSettings:ClientId": "[parameters('ApplicationId')]",
             "ClientSecret": "[parameters('ApplicationSecret')]",
-            "CrossOriginAddress": "[parameters('CrossOriginAddress')]",
+            "CrossOriginAddress": "https://mycompanywebsitetoembedthissite.com",
             "AzureSettings:AutomationAccount": "[parameters('AutomationAccount')]",
             "AzureSettings:TenantId": "[parameters('TenantId')]",
             "AzureSettings:ResourceGroup": "[parameters('AutomationResourceGroup')]",
