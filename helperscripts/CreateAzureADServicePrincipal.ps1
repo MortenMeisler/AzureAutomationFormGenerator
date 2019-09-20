@@ -10,15 +10,17 @@ param(
 $ErrorActionPreference = "Stop"
 
 #Install required modules if not exist
-$modules = @("Az.Accounts", "Az.Resources", "Az.Automation")
+$modules = @("Az.Accounts2", "Az.Resources", "Az.Automation")
 if ((Get-Module $modules  -ListAvailable).Count -lt $modules.Count)
 {
     #RunAs Administrator
+    If (-NOT ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator"))
     {   
-    $arguments = "& '" + $myinvocation.mycommand.definition + "'"
-    Start-Process powershell -Verb runAs -ArgumentList $arguments
-    Break
+        $arguments = "& '" + $myinvocation.mycommand.definition + "'"
+        Start-Process powershell -Verb runAs -ArgumentList $arguments
+        Break
     }
+    write-host "Installing modules: $modules ..."
     Install-Module $modules
 }
 
